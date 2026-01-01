@@ -1,0 +1,8 @@
+# Ignore the website repo living inside this folder (it has its own git remote)
+active-site/
+# Usual noise
+.DS_Store
+node_modules/
+dist/
+.env
+.env.*
