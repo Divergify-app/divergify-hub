@@ -200,6 +200,70 @@ button, input, select, textarea { font: inherit; }
   gap: 10px;
 }
 
+.checkin-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 20, 30, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  z-index: 50;
+}
+
+.checkin-panel {
+  width: min(520px, 100%);
+  padding: var(--space-5);
+  display: grid;
+  gap: var(--space-4);
+}
+
+.checkin-grid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.checkin-choice {
+  text-align: left;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  cursor: pointer;
+  display: grid;
+  gap: 6px;
+}
+
+.checkin-choice:focus {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.checkin-choice-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.checkin-choice-hint {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.checkin-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 540px) {
+  .checkin-panel {
+    padding: var(--space-4);
+  }
+  .checkin-choice {
+    padding: var(--space-3);
+  }
+}
+
 .tablink {
   text-decoration: none;
   display: inline-flex;

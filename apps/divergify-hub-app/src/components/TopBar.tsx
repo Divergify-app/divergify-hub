@@ -1,7 +1,15 @@
 import { useApp } from "../state/useApp";
+import { useSessionState } from "../state/sessionState";
 
-export function TopBar() {
+type Props = {
+  onOpenState?: () => void;
+};
+
+export function TopBar({ onOpenState }: Props) {
   const { data, actions } = useApp();
+  const { session } = useSessionState();
+
+  const stateLabel = session?.mode ? `State: ${session.mode}` : "Set state";
 
   return (
     <div className="panel" style={{ padding: "14px 16px", marginBottom: "16px" }}>
@@ -12,6 +20,9 @@ export function TopBar() {
         </div>
 
         <div className="row" style={{ flexWrap: "wrap" }}>
+          <button className="btn" onClick={onOpenState}>
+            {stateLabel}
+          </button>
           <button className="btn" onClick={actions.toggleShades} aria-pressed={data.preferences.shades}>
             Shades: {data.preferences.shades ? "ON" : "OFF"}
           </button>
