@@ -1,19 +1,21 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 export type SessionMode = "overloaded" | "neutral" | "ready";
+export type SupportLevel = "normal" | "gentle" | "overloaded";
 
-type SessionState = { mode: SessionMode; setAt: string };
+type SessionState = { mode: SessionMode; setAt: string; overwhelm: number };
 
 type SessionCtx = {
   session: SessionState | null;
   checkInRequired: boolean;
-  setMode: (mode: SessionMode) => void;
+  setOverwhelm: (value: number) => void;
   skipCheckIn: () => void;
   clearSession: () => void;
 };
 
 const STATE_KEY = "divergify.session.state";
 const STATE_AT_KEY = "divergify.session.stateSetAt";
+const OVERWHELM_KEY = "divergify.session.overwhelm";
 const SKIP_AT_KEY = "divergify.session.stateSkippedAt";
 const TTL_MS = 12 * 60 * 60 * 1000;
 
@@ -26,44 +28,68 @@ function isFresh(setAt: string | null) {
   return Date.now() - ts < TTL_MS;
 }
 
+export function clampOverwhelm(value: number) {
+  if (Number.isNaN(value)) return 50;
+  return Math.max(0, Math.min(100, value));
+}
+
+export function snapOverwhelm(value: number) {
+  const clamped = clampOverwhelm(value);
+  return Math.round(clamped / 25) * 25;
+}
+
+export function mapOverwhelmToSupportLevel(value: number): SupportLevel {
+  const clamped = clampOverwhelm(value);
+  if (clamped >= 75) return "overloaded";
+  if (clamped >= 25) return "gentle";
+  return "normal";
+}
+
+export function mapOverwhelmToMode(value: number): SessionMode {
+  const support = mapOverwhelmToSupportLevel(value);
+  if (support === "overloaded") return "overloaded";
+  if (support === "gentle") return "neutral";
+  return "ready";
+}
+
 export function getSessionState(): SessionState | null {
   try {
     const mode = localStorage.getItem(STATE_KEY) as SessionMode | null;
     const setAt = localStorage.getItem(STATE_AT_KEY);
+    const rawOverwhelm = localStorage.getItem(OVERWHELM_KEY);
     if (!mode || !setAt) return null;
     if (mode !== "overloaded" && mode !== "neutral" && mode !== "ready") return null;
-    return { mode, setAt };
+    const overwhelm = rawOverwhelm ? Number(rawOverwhelm) : 50;
+    return { mode, setAt, overwhelm: clampOverwhelm(overwhelm) };
   } catch {
     return null;
   }
 }
 
-export function setSessionState(mode: SessionMode): SessionState {
+export function setSessionState(value: number, skipped = false): SessionState {
+  const overwhelm = snapOverwhelm(value);
+  const mode = mapOverwhelmToMode(overwhelm);
   const setAt = new Date().toISOString();
   try {
     localStorage.setItem(STATE_KEY, mode);
     localStorage.setItem(STATE_AT_KEY, setAt);
-    localStorage.removeItem(SKIP_AT_KEY);
+    localStorage.setItem(OVERWHELM_KEY, String(overwhelm));
+    if (skipped) {
+      localStorage.setItem(SKIP_AT_KEY, setAt);
+    } else {
+      localStorage.removeItem(SKIP_AT_KEY);
+    }
   } catch {
     // ignore storage errors
   }
-  return { mode, setAt };
-}
-
-export function setSessionSkip() {
-  const setAt = new Date().toISOString();
-  try {
-    localStorage.setItem(SKIP_AT_KEY, setAt);
-  } catch {
-    // ignore storage errors
-  }
-  return setAt;
+  return { mode, setAt, overwhelm };
 }
 
 export function clearSessionState() {
   try {
     localStorage.removeItem(STATE_KEY);
     localStorage.removeItem(STATE_AT_KEY);
+    localStorage.removeItem(OVERWHELM_KEY);
   } catch {
     // ignore storage errors
   }
@@ -106,14 +132,14 @@ export function SessionStateProvider({ children }: { children: React.ReactNode }
     return {
       session,
       checkInRequired,
-      setMode: (mode) => {
-        const next = setSessionState(mode);
+      setOverwhelm: (value) => {
+        const next = setSessionState(value);
         setSession(next);
         setCheckInRequired(false);
       },
       skipCheckIn: () => {
-        setSessionSkip();
-        setSession(null);
+        const next = setSessionState(50, true);
+        setSession(next);
         setCheckInRequired(false);
       },
       clearSession: () => {

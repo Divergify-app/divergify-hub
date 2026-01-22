@@ -218,49 +218,56 @@ button, input, select, textarea { font: inherit; }
   gap: var(--space-4);
 }
 
-.checkin-grid {
+.checkin-slider {
   display: grid;
   gap: var(--space-3);
 }
 
-.checkin-choice {
-  text-align: left;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
-  padding: var(--space-4);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text);
-  cursor: pointer;
-  display: grid;
-  gap: 6px;
+.checkin-range {
+  width: 100%;
+  height: 36px;
 }
 
-.checkin-choice:focus {
+.checkin-anchors {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.checkin-level {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.checkin-input {
+  width: 90px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px 8px;
+  color: var(--text);
+}
+.checkin-input:focus {
   outline: var(--focus-ring);
   outline-offset: 2px;
 }
 
-.checkin-choice-title {
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.checkin-choice-hint {
-  font-size: 13px;
-  color: var(--muted);
-}
-
 .checkin-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
 }
 
 @media (max-width: 540px) {
   .checkin-panel {
     padding: var(--space-4);
   }
-  .checkin-choice {
-    padding: var(--space-3);
+  .checkin-range {
+    height: 32px;
   }
 }
 

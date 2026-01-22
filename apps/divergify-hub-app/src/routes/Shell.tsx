@@ -5,7 +5,7 @@ import { Tabs } from "../components/Tabs";
 import { SidekickDrawer } from "../components/SidekickDrawer";
 import { useApp } from "../state/useApp";
 import { TakotaCheckIn } from "../components/TakotaCheckIn";
-import { useSessionState } from "../state/sessionState";
+import { mapOverwhelmToSupportLevel, useSessionState } from "../state/sessionState";
 
 export function Shell() {
   const { hydrated, data, actions } = useApp();
@@ -18,10 +18,13 @@ export function Shell() {
   }, [checkInRequired]);
 
   useEffect(() => {
-    if (!session?.mode) return;
+    if (!session) return;
+    const support = mapOverwhelmToSupportLevel(session.overwhelm);
     const desired =
-      session.mode === "overloaded"
+      support === "overloaded"
         ? { shades: true, reduceMotion: true }
+        : support === "gentle"
+        ? { shades: true, reduceMotion: data.preferences.reduceMotion }
         : { shades: false, reduceMotion: false };
 
     if (
@@ -30,7 +33,7 @@ export function Shell() {
     ) {
       actions.setPreferences({ ...data.preferences, ...desired });
     }
-  }, [actions, data.preferences, session?.mode]);
+  }, [actions, data.preferences, session]);
 
   if (!hydrated) {
     return (

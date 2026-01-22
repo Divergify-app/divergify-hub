@@ -1,19 +1,14 @@
-import { useEffect, useMemo } from "react";
-import { useSessionState } from "../state/sessionState";
+import { useEffect, useMemo, useState } from "react";
+import { mapOverwhelmToSupportLevel, snapOverwhelm, useSessionState } from "../state/sessionState";
 
 type Props = {
   open: boolean;
   onClose?: () => void;
 };
 
-const choices = [
-  { id: "overloaded", label: "Overloaded", hint: "We go quieter first. One step." },
-  { id: "neutral", label: "Stable", hint: "Baseline mode. Keep it clean." },
-  { id: "ready", label: "Ready", hint: "Let’s move. You can add scaffolds." }
-] as const;
-
 export function TakotaCheckIn({ open, onClose }: Props) {
-  const { setMode, skipCheckIn } = useSessionState();
+  const { setOverwhelm, skipCheckIn, session } = useSessionState();
+  const [value, setValue] = useState(() => snapOverwhelm(session?.overwhelm ?? 50));
 
   useEffect(() => {
     if (!open) return;
@@ -25,8 +20,15 @@ export function TakotaCheckIn({ open, onClose }: Props) {
     };
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    setValue(snapOverwhelm(session?.overwhelm ?? 50));
+  }, [open, session?.overwhelm]);
+
   const titleId = useMemo(() => `takota-checkin-title`, []);
   const descId = useMemo(() => `takota-checkin-desc`, []);
+  const level = mapOverwhelmToSupportLevel(value);
+  const levelLabel = level === "overloaded" ? "High support" : level === "gentle" ? "Gentle support" : "Baseline";
 
   if (!open) return null;
 
@@ -35,24 +37,52 @@ export function TakotaCheckIn({ open, onClose }: Props) {
       <div className="checkin-panel panel">
         <div className="stack" style={{ gap: 8 }}>
           <div className="badge">Takota check-in</div>
-          <h2 className="h2" id={titleId}>Where are we at?</h2>
-          <p className="p" id={descId}>Pick a mode. I’ll adapt.</p>
+          <h2 className="h2" id={titleId}>Set your stimulation level.</h2>
+          <p className="p" id={descId}>Optional. I’ll adapt quietly for this session.</p>
         </div>
 
-        <div className="checkin-grid">
-          {choices.map((choice) => (
-            <button
-              key={choice.id}
-              className="checkin-choice"
-              onClick={() => {
-                setMode(choice.id);
-                onClose?.();
-              }}
-            >
-              <span className="checkin-choice-title">{choice.label}</span>
-              <span className="checkin-choice-hint">{choice.hint}</span>
-            </button>
-          ))}
+        <div className="checkin-slider">
+          <label className="label" htmlFor="takota-overwhelm">
+            Stimulation level
+          </label>
+          <input
+            id="takota-overwhelm"
+            className="checkin-range"
+            type="range"
+            min={0}
+            max={100}
+            step={25}
+            list="takota-overwhelm-anchors"
+            value={value}
+            aria-valuetext={`${value} out of 100`}
+            onChange={(event) => setValue(snapOverwhelm(Number(event.target.value)))}
+          />
+          <datalist id="takota-overwhelm-anchors">
+            <option value="0" label="Calm" />
+            <option value="25" label="" />
+            <option value="50" label="Stretched" />
+            <option value="75" label="" />
+            <option value="100" label="Overloaded" />
+          </datalist>
+          <div className="checkin-anchors">
+            <span>0 calm</span>
+            <span>50 stretched</span>
+            <span>100 overloaded</span>
+          </div>
+          <div className="checkin-level">
+            <span className="badge">{levelLabel}</span>
+            <label className="mini" htmlFor="takota-overwhelm-input">Value</label>
+            <input
+              id="takota-overwhelm-input"
+              className="checkin-input"
+              type="number"
+              min={0}
+              max={100}
+              step={25}
+              value={value}
+              onChange={(event) => setValue(snapOverwhelm(Number(event.target.value)))}
+            />
+          </div>
         </div>
 
         <div className="checkin-footer">
@@ -64,6 +94,15 @@ export function TakotaCheckIn({ open, onClose }: Props) {
             }}
           >
             Skip for now
+          </button>
+          <button
+            className="btn primary"
+            onClick={() => {
+              setOverwhelm(value);
+              onClose?.();
+            }}
+          >
+            Continue
           </button>
         </div>
       </div>

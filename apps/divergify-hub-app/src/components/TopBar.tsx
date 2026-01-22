@@ -1,5 +1,5 @@
 import { useApp } from "../state/useApp";
-import { useSessionState } from "../state/sessionState";
+import { mapOverwhelmToSupportLevel, useSessionState } from "../state/sessionState";
 
 type Props = {
   onOpenState?: () => void;
@@ -9,7 +9,10 @@ export function TopBar({ onOpenState }: Props) {
   const { data, actions } = useApp();
   const { session } = useSessionState();
 
-  const stateLabel = session?.mode ? `State: ${session.mode}` : "Set state";
+  const support = session ? mapOverwhelmToSupportLevel(session.overwhelm) : null;
+  const supportLabel =
+    support === "overloaded" ? "High support" : support === "gentle" ? "Gentle support" : "Baseline";
+  const stateLabel = session ? `State: ${supportLabel}` : "Set state";
 
   return (
     <div className="panel" style={{ padding: "14px 16px", marginBottom: "16px" }}>
