@@ -43,3 +43,9 @@
   /* keep brand colors; just alter emphasis slightly */
   --border-strong: rgba(255, 255, 255, 0.34);
 }
+
+:root.state-overloaded {
+  --border: rgba(255, 255, 255, 0.14);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --accent: #7fbc96;
+}

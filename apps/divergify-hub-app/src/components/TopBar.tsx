@@ -1,7 +1,18 @@
 import { useApp } from "../state/useApp";
+import { mapOverwhelmToSupportLevel, useSessionState } from "../state/sessionState";
 
-export function TopBar() {
+type Props = {
+  onOpenState?: () => void;
+};
+
+export function TopBar({ onOpenState }: Props) {
   const { data, actions } = useApp();
+  const { session } = useSessionState();
+
+  const support = session ? mapOverwhelmToSupportLevel(session.overwhelm) : null;
+  const supportLabel =
+    support === "overloaded" ? "High support" : support === "gentle" ? "Gentle support" : "Baseline";
+  const stateLabel = session ? `State: ${supportLabel}` : "Set state";
 
   return (
     <div className="panel" style={{ padding: "14px 16px", marginBottom: "16px" }}>
@@ -12,6 +23,9 @@ export function TopBar() {
         </div>
 
         <div className="row" style={{ flexWrap: "wrap" }}>
+          <button className="btn" onClick={onOpenState}>
+            {stateLabel}
+          </button>
           <button className="btn" onClick={actions.toggleShades} aria-pressed={data.preferences.shades}>
             Shades: {data.preferences.shades ? "ON" : "OFF"}
           </button>

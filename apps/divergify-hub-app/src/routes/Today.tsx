@@ -3,10 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../state/useApp";
 import { todayISO } from "../shared/utils";
 import { FocusTimer } from "../components/FocusTimer";
+import { useSessionState } from "../state/sessionState";
 
 export function Today() {
   const { data, actions } = useApp();
   const nav = useNavigate();
+  const { session } = useSessionState();
 
   const today = todayISO();
   const openTasks = useMemo(() => data.tasks.filter((t) => !t.done), [data.tasks]);
@@ -45,6 +47,21 @@ export function Today() {
           <Link to="/tasks" className="btn" style={{ textDecoration: "none" }}>Tasks ({openTasks.length})</Link>
           <Link to="/habits" className="btn" style={{ textDecoration: "none" }}>Habits ({data.habits.length})</Link>
           <Link to="/focus" className="btn" style={{ textDecoration: "none" }}>Focus</Link>
+          {session?.mode === "overloaded" ? (
+            <Link to="/focus" className="btn primary" style={{ textDecoration: "none" }}>
+              Comfort Quest
+            </Link>
+          ) : null}
+          {session?.mode === "neutral" ? (
+            <Link to="/tasks" className="btn primary" style={{ textDecoration: "none" }}>
+              Anchor Task
+            </Link>
+          ) : null}
+          {session?.mode === "ready" ? (
+            <Link to="/tasks" className="btn" style={{ textDecoration: "none" }}>
+              Add scaffold
+            </Link>
+          ) : null}
         </div>
       </div>
 
