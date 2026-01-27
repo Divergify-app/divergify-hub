@@ -1,12 +1,12 @@
 :root {
-  --bg: #00466C;
-  --panel: #003A59;
-  --text: #ffffff;
-  --muted: #d7e1ec;
-  --accent: #6FAE86;
+  --bg: #232147;
+  --panel: #1B1938;
+  --text: #F9EED2;
+  --muted: #918FA2;
+  --accent: #CDA977;
 
-  --border: rgba(255, 255, 255, 0.18);
-  --border-strong: rgba(255, 255, 255, 0.26);
+  --border: rgba(249, 238, 210, 0.18);
+  --border-strong: rgba(249, 238, 210, 0.26);
 
   --radius: 16px;
   --radius-sm: 12px;
@@ -23,20 +23,20 @@
   --font: "Avenir Next", "Avenir", "Trebuchet MS", "Gill Sans", "Tahoma", sans-serif;
   --line: 1.45;
 
-  --focus-ring: 2px solid rgba(111, 174, 134, 0.7);
+  --focus-ring: 2px solid rgba(205, 169, 119, 0.7);
 
   /* user adjustable */
   --scale: 1;
 }
 
 :root[data-mode="shades"] {
-  --bg: #003A59;
-  --panel: #022F45;
-  --text: #ffffff;
-  --muted: #cfe0ee;
-  --accent: #6FAE86;
-  --border: rgba(255, 255, 255, 0.16);
-  --border-strong: rgba(255, 255, 255, 0.22);
+  --bg: #151426;
+  --panel: #1B192D;
+  --text: #C8C6D1;
+  --muted: #5E5C6B;
+  --accent: #8C7A5E;
+  --border: rgba(200, 198, 209, 0.16);
+  --border-strong: rgba(200, 198, 209, 0.22);
 }
 
 :root[data-privacy="tinfoil"] {
@@ -45,7 +45,7 @@
 }
 
 :root.state-overloaded {
-  --border: rgba(255, 255, 255, 0.14);
-  --border-strong: rgba(255, 255, 255, 0.2);
-  --accent: #7fbc96;
+  --border: rgba(200, 198, 209, 0.14);
+  --border-strong: rgba(200, 198, 209, 0.2);
+  --accent: #8C7A5E;
 }
