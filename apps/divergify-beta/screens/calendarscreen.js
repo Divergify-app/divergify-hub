@@ -12,8 +12,8 @@ import { Calendar } from 'react-native-calendars';
 import SectionCard from '../components/sectioncard';
 import PrimaryButton from '../components/primarybutton';
 import BrandBadge from '../components/brandbadge';
-import usePersistentState from '../hooks/usepersistentstate';
-import { colors, spacing } from '../constants/colors';
+import { useStickys } from '../src/stickys/StickysProvider';
+import { colors, radii, spacing, typography } from '../constants/colors';
 
 const typeOptions = ['Task', 'Appointment', 'Body Double'];
 const todayISO = () => new Date().toISOString().split('T')[0];
@@ -22,13 +22,18 @@ export default function CalendarScreen() {
   const [selectedDate, setSelectedDate] = useState(todayISO());
   const [entryText, setEntryText] = useState('');
   const [entryType, setEntryType] = useState(typeOptions[0]);
-  const [tasks, setTasks] = usePersistentState('calendarTasks', {});
+  const {
+    calendarTasks,
+    addCalendarEntry,
+    toggleCalendarEntry,
+    deleteCalendarEntry,
+  } = useStickys();
 
-  const dayItems = tasks?.[selectedDate] ?? [];
+  const dayItems = calendarTasks?.[selectedDate] ?? [];
 
   const markedDates = useMemo(() => {
-    const marks = Object.keys(tasks ?? {}).reduce((acc, date) => {
-      if ((tasks[date] ?? []).length > 0) {
+    const marks = Object.keys(calendarTasks ?? {}).reduce((acc, date) => {
+      if ((calendarTasks[date] ?? []).length > 0) {
         acc[date] = {
           marked: true,
           dotColor: colors.accent,
@@ -45,7 +50,7 @@ export default function CalendarScreen() {
         selectedColor: colors.accentMuted,
       },
     };
-  }, [tasks, selectedDate]);
+  }, [calendarTasks, selectedDate]);
 
   const handleSave = () => {
     if (!entryText.trim()) return;
@@ -55,27 +60,16 @@ export default function CalendarScreen() {
       type: entryType,
       done: false,
     };
-    setTasks((prev) => ({
-      ...prev,
-      [selectedDate]: [...(prev?.[selectedDate] ?? []), payload],
-    }));
+    addCalendarEntry(selectedDate, payload);
     setEntryText('');
   };
 
   const toggleDone = (id) => {
-    setTasks((prev) => ({
-      ...prev,
-      [selectedDate]: prev[selectedDate].map((item) =>
-        item.id === id ? { ...item, done: !item.done } : item
-      ),
-    }));
+    toggleCalendarEntry(selectedDate, id);
   };
 
   const removeItem = (id) => {
-    setTasks((prev) => ({
-      ...prev,
-      [selectedDate]: prev[selectedDate].filter((item) => item.id !== id),
-    }));
+    deleteCalendarEntry(selectedDate, id);
   };
 
   return (
@@ -182,14 +176,14 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: colors.text,
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.bold,
     marginBottom: spacing.sm,
   },
   subheading: {
     color: colors.text,
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: typography.sizes.md,
+    fontWeight: typography.weights.semibold,
     marginBottom: spacing.sm,
   },
   pills: {
@@ -201,9 +195,9 @@ const styles = StyleSheet.create({
   pill: {
     paddingVertical: 6,
     paddingHorizontal: 14,
-    borderRadius: 999,
+    borderRadius: radii.pill,
     borderWidth: 1,
-    borderColor: '#1f1f29',
+    borderColor: colors.border,
   },
   pillActive: {
     backgroundColor: colors.accent,
@@ -217,12 +211,12 @@ const styles = StyleSheet.create({
     color: '#05141a',
   },
   input: {
-    backgroundColor: '#0f0f15',
+    backgroundColor: colors.surface,
     color: colors.text,
-    borderRadius: 12,
+    borderRadius: radii.md,
     padding: spacing.sm,
     borderWidth: 1,
-    borderColor: '#1f1f29',
+    borderColor: colors.border,
     minHeight: 80,
     marginBottom: spacing.sm,
   },
@@ -238,7 +232,7 @@ const styles = StyleSheet.create({
   checkbox: {
     width: 28,
     height: 28,
-    borderRadius: 8,
+    borderRadius: radii.sm,
     borderWidth: 1,
     borderColor: colors.accent,
     alignItems: 'center',
@@ -254,7 +248,7 @@ const styles = StyleSheet.create({
   },
   entryText: {
     color: colors.text,
-    fontSize: 16,
+    fontSize: typography.sizes.md,
   },
   entryTextDone: {
     color: colors.muted,
@@ -262,7 +256,7 @@ const styles = StyleSheet.create({
   },
   entryType: {
     color: colors.muted,
-    fontSize: 12,
+    fontSize: typography.sizes.xs,
   },
   delete: {
     color: colors.danger,

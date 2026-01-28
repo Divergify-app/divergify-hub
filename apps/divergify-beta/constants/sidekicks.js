@@ -1,7 +1,7 @@
 export const SIDEKICKS = [
   {
     id: 'takota',
-    name: 'Takota',
+    name: 'TAKOTA',
     tagline: 'Default. Dry humor. Real support. No nonsense.',
     style: 'default',
     boundaries: [
@@ -19,10 +19,17 @@ export const SIDEKICKS = [
   },
   {
     id: 'chaos_buddy',
-    name: 'Chaos Buddy',
+    name: 'Buddy',
     tagline: 'Novelty and momentum. Friendly chaos, contained.',
     style: 'chaotic',
     boundaries: ['No risky dares.', 'No mocking.', 'Convert hype into one doable step.'],
+  },
+  {
+    id: 'courtney',
+    name: 'Courtney',
+    tagline: 'Creative lift. Fast idea scaffolds without the fluff.',
+    style: 'creative',
+    boundaries: ['No therapy framing.', 'No vague hype.', 'One concrete output.'],
   },
   {
     id: 'drill_coach',

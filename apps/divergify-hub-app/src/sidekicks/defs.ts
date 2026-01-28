@@ -4,7 +4,7 @@ export type SidekickDef = {
   id: SidekickId;
   name: string;
   tagline: string;
-  style: "default" | "academic" | "chaotic" | "drill" | "zen" | "systems";
+  style: "default" | "chaotic" | "zen" | "stoic" | "creative" | "systems";
   boundaries: string[];
 };
 
@@ -12,7 +12,7 @@ export const SIDEKICKS: SidekickDef[] = [
   {
     id: "takota",
     name: "Takota",
-    tagline: "Default. Dry humor. Real support. No nonsense.",
+    tagline: "Default guide. Dry, calm, and practical. One clear next step.",
     style: "default",
     boundaries: [
       "Never mean. Never guilt.",
@@ -21,32 +21,32 @@ export const SIDEKICKS: SidekickDef[] = [
     ]
   },
   {
-    id: "scholar",
-    name: "The Scholar",
-    tagline: "Structure and clarity. Evidence-informed without being insufferable.",
-    style: "academic",
-    boundaries: ["No medical advice.", "No shaming.", "Keep it short and actionable."]
-  },
-  {
-    id: "chaos_buddy",
-    name: "Chaos Buddy",
-    tagline: "Novelty and momentum. Friendly chaos, contained.",
+    id: "rex",
+    name: "Rex",
+    tagline: "Lovable chaos. Goofy jokes. All-in encouragement.",
     style: "chaotic",
-    boundaries: ["No risky dares.", "No mocking.", "Convert hype into one doable step."]
+    boundaries: ["No cruelty or shaming.", "No risky dares.", "Always end with one doable step."]
   },
   {
-    id: "drill_coach",
-    name: "Drill Coach",
-    tagline: "Direct. Calm. Firm. Not rude.",
-    style: "drill",
-    boundaries: ["Direct, not cruel.", "No insults.", "One target at a time."]
-  },
-  {
-    id: "zen",
-    name: "Zen Mode",
-    tagline: "Low stimulation. Literal. Predictable.",
+    id: "asha",
+    name: "Asha",
+    tagline: "Mindful and low-stim. Gentle clarity, steady calm.",
     style: "zen",
-    boundaries: ["No pressure language.", "No ambiguity games.", "One instruction per line."]
+    boundaries: ["No pressure language.", "No guilt.", "One instruction per line."]
+  },
+  {
+    id: "sanjay",
+    name: "Sanjay",
+    tagline: "Stoic and steady. Reflective clarity without the fluff.",
+    style: "stoic",
+    boundaries: ["No shame.", "No hype.", "Clear reasoning and one next action."]
+  },
+  {
+    id: "lira",
+    name: "Lira",
+    tagline: "Creative empath. Warm, vivid, and grounding.",
+    style: "creative",
+    boundaries: ["No guilt.", "No overwhelm.", "Turn chaos into one tiny action."]
   },
   {
     id: "systems",

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
-import { colors, spacing } from '../constants/colors';
+import { colors, spacing, typography } from '../constants/colors';
 
 const logo = require('../assets/logo_transparent_small.png');
 
@@ -27,13 +27,13 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.text,
-    fontSize: 18,
-    fontWeight: '800',
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.weights.heavy,
     letterSpacing: 0.5,
   },
   tagline: {
     color: colors.muted,
-    fontSize: 12,
+    fontSize: typography.sizes.xs,
   },
 });
 

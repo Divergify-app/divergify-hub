@@ -26,7 +26,7 @@ export function Shell() {
     <div className="container">
       <TopBar />
       <Tabs />
-      <main id="main" className="panel" style={{ padding: "18px", marginTop: "16px" }}>
+      <main id="main" className="panel page" style={{ padding: "18px", marginTop: "16px" }}>
         <Outlet />
       </main>
       <SidekickDrawer />

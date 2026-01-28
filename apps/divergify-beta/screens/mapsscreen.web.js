@@ -10,7 +10,7 @@ import {
 import SectionCard from '../components/sectioncard';
 import PrimaryButton from '../components/primarybutton';
 import usePersistentState from '../hooks/usepersistentstate';
-import { colors, spacing } from '../constants/colors';
+import { colors, radii, spacing, typography } from '../constants/colors';
 
 export default function MapsScreen() {
   const [origin, setOrigin] = useState('');
@@ -116,14 +116,14 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: colors.text,
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.bold,
     marginBottom: spacing.sm,
   },
   subheading: {
     color: colors.text,
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: typography.sizes.md,
+    fontWeight: typography.weights.semibold,
     marginBottom: spacing.sm,
   },
   helper: {
@@ -131,30 +131,30 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   input: {
-    backgroundColor: '#0f0f15',
+    backgroundColor: colors.surface,
     color: colors.text,
-    borderRadius: 12,
+    borderRadius: radii.md,
     padding: spacing.sm,
     borderWidth: 1,
-    borderColor: '#1f1f29',
+    borderColor: colors.border,
     marginBottom: spacing.sm,
   },
   webMapPlaceholder: {
-    borderRadius: 16,
+    borderRadius: radii.lg,
     borderWidth: 1,
-    borderColor: '#1f1f29',
+    borderColor: colors.border,
     padding: spacing.md,
-    backgroundColor: '#0c0c12',
+    backgroundColor: colors.surface,
   },
   placeholderTitle: {
     color: colors.text,
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: typography.sizes.md,
+    fontWeight: typography.weights.semibold,
     marginBottom: spacing.xs,
   },
   placeholderText: {
     color: colors.muted,
-    fontSize: 13,
+    fontSize: typography.sizes.sm,
     lineHeight: 18,
   },
   routeRow: {
@@ -162,19 +162,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: spacing.sm,
     borderBottomWidth: 1,
-    borderBottomColor: '#1f1f29',
+    borderBottomColor: colors.border,
   },
   routeLabel: {
     color: colors.text,
-    fontWeight: '600',
+    fontWeight: typography.weights.semibold,
     marginBottom: 4,
   },
   routeText: {
     color: colors.muted,
-    fontSize: 12,
+    fontSize: typography.sizes.xs,
   },
   useText: {
     color: colors.accent,
-    fontWeight: '700',
+    fontWeight: typography.weights.bold,
   },
 });

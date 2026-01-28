@@ -1,0 +1,16 @@
+{
+  "cli": {
+    "version": ">= 5.9.0",
+    "appVersionSource": "local"
+  },
+  "build": {
+    "production": {
+      "ios": {
+        "distribution": "store",
+        "credentialsSource": "remote",
+        "autoIncrement": "buildNumber",
+        "resourceClass": "m-medium"
+      }
+    }
+  }
+}

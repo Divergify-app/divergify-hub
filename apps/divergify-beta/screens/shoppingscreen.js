@@ -10,7 +10,7 @@ import {
 import SectionCard from '../components/sectioncard';
 import PrimaryButton from '../components/primarybutton';
 import usePersistentState from '../hooks/usepersistentstate';
-import { colors, spacing } from '../constants/colors';
+import { colors, radii, spacing, typography } from '../constants/colors';
 
 const categories = ['Groceries', 'Essentials', 'Self-Care', 'Errands'];
 
@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: colors.text,
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.bold,
     marginBottom: spacing.sm,
   },
   helper: {
@@ -157,8 +157,8 @@ const styles = StyleSheet.create({
   },
   pill: {
     borderWidth: 1,
-    borderColor: '#1f1f29',
-    borderRadius: 999,
+    borderColor: colors.border,
+    borderRadius: radii.pill,
     paddingHorizontal: 14,
     paddingVertical: 6,
   },
@@ -174,31 +174,31 @@ const styles = StyleSheet.create({
     color: '#05141a',
   },
   input: {
-    backgroundColor: '#0f0f15',
+    backgroundColor: colors.surface,
     color: colors.text,
-    borderRadius: 12,
+    borderRadius: radii.md,
     padding: spacing.sm,
     borderWidth: 1,
-    borderColor: '#1f1f29',
+    borderColor: colors.border,
     marginBottom: spacing.sm,
   },
   subheading: {
     color: colors.text,
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: typography.sizes.md,
+    fontWeight: typography.weights.semibold,
     marginBottom: spacing.sm / 2,
   },
   progressTrack: {
     width: '100%',
     height: 10,
-    borderRadius: 999,
+    borderRadius: radii.pill,
     backgroundColor: '#1d1d27',
     marginBottom: spacing.sm,
   },
   progressThumb: {
     height: '100%',
     backgroundColor: colors.accent,
-    borderRadius: 999,
+    borderRadius: radii.pill,
   },
   itemRow: {
     flexDirection: 'row',
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   checkbox: {
     width: 30,
     height: 30,
-    borderRadius: 10,
+    borderRadius: radii.sm,
     borderWidth: 1,
     borderColor: colors.accent,
     alignItems: 'center',
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     color: colors.text,
-    fontSize: 16,
+    fontSize: typography.sizes.md,
   },
   itemTextDone: {
     color: colors.muted,
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   },
   intention: {
     color: colors.muted,
-    fontSize: 12,
+    fontSize: typography.sizes.xs,
   },
   delete: {
     color: colors.danger,

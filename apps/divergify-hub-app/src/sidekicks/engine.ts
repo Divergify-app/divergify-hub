@@ -135,12 +135,47 @@ function replyTakota(message: string, data: AppData) {
   ].filter(Boolean).join("\n");
 }
 
-function replyScholar(message: string, data: AppData) {
+function replyRex(data: AppData) {
+  const ctx = summarizeContext(data);
+  return [
+    "Okay, I'm in. Full chaos buddy mode, but useful.",
+    "Goofy rule: we make it tiny and we make it funny.",
+    "",
+    "Pick one:",
+    "- The tiniest real step",
+    "- A setup step (open the doc, lay out tools, write the title)",
+    "- A 2-minute chaos sprint",
+    "",
+    ctx.topTask ? `Target: "${ctx.topTask}"` : "Target: the smallest visible task.",
+    "",
+    microStepPrompt("Set a 2-minute timer and start. When it ends, decide if you want another 2 minutes."),
+    stopPointLine()
+  ].join("\n");
+}
+
+function replyAsha(data: AppData) {
+  const ctx = summarizeContext(data);
+  return [
+    "We will keep this gentle and simple.",
+    "",
+    "Step 1: choose one task.",
+    ctx.topTask ? `Suggestion: ${ctx.topTask}` : "Suggestion: the smallest visible task.",
+    "",
+    "Step 2: set a timer for 10 minutes.",
+    "Step 3: do only the first tiny step.",
+    "",
+    "If it feels big, cut it in half.",
+    stopPointLine(),
+    safeDisclaimer()
+  ].join("\n");
+}
+
+function replySanjay(message: string, data: AppData) {
   const ctx = summarizeContext(data);
   const lines = [
-    "Lets reduce uncertainty.",
+    "We will reduce uncertainty.",
     "",
-    "1) Define done in one line.",
+    "1) Define the outcome in one line.",
     "2) Define the first observable step.",
     "3) Timebox it to 10 minutes.",
     "",
@@ -151,57 +186,22 @@ function replyScholar(message: string, data: AppData) {
     safeDisclaimer()
   ];
   if (containsAny(message, ["research", "study", "learn", "read", "write"])) {
-    lines.unshift("Academic mode: clear target, clear constraint, clear next action.");
+    lines.unshift("Stoic mode: clear target, clear constraint, clear next action.");
   }
   return lines.join("\n");
 }
 
-function replyChaos(data: AppData) {
+function replyLira(data: AppData) {
   const ctx = summarizeContext(data);
   return [
-    "Okay. We need novelty, but controlled novelty.",
+    "Let's make this feel lighter without making it vague.",
     "",
-    "Pick one weird-but-safe trick:",
-    "- Do it for 2 minutes only. Then you can quit.",
-    "- Change the location. Same task, new spot.",
-    "- Rename the task to something funnier and smaller.",
+    "Give the task a tiny, friendly name.",
+    ctx.topTask ? `Example: \"${ctx.topTask}\" → \"one brushstroke\"` : "Example: \"the smallest visible step\" → \"one brushstroke\"",
     "",
-    ctx.topTask ? `Target suggestion: \"${ctx.topTask}\"` : "Target suggestion: pick the smallest visible step.",
+    "Then do the first tiny action only.",
     "",
-    microStepPrompt("Set a 2-minute timer and start. When it ends, decide if you want another 2 minutes."),
-    stopPointLine()
-  ].join("\n");
-}
-
-function replyDrill(data: AppData) {
-  const ctx = summarizeContext(data);
-  return [
-    "Listen. One objective.",
-    "",
-    "Do this now:",
-    "1) Choose ONE target task.",
-    "2) Start 10 minutes.",
-    "3) No side quests.",
-    "",
-    ctx.topTask ? `Target: \"${ctx.topTask}\"` : "Target: choose the smallest visible task.",
-    "",
-    "When time is up: write one line of what changed. Then stop or repeat.",
-    stopPointLine()
-  ].join("\n");
-}
-
-function replyZen(data: AppData) {
-  const ctx = summarizeContext(data);
-  return [
-    "We will keep this calm and literal.",
-    "",
-    "Step 1: choose one task.",
-    ctx.topTask ? `Suggestion: ${ctx.topTask}` : "Suggestion: choose the smallest visible task.",
-    "",
-    "Step 2: set a timer for 10 minutes.",
-    "Step 3: do only the first step.",
-    "",
-    "If you feel stuck, reduce the step size by half.",
+    microStepPrompt("Do one 60-second brushstroke. When it ends, decide if you want a second."),
     stopPointLine(),
     safeDisclaimer()
   ].join("\n");
@@ -240,10 +240,10 @@ export function generateSidekickTurn(input: Input): ChatTurn {
 
   const content =
     s.id === "takota" ? replyTakota(msg, input.data) :
-    s.id === "scholar" ? replyScholar(msg, input.data) :
-    s.id === "chaos_buddy" ? replyChaos(input.data) :
-    s.id === "drill_coach" ? replyDrill(input.data) :
-    s.id === "zen" ? replyZen(input.data) :
+    s.id === "rex" ? replyRex(input.data) :
+    s.id === "asha" ? replyAsha(input.data) :
+    s.id === "sanjay" ? replySanjay(msg, input.data) :
+    s.id === "lira" ? replyLira(input.data) :
     replySystems(input.data);
 
   return {

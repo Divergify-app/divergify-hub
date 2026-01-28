@@ -12,7 +12,7 @@ import PrimaryButton from '../components/primarybutton';
 import BrandBadge from '../components/brandbadge';
 import usePersistentState from '../hooks/usepersistentstate';
 import { nudges } from '../constants/nudges';
-import { colors, spacing } from '../constants/colors';
+import { colors, radii, spacing, typography } from '../constants/colors';
 
 export default function NudgesScreen() {
   const [current, setCurrent] = useState(nudges[0]);
@@ -101,8 +101,8 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: colors.text,
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.bold,
     marginBottom: spacing.sm,
   },
   helper: {
@@ -110,16 +110,16 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   nudgeCard: {
-    backgroundColor: '#0f0f15',
-    borderRadius: 16,
+    backgroundColor: colors.surface,
+    borderRadius: radii.lg,
     padding: spacing.md,
     marginBottom: spacing.sm,
     borderWidth: 1,
-    borderColor: '#1f1f29',
+    borderColor: colors.border,
   },
   nudgeText: {
     color: colors.text,
-    fontSize: 18,
+    fontSize: typography.sizes.lg,
     lineHeight: 24,
   },
   actionsRow: {
@@ -129,12 +129,12 @@ const styles = StyleSheet.create({
   },
   action: {
     color: colors.accent,
-    fontWeight: '600',
+    fontWeight: typography.weights.semibold,
   },
   subheading: {
     color: colors.text,
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: typography.sizes.md,
+    fontWeight: typography.weights.semibold,
     marginBottom: spacing.sm,
   },
   pinRow: {

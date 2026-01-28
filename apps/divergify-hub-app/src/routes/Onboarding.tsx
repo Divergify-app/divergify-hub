@@ -11,6 +11,7 @@ export function Onboarding() {
   const [step, setStep] = useState(0);
   const [firstTask, setFirstTask] = useState("");
   const [firstHabit, setFirstHabit] = useState("");
+  const [showSidekicks, setShowSidekicks] = useState(false);
 
   const next = () => setStep((s) => Math.min(2, s + 1));
   const back = () => setStep((s) => Math.max(0, s - 1));
@@ -25,10 +26,14 @@ export function Onboarding() {
   const setHumor = (humor: Humor) => actions.setPreferences({ ...data.preferences, humor });
 
   const setSidekick = (id: SidekickId) => actions.setActiveSidekickId(id);
+  const continueWithTakota = () => {
+    setSidekick("takota");
+    next();
+  };
 
   return (
-    <div className="stack">
-      <div className="card stack">
+    <div className="onboarding-shell stack">
+      <div className="card stack onboarding-card">
         <div className="badge">Onboarding</div>
         <h2 className="h2">Takota here.</h2>
         <p className="p">
@@ -38,20 +43,43 @@ export function Onboarding() {
 
         {step === 0 ? (
           <div className="stack">
-            <h3 className="h2">Choose a default personality</h3>
-            <p className="p">If you do not choose, you get Takota. That is fine. He is built for uncertainty.</p>
+            <h3 className="h2">Takota goes first.</h3>
+            <p className="p">
+              Default is calm, direct, and low-stim. You can switch later.
+            </p>
 
-            <div className="row" style={{ flexWrap: "wrap" }}>
-              {SIDEKICKS.map((s) => (
-                <button
-                  key={s.id}
-                  className={`btn ${data.activeSidekickId === s.id ? "primary" : ""}`}
-                  onClick={() => setSidekick(s.id)}
-                >
-                  {s.name}
-                </button>
-              ))}
+            <div className="card stack" style={{ gap: 6 }}>
+              <div style={{ fontWeight: 900 }}>Takota</div>
+              <div className="p">Dry, calm, practical. One clear next step.</div>
+              <div className="mini">Boundaries: no shame • no medical advice • one doable step</div>
             </div>
+
+            <div className="row onboarding-actions">
+              <button className="btn primary" onClick={continueWithTakota}>Continue with Takota</button>
+              <button className="btn" onClick={() => setShowSidekicks((v) => !v)}>
+                {showSidekicks ? "Hide other guides" : "Choose a different guide"}
+              </button>
+            </div>
+
+            {showSidekicks ? (
+              <div className="stack">
+                <div className="mini">Pick one if you want a different vibe. You can change later.</div>
+                <div className="row button-grid">
+                  {SIDEKICKS.map((s) => (
+                    <button
+                      key={s.id}
+                      className={`btn ${data.activeSidekickId === s.id ? "primary" : ""}`}
+                      onClick={() => setSidekick(s.id)}
+                    >
+                      {s.name}
+                    </button>
+                  ))}
+                </div>
+                <div className="row onboarding-actions">
+                  <button className="btn primary" onClick={next}>Continue</button>
+                </div>
+              </div>
+            ) : null}
 
             <div className="field">
               <label className="label" htmlFor="humor">Humor</label>
@@ -62,27 +90,25 @@ export function Onboarding() {
               </select>
               <div className="mini">Sarcastic-supportive roasts the chaos, not the person.</div>
             </div>
-
-            <div className="row" style={{ justifyContent: "flex-end" }}>
-              <button className="btn primary" onClick={next}>Next</button>
-            </div>
           </div>
         ) : null}
 
         {step === 1 ? (
           <div className="stack">
             <h3 className="h2">Make the first bridge step</h3>
-            <div className="field">
-              <label className="label" htmlFor="firstTask">First tiny task</label>
-              <input id="firstTask" className="input" value={firstTask} onChange={(e) => setFirstTask(e.target.value)} placeholder="Example: Write 3 bullets" />
-            </div>
-            <div className="field">
-              <label className="label" htmlFor="firstHabit">Optional: one habit</label>
-              <input id="firstHabit" className="input" value={firstHabit} onChange={(e) => setFirstHabit(e.target.value)} placeholder="Example: Drink water" />
-              <div className="mini">No streak pressure. Just check-ins.</div>
+            <div className="sticky-note stack">
+              <div className="field">
+                <label className="label" htmlFor="firstTask">First tiny task</label>
+                <input id="firstTask" className="input" value={firstTask} onChange={(e) => setFirstTask(e.target.value)} placeholder="Example: Write 3 bullets" />
+              </div>
+              <div className="field">
+                <label className="label" htmlFor="firstHabit">Optional: one habit</label>
+                <input id="firstHabit" className="input" value={firstHabit} onChange={(e) => setFirstHabit(e.target.value)} placeholder="Example: Drink water" />
+                <div className="mini">No streak pressure. Just check-ins.</div>
+              </div>
             </div>
 
-            <div className="row" style={{ justifyContent: "space-between" }}>
+            <div className="row onboarding-actions">
               <button className="btn" onClick={back}>Back</button>
               <button className="btn primary" onClick={next}>Next</button>
             </div>
@@ -113,7 +139,7 @@ export function Onboarding() {
               This app provides productivity support. Not medical advice, diagnosis, or treatment.
             </div>
 
-            <div className="row" style={{ justifyContent: "space-between" }}>
+            <div className="row onboarding-actions">
               <button className="btn" onClick={back}>Back</button>
               <button className="btn primary" onClick={finish}>Finish</button>
             </div>

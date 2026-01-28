@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from "next";
 export const metadata: Metadata = {
   title: "Divergify",
   description: "Divergify. For brains that zig when the world zags.",
-  themeColor: "#00466C",
+  themeColor: "#232147",
   openGraph: {
     title: "Divergify",
     description: "Neurodivergent-friendly productivity.",
@@ -19,13 +19,19 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body style={{ background: "white", fontFamily: "system-ui, sans-serif" }}>
+      <body
+        style={{
+          background: "#232147",
+          color: "#F9EED2",
+          fontFamily: "system-ui, sans-serif",
+        }}
+      >
         <nav
           style={{
-            background: "#8BC34A",
+            background: "#CDA977",
             padding: "1rem",
             fontWeight: "bold",
-            color: "#00466C",
+            color: "#232147",
           }}
         >
           Divergify Nav

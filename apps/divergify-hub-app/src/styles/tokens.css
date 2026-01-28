@@ -1,13 +1,17 @@
 :root {
   /* Source: /branding/brand.json + /branding/BRAND_GUIDE.md */
-  --bg: #232147;
-  --panel: #1b1938;
-  --text: #F9EED2;
-  --muted: #918FA2;
-  --accent: #CDA977;
+  --bg: #151A2B;
+  --panel: #1B2236;
+  --text: #F2EDE2;
+  --muted: #9AA3B2;
+  --accent: #93B7A7;
 
-  --border: rgba(249, 238, 210, 0.18);
-  --border-strong: rgba(249, 238, 210, 0.26);
+  --border: rgba(242, 237, 226, 0.14);
+  --border-strong: rgba(242, 237, 226, 0.22);
+
+  --surface: rgba(255, 255, 255, 0.03);
+  --surface-strong: rgba(255, 255, 255, 0.06);
+  --shadow-soft: 0 12px 30px rgba(10, 12, 24, 0.35);
 
   --radius: 16px;
   --radius-sm: 12px;
@@ -24,20 +28,22 @@
   --font: "Avenir Next", "Avenir", "Trebuchet MS", "Gill Sans", "Tahoma", sans-serif;
   --line: 1.45;
 
-  --focus-ring: 2px solid rgba(205, 169, 119, 0.7);
+  --focus-ring: 2px solid rgba(147, 183, 167, 0.7);
 
   /* user adjustable */
   --scale: 1;
 }
 
 :root[data-mode="shades"] {
-  --bg: #151426;
-  --panel: #1b192d;
-  --text: #C8C6D1;
-  --muted: #5E5C6B;
-  --accent: #8C7A5E;
-  --border: rgba(200, 198, 209, 0.16);
-  --border-strong: rgba(200, 198, 209, 0.22);
+  --bg: #121420;
+  --panel: #171A2B;
+  --text: #C6CBD8;
+  --muted: #6B7384;
+  --accent: #7E8C7B;
+  --border: rgba(198, 203, 216, 0.14);
+  --border-strong: rgba(198, 203, 216, 0.2);
+  --surface: rgba(255, 255, 255, 0.02);
+  --surface-strong: rgba(255, 255, 255, 0.04);
 }
 
 :root[data-privacy="tinfoil"] {

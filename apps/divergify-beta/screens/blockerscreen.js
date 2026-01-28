@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import SectionCard from '../components/sectioncard';
 import PrimaryButton from '../components/primarybutton';
 import usePersistentState from '../hooks/usepersistentstate';
-import { colors, spacing } from '../constants/colors';
+import { colors, radii, spacing, typography } from '../constants/colors';
 import { nudges } from '../constants/nudges';
 
 const formatTime = (seconds) => {
@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: colors.text,
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.bold,
     marginBottom: spacing.sm,
   },
   helper: {
@@ -163,19 +163,19 @@ const styles = StyleSheet.create({
   },
   timerCard: {
     width: '100%',
-    borderRadius: 20,
+    borderRadius: radii.lg,
     borderWidth: 1,
-    borderColor: '#1f1f29',
+    borderColor: colors.border,
     paddingVertical: spacing.lg,
     alignItems: 'center',
     marginBottom: spacing.sm,
-    backgroundColor: '#0f0f15',
+    backgroundColor: colors.surface,
   },
   timerValue: {
     color: colors.text,
     fontSize: 48,
     fontVariant: ['tabular-nums'],
-    fontWeight: '700',
+    fontWeight: typography.weights.bold,
   },
   timerLabel: {
     color: colors.muted,
@@ -183,8 +183,8 @@ const styles = StyleSheet.create({
   },
   subheading: {
     color: colors.text,
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: typography.sizes.md,
+    fontWeight: typography.weights.semibold,
     marginBottom: spacing.sm,
   },
   nudge: {
@@ -198,19 +198,19 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    borderRadius: 12,
-    backgroundColor: '#0f0f15',
+    borderRadius: radii.md,
+    backgroundColor: colors.surface,
     paddingVertical: spacing.sm,
     alignItems: 'center',
   },
   statValue: {
     color: colors.text,
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.weights.bold,
   },
   statLabel: {
     color: colors.muted,
-    fontSize: 12,
+    fontSize: typography.sizes.xs,
   },
   historyRow: {
     flexDirection: 'row',
@@ -220,19 +220,19 @@ const styles = StyleSheet.create({
   },
   historyTime: {
     color: colors.text,
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: typography.sizes.md,
+    fontWeight: typography.weights.semibold,
   },
   historyDate: {
     color: colors.muted,
-    fontSize: 12,
+    fontSize: typography.sizes.xs,
   },
   badge: {
-    borderRadius: 999,
+    borderRadius: radii.pill,
     paddingHorizontal: 14,
     paddingVertical: 6,
   },
   badgeText: {
-    fontWeight: '600',
+    fontWeight: typography.weights.semibold,
   },
 });

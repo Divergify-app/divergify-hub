@@ -13,7 +13,7 @@ import * as Location from 'expo-location';
 import SectionCard from '../components/sectioncard';
 import PrimaryButton from '../components/primarybutton';
 import usePersistentState from '../hooks/usepersistentstate';
-import { colors, spacing } from '../constants/colors';
+import { colors, radii, spacing, typography } from '../constants/colors';
 import { GOOGLE_MAPS_API_KEY } from '../config';
 
 const DEFAULT_REGION = {
@@ -184,14 +184,14 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: colors.text,
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.bold,
     marginBottom: spacing.sm,
   },
   subheading: {
     color: colors.text,
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: typography.sizes.md,
+    fontWeight: typography.weights.semibold,
     marginBottom: spacing.sm,
   },
   helper: {
@@ -205,38 +205,38 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
-    backgroundColor: '#0f0f15',
+    backgroundColor: colors.surface,
     color: colors.text,
-    borderRadius: 12,
+    borderRadius: radii.md,
     padding: spacing.sm,
     borderWidth: 1,
-    borderColor: '#1f1f29',
+    borderColor: colors.border,
     marginBottom: spacing.sm,
   },
   map: {
     width: '100%',
     height: 220,
-    borderRadius: 16,
+    borderRadius: radii.lg,
   },
   routeRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: spacing.sm,
     borderBottomWidth: 1,
-    borderBottomColor: '#1f1f29',
+    borderBottomColor: colors.border,
   },
   routeLabel: {
     color: colors.text,
-    fontWeight: '600',
+    fontWeight: typography.weights.semibold,
     marginBottom: 4,
   },
   routeText: {
     color: colors.muted,
-    fontSize: 12,
+    fontSize: typography.sizes.xs,
   },
   useText: {
     color: colors.accent,
-    fontWeight: '700',
+    fontWeight: typography.weights.bold,
   },
 });
 

@@ -1,10 +1,10 @@
 export type Humor = "neutral" | "light" | "sarcastic_supportive";
 export type SidekickId =
   | "takota"
-  | "scholar"
-  | "chaos_buddy"
-  | "drill_coach"
-  | "zen"
+  | "rex"
+  | "asha"
+  | "sanjay"
+  | "lira"
   | "systems";
 
 export type Preferences = {

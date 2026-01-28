@@ -32,3 +32,10 @@ expo build:web        # emits web-build/ for hosting at divergify.app
 ```
 
 Upload the finished APK/Web build to `divergify.app/download` when ready. Replace the placeholder Google Maps API key (`AIzaSyD-Your-Free-Key-Here`) in `app.json` before going public.
+
+## Takota Voice MVP
+
+- Env (keep out of git): `EXPO_PUBLIC_AI_BASE_URL`, `EXPO_PUBLIC_TAKOTA_GUARDRAIL`, `EXPO_PUBLIC_TAKOTA_MAX_RESPONSE_CHARS`.
+- Endpoint: POST `${EXPO_PUBLIC_AI_BASE_URL}/ai/voice` with `{ persona, convoId, transcript, device:"mobile", clientSettings?:{ mute?:boolean, speed?:number } }`.
+- Streaming frames: `{ text, speak, traceId }` deltas, final `{ done:true, text, speak, ssml:null, traceId }`.
+- Requires dev client (`expo run:ios` / `expo run:android`) for `@react-native-voice/voice`.
