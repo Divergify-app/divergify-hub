@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Divergify App Prototype</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: "Inter", sans-serif; transition: background-color 0.5s ease, color 0.5s ease; }
+    .mono-font { font-family: "JetBrains Mono", monospace; }
+
+    /* Low Stim Mode Overrides */
+    body.low-stim { background-color: #1a1a1a; color: #a3a3a3; }
+    body.low-stim .bg-white { background-color: #262626; border-color: #404040; color: #d4d4d4; }
+    body.low-stim .bg-stone-50 { background-color: #171717; }
+    body.low-stim .text-slate-900 { color: #e5e5e5; }
+    body.low-stim .border-slate-200 { border-color: #404040; }
+    body.low-stim input, body.low-stim textarea { background-color: #333; color: #eee; border-color: #555; }
+
+    /* Low Stim means reduced motion, not just dark mode */
+    body.low-stim .spinner { animation: none; }
+    body.low-stim .animate-pulse { animation: none !important; }
+    body.low-stim * { transition: none !important; }
+
+    /* Takota Container */
+    .takota-container {
+      color: #0f766e;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    body.low-stim .takota-container { color: #a3a3a3; }
+    body.tin-foil .takota-container { color: #0f766e; }
+
+    /* Foil Ring: static */
+    #foilRing { transition: opacity 150ms ease-in-out; }
+    body.low-stim #foilRing { transition: none; }
+
+    /* Sunglasses Overlay */
+    .sunglasses-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 20px;
+      background: transparent;
+      display: none;
+      z-index: 20;
+      pointer-events: none;
+    }
+    .sunglasses-lens {
+      position: absolute;
+      width: 26px;
+      height: 18px;
+      background: #000;
+      border-radius: 4px;
+      top: 0;
+    }
+    .sunglasses-lens.left { left: 0; border-top-left-radius: 8px; border-bottom-left-radius: 12px; }
+    .sunglasses-lens.right { right: 0; border-top-right-radius: 8px; border-bottom-right-radius: 12px; }
+    .sunglasses-bridge {
+      position: absolute;
+      top: 4px;
+      left: 26px;
+      width: 8px;
+      height: 2px;
+      background: #333;
+    }
+    body.low-stim .sunglasses-overlay { display: block; }
+
+    /* Tabs */
+    .tab-content { display: none; opacity: 0; transition: opacity 0.2s ease-in; }
+    .tab-content.active { display: block; opacity: 1; }
+
+    /* Chart */
+    .chart-wrapper { position: relative; height: 250px; width: 100%; }
+
+    /* Spinner */
+    .spinner {
+      border: 3px solid rgba(0,0,0,0.1);
+      border-radius: 50%;
+      border-top: 3px solid currentColor;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 h-screen flex overflow-hidden">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between flex-shrink-0 transition-colors duration-300">
+    <div>
+      <div class="h-16 flex items-center px-6 border-b border-slate-800">
+        <div class="font-bold text-xl tracking-wider text-teal-400">DIVERGIFY</div>
+      </div>
+
+      <nav class="mt-6 px-4 space-y-2">
+        <button data-tab="home" class="nav-btn w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+          <i data-lucide="home" class="w-5 h-5 mr-3"></i> Home
+        </button>
+        <button data-tab="hub" class="nav-btn w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+          <i data-lucide="grid" class="w-5 h-5 mr-3"></i> The Hub
+        </button>
+        <button data-tab="tasks" class="nav-btn w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+          <i data-lucide="sparkles" class="w-5 h-5 mr-3"></i> Magic Tasks
+        </button>
+      </nav>
+    </div>
+
+    <div class="p-4 border-t border-slate-800">
+      <button data-tab="settings" class="nav-btn w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors">
+        <i data-lucide="settings" class="w-5 h-5 mr-3"></i> Settings
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+
+    <!-- Header -->
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 transition-colors duration-300">
+      <h2 id="pageTitle" class="text-lg font-semibold text-slate-700">Dashboard</h2>
+
+      <div class="flex items-center gap-4">
+        <div class="text-right hidden sm:block">
+          <div class="text-xs font-bold text-teal-600 uppercase tracking-wide" id="takotaTitle">Guide Active</div>
+          <div class="text-sm font-medium text-slate-500" id="takotaStatusText">Ready when you are.</div>
+        </div>
+
+        <div id="takotaContainer" class="takota-container w-24 h-24 flex items-center justify-center">
+          <svg viewBox="0 0 100 100" class="w-20 h-20" aria-label="Takota North Star" role="img">
+            <g fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round">
+              <path d="M50 6 L58 38 L94 50 L58 62 L50 94 L42 62 L6 50 L42 38 Z"/>
+            </g>
+            <circle cx="50" cy="50" r="6" fill="currentColor"/>
+            <circle id="foilRing" cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="7 7" opacity="0"/>
+          </svg>
+
+          <div class="sunglasses-overlay">
+            <div class="sunglasses-lens left"></div>
+            <div class="sunglasses-bridge"></div>
+            <div class="sunglasses-lens right"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="flex-1 overflow-y-auto p-8 relative">
+
+      <!-- HOME -->
+      <section id="home" class="tab-content active max-w-4xl mx-auto">
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 mb-8 transition-colors duration-300">
+          <h1 class="text-3xl font-bold text-slate-800 mb-4">Welcome back, Jess.</h1>
+          <p class="text-lg text-slate-600 mb-6">
+            Pick a focus window and I will keep the next step small. Want the Lab tools, or a brain dump first?
+          </p>
+          <div class="flex gap-4">
+            <button data-tab="hub" class="nav-jump px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors shadow-sm">
+              Open The Hub
+            </button>
+            <button data-tab="tasks" class="nav-jump px-6 py-3 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-medium rounded-lg transition-colors">
+              Magic Task Breakdown
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm transition-colors duration-300">
+            <div class="flex items-center mb-4 text-teal-600">
+              <i data-lucide="battery" class="w-5 h-5 mr-2"></i>
+              <span class="font-bold uppercase text-xs tracking-wider">Energy Monitor</span>
+            </div>
+            <p class="text-slate-600 text-sm">
+              Quick read: high energy, scattered intent. Pick one task to win, then you can be chaotic again.
+            </p>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm transition-colors duration-300">
+            <div class="flex items-center mb-4 text-indigo-600">
+              <i data-lucide="shield" class="w-5 h-5 mr-2"></i>
+              <span class="font-bold uppercase text-xs tracking-wider">Privacy Status</span>
+            </div>
+            <p class="text-slate-600 text-sm">
+              Tin Foil Hat mode is <span id="homeFoilStatus" class="font-bold text-slate-400">OFF</span>.
+              <span class="block mt-1 text-xs text-slate-500">When ON, external AI features are disabled.</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- HUB -->
+      <section id="hub" class="tab-content max-w-5xl mx-auto">
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold text-slate-800">The Lab</h2>
+          <p class="text-slate-500">Tools that make time and thoughts behave.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+          <!-- Reality Check Clock -->
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition-colors duration-300">
+            <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+              <h3 class="font-bold text-slate-800 flex items-center">
+                <i data-lucide="clock" class="w-5 h-5 mr-2 text-teal-600"></i>
+                Reality Check Clock
+              </h3>
+            </div>
+            <div class="p-6">
+              <div class="space-y-4 mb-6">
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Appointment Time</label>
+                  <input type="time" id="apptTime" value="16:00" class="w-full p-2 border border-slate-300 rounded bg-white text-slate-800">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Travel (Mins)</label>
+                  <input type="range" id="travelInput" min="5" max="60" value="30" class="w-full accent-teal-600">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Lost Keys Buffer (Mins)</label>
+                  <input type="range" id="keysInput" min="0" max="30" value="15" class="w-full accent-teal-600">
+                </div>
+              </div>
+
+              <div class="bg-slate-100 p-4 rounded-lg text-center mb-4">
+                <span class="text-xs text-slate-500 uppercase font-bold block">You must act at</span>
+                <span id="realTimeDisplay" class="text-4xl font-bold text-slate-800 mono-font">14:35</span>
+              </div>
+
+              <div class="chart-wrapper">
+                <canvas id="timeChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spaghetti Sorter -->
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition-colors duration-300">
+            <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+              <h3 class="font-bold text-slate-800 flex items-center">
+                <i data-lucide="brain-circuit" class="w-5 h-5 mr-2 text-indigo-600"></i>
+                Spaghetti Sorter
+              </h3>
+            </div>
+            <div class="p-6 flex flex-col h-[500px]">
+              <textarea id="brainDumpInput" class="w-full h-32 p-4 mb-4 border border-slate-300 rounded-lg text-sm bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors" placeholder="Dump your brain here. No judgement."></textarea>
+
+              <button id="sortBtn" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg mb-4 transition-colors flex items-center justify-center">
+                ✨ Sort It
+              </button>
+
+              <div id="sortedOutput" class="flex-1 bg-slate-50 border border-slate-200 rounded-lg p-4 overflow-y-auto text-sm space-y-3">
+                <div class="text-slate-400 italic text-center mt-10">Sorted output appears here.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="settings" class="tab-content max-w-2xl mx-auto">
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold text-slate-800">Environment Controls</h2>
+          <p class="text-slate-500">Reduce stimulation. Reduce data leaks. Keep going.</p>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between transition-colors duration-300">
+            <div>
+              <h3 class="font-bold text-slate-800">Tin Foil Hat Mode</h3>
+              <p class="text-sm text-slate-500">Privacy mode. External AI features turn off.</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="foilToggle" class="sr-only peer">
+              <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+            </label>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between transition-colors duration-300">
+            <div>
+              <h3 class="font-bold text-slate-800">Low Stim Mode</h3>
+              <p class="text-sm text-slate-500">Dark theme and reduced motion.</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="stimToggle" class="sr-only peer">
+              <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-600"></div>
+            </label>
+          </div>
+
+          <div class="p-4 border border-dashed border-slate-300 rounded-lg text-center text-slate-400">
+            More settings coming in v1.
+          </div>
+        </div>
+      </section>
+
+      <!-- TASKS -->
+      <section id="tasks" class="tab-content max-w-4xl mx-auto py-8">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl font-bold text-slate-800 mb-2">Goblin De Scary Fier</h2>
+          <p class="text-slate-500">Big task. Tiny steps. Fewer feelings about it.</p>
+        </div>
+
+        <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+          <div class="p-6 bg-slate-50 border-b border-slate-100">
+            <label class="block text-sm font-bold text-slate-700 uppercase mb-2">What is the big scary task</label>
+            <div class="flex gap-2">
+              <input type="text" id="scaryTaskInput" placeholder="Example: clean the kitchen" class="flex-1 p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none transition-colors">
+              <button id="breakdownBtn" class="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-lg transition-colors flex items-center">
+                ✨ De Scary fy
+              </button>
+            </div>
+          </div>
+
+          <div class="p-6 min-h-[200px] flex flex-col justify-center items-center" id="breakdownOutput">
+            <div class="text-slate-400 italic text-center">
+              <i data-lucide="wand-2" class="w-12 h-12 mx-auto mb-2 text-slate-300"></i>
+              <p>Enter a task. You get a tiny first step.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // Tabs
+    const titles = {
+      home: "Dashboard",
+      hub: "The Lab",
+      tasks: "Magic Focus Engine",
+      settings: "Environment Controls"
+    };
+
+    function setActiveNav(tabId) {
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        const isActive = btn.dataset.tab === tabId;
+        btn.classList.toggle("bg-slate-800", isActive);
+        btn.classList.toggle("text-teal-400", isActive);
+        btn.classList.toggle("text-slate-400", !isActive);
+      });
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      document.getElementById("pageTitle").innerText = titles[tabId] || "Divergify";
+      setActiveNav(tabId);
+    }
+
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+    });
+
+    document.querySelectorAll(".nav-jump").forEach(btn => {
+      btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+    });
+
+    // Environment toggles
+    const foilToggle = document.getElementById("foilToggle");
+    const stimToggle = document.getElementById("stimToggle");
+    const foilRing = document.getElementById("foilRing");
+    const takotaStatus = document.getElementById("takotaStatusText");
+    const takotaTitle = document.getElementById("takotaTitle");
+    const homeFoilStatus = document.getElementById("homeFoilStatus");
+
+    function isTinFoilOn() {
+      return foilToggle.checked;
+    }
+
+    function updateEnvironment() {
+      const isFoil = foilToggle.checked;
+      const isStim = stimToggle.checked;
+
+      if (isFoil) {
+        document.body.classList.add("tin-foil");
+        foilRing.style.opacity = "0.9";
+        homeFoilStatus.textContent = "ON";
+        homeFoilStatus.className = "font-bold text-teal-600";
+        takotaTitle.textContent = "Privacy Mode";
+        takotaStatus.textContent = "External AI disabled.";
+      } else {
+        document.body.classList.remove("tin-foil");
+        foilRing.style.opacity = "0";
+        homeFoilStatus.textContent = "OFF";
+        homeFoilStatus.className = "font-bold text-slate-400";
+        takotaTitle.textContent = "Guide Active";
+        takotaStatus.textContent = "Ready when you are.";
+      }
+
+      if (isStim) document.body.classList.add("low-stim");
+      else document.body.classList.remove("low-stim");
+    }
+
+    foilToggle.addEventListener("change", updateEnvironment);
+    stimToggle.addEventListener("change", updateEnvironment);
+
+    // Chart
+    let timeChart = null;
+
+    function initChart() {
+      const ctx = document.getElementById("timeChart").getContext("2d");
+      timeChart = new Chart(ctx, {
+        type: "bar",
+        indexAxis: "y",
+        data: {
+          labels: ["Time Block"],
+          datasets: [
+            { label: "Prep", data: [45], backgroundColor: "#cbd5e1" },
+            { label: "Buffer", data: [15], backgroundColor: "#0d9488" },
+            { label: "Travel", data: [30], backgroundColor: "#475569" }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom" } },
+          scales: { x: { stacked: true }, y: { stacked: true, display: false } }
+        }
+      });
+
+      updateTimeCalc();
+    }
+
+    function updateTimeCalc() {
+      const timeStr = document.getElementById("apptTime").value;
+      const travel = parseInt(document.getElementById("travelInput").value);
+      const keys = parseInt(document.getElementById("keysInput").value);
+      const prep = 45;
+
+      if (timeChart) {
+        timeChart.data.datasets[1].data = [keys];
+        timeChart.data.datasets[2].data = [travel];
+        timeChart.update();
+      }
+
+      const [h, m] = timeStr.split(":").map(Number);
+      const totalMins = (h * 60) + m;
+      const startMins = totalMins - (travel + keys + prep + 10);
+
+      let startH = Math.floor(startMins / 60);
+      let startM = startMins % 60;
+      if (startH < 0) startH += 24;
+
+      document.getElementById("realTimeDisplay").innerText =
+        `${String(startH).padStart(2,"0")}:${String(startM).padStart(2,"0")}`;
+    }
+
+    ["apptTime", "travelInput", "keysInput"].forEach(id => {
+      document.getElementById(id).addEventListener("input", updateTimeCalc);
+    });
+
+    // Mock AI provider
+    async function mockAI(kind, input) {
+      await new Promise(r => setTimeout(r, 450));
+
+      if (kind === "sort") {
+        const raw = input.toLowerCase();
+        const shopping = [];
+        const tasks = [];
+        const vents = [];
+
+        raw.split(/[,\\n]+/).map(s => s.trim()).filter(Boolean).forEach(item => {
+          if (/(milk|eggs|bread|paper|toilet|coffee)/.test(item)) shopping.push(item);
+          else if (/(call|email|schedule|pay|clean|fix|send|make)/.test(item)) tasks.push(item);
+          else vents.push(item);
+        });
+
+        return {
+          tasks: tasks.length ? tasks : [],
+          shopping: shopping.length ? shopping : [],
+          vents: vents.length ? vents.join(", ") : ""
+        };
+      }
+
+      if (kind === "breakdown") {
+        return {
+          steps: [
+            "✨ Open notes and write the smallest possible first move.",
+            "✨ Set a 5 minute timer and do only that first move.",
+            "✨ Put away one item that blocks progress.",
+            "✨ Decide the next micro step before you stop."
+          ]
+        };
+      }
+
+      return null;
+    }
+
+    // Spaghetti Sorter action
+    document.getElementById("sortBtn").addEventListener("click", async function() {
+      const input = document.getElementById("brainDumpInput").value;
+      const out = document.getElementById("sortedOutput");
+      const btn = this;
+
+      if (!input.trim()) {
+        out.innerHTML = '<div class="text-red-400">Type something first.</div>';
+        return;
+      }
+
+      if (isTinFoilOn()) {
+        out.innerHTML = '<div class="text-slate-500">Tin Foil Hat is ON. External AI is disabled.</div>';
+        return;
+      }
+
+      const original = btn.innerHTML;
+      btn.innerHTML = '<span class="spinner"></span>Sorting...';
+      btn.disabled = true;
+      out.innerHTML = '<div class="text-slate-400 animate-pulse">Sorting the spaghetti...</div>';
+
+      const data = await mockAI("sort", input);
+
+      let html = "";
+      if (data?.tasks?.length) {
+        html += `<div class="p-3 bg-teal-50 border border-teal-100 rounded text-teal-900 mb-2"><strong>✅ Tasks</strong><ul class="list-disc pl-5 mt-1">${data.tasks.map(t => `<li>${t}</li>`).join("")}</ul></div>`;
+      }
+      if (data?.shopping?.length) {
+        html += `<div class="p-3 bg-indigo-50 border border-indigo-100 rounded text-indigo-900 mb-2"><strong>🛒 Shopping</strong><ul class="list-disc pl-5 mt-1">${data.shopping.map(t => `<li>${t}</li>`).join("")}</ul></div>`;
+      }
+      if (data?.vents) {
+        html += `<div class="p-3 bg-slate-100 border border-slate-200 rounded text-slate-500 italic"><strong>🗒️ Notes parked</strong><div class="mt-1">${data.vents}</div></div>`;
+      }
+
+      out.innerHTML = html || '<div class="text-slate-500">No clear items found. Add more detail.</div>';
+      btn.innerHTML = original;
+      btn.disabled = false;
+    });
+
+    // Task breakdown action
+    document.getElementById("breakdownBtn").addEventListener("click", async function() {
+      const task = document.getElementById("scaryTaskInput").value;
+      const out = document.getElementById("breakdownOutput");
+      const btn = this;
+
+      if (!task.trim()) return;
+
+      if (isTinFoilOn()) {
+        out.innerHTML = '<div class="text-slate-500">Tin Foil Hat is ON. External AI is disabled.</div>';
+        return;
+      }
+
+      const original = btn.innerHTML;
+      btn.innerHTML = '<span class="spinner"></span>';
+      btn.disabled = true;
+      out.innerHTML = '<div class="text-center text-slate-400 animate-pulse">Making it smaller...</div>';
+
+      const data = await mockAI("breakdown", task);
+
+      if (data?.steps?.length) {
+        out.innerHTML = `
+          <div class="w-full">
+            <h3 class="text-center text-slate-600 font-bold mb-4">Do step 1. Seriously. Only step 1.</h3>
+            <div class="space-y-3">
+              ${data.steps.map((step, i) => `
+                <div class="flex items-center p-3 bg-white border border-slate-200 rounded-lg shadow-sm hover:border-teal-400 transition-colors">
+                  <div class="w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold mr-3 text-sm">${i + 1}</div>
+                  <span class="text-slate-700">${step}</span>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      } else {
+        out.innerHTML = '<div class="text-red-400">Could not generate steps.</div>';
+      }
+
+      btn.innerHTML = original;
+      btn.disabled = false;
+    });
+
+    // Boot
+    window.addEventListener("load", () => {
+      initChart();
+      updateEnvironment();
+      setActiveNav("home");
+    });
+  </script>
+</body>
+</html>
