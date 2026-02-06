@@ -1,5 +1,6 @@
 import { useApp } from "../state/useApp";
 import { mapOverwhelmToSupportLevel, useSessionState } from "../state/sessionState";
+import { TakotaStatus } from "./TakotaStatus";
 
 type Props = {
   onOpenState?: () => void;
@@ -22,16 +23,19 @@ export function TopBar({ onOpenState }: Props) {
           <div className="mini">Bridge mode: on.</div>
         </div>
 
-        <div className="row" style={{ flexWrap: "wrap" }}>
-          <button className="btn" onClick={onOpenState}>
-            {stateLabel}
-          </button>
-          <button className="btn" onClick={actions.toggleShades} aria-pressed={data.preferences.shades}>
-            Shades: {data.preferences.shades ? "ON" : "OFF"}
-          </button>
-          <button className="btn" onClick={actions.toggleTinFoil} aria-pressed={data.preferences.tinFoil}>
-            Tin Foil: {data.preferences.tinFoil ? "ON" : "OFF"}
-          </button>
+        <div className="stack" style={{ alignItems: "flex-end", gap: "10px" }}>
+          <TakotaStatus />
+          <div className="row" style={{ flexWrap: "wrap" }}>
+            <button className="btn" onClick={onOpenState}>
+              {stateLabel}
+            </button>
+            <button className="btn" onClick={actions.toggleShades} aria-pressed={data.preferences.shades}>
+              Shades: {data.preferences.shades ? "ON" : "OFF"}
+            </button>
+            <button className="btn" onClick={actions.toggleTinFoil} aria-pressed={data.preferences.tinFoil}>
+              Tin Foil: {data.preferences.tinFoil ? "ON" : "OFF"}
+            </button>
+          </div>
         </div>
       </div>
 
