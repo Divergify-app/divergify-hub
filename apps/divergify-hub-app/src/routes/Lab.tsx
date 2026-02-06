@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import { useApp } from "../state/useApp";
+import { sortWithAi } from "../shared/aiClient";
 
 type SortBuckets = {
   tasks: string[];
@@ -86,11 +88,13 @@ function minutesToTime(totalMinutes: number) {
 }
 
 export function Lab() {
+  const { data } = useApp();
   const [appointmentTime, setAppointmentTime] = useState("16:00");
   const [travelMinutes, setTravelMinutes] = useState(30);
   const [bufferMinutes, setBufferMinutes] = useState(15);
   const [brainDump, setBrainDump] = useState("");
   const [sorted, setSorted] = useState<SortBuckets | null>(null);
+  const [sortNotice, setSortNotice] = useState("");
 
   const actAt = useMemo(() => {
     const prepMinutes = 45;
@@ -100,7 +104,25 @@ export function Lab() {
   }, [appointmentTime, travelMinutes, bufferMinutes]);
 
   const runSorter = () => {
+    setSortNotice("");
     setSorted(sortBrainDump(brainDump));
+  };
+
+  const runAiSorter = async () => {
+    const text = brainDump.trim();
+    if (!text) return;
+    const result = await sortWithAi(text, { tinFoilHat: data.preferences.tinFoil });
+    if (result.ok) {
+      setSorted({
+        tasks: result.data.tasks ?? [],
+        shopping: result.data.shopping ?? [],
+        notes: result.data.notes ?? []
+      });
+      setSortNotice("AI assist complete.");
+      return;
+    }
+    setSorted(sortBrainDump(text));
+    setSortNotice(`AI unavailable, local sorter used. ${result.error}`);
   };
 
   return (
@@ -178,11 +200,18 @@ export function Lab() {
             />
           </div>
 
-          <div className="row" style={{ justifyContent: "flex-end" }}>
+          <div className="row" style={{ justifyContent: "flex-end", flexWrap: "wrap" }}>
             <button className="btn primary" onClick={runSorter} disabled={!brainDump.trim()}>
               Sort It
             </button>
+            {!data.preferences.tinFoil ? (
+              <button className="btn" onClick={() => void runAiSorter()} disabled={!brainDump.trim()}>
+                AI Assist
+              </button>
+            ) : null}
           </div>
+
+          {sortNotice ? <div className="mini">{sortNotice}</div> : null}
 
           <div className="panel stack" style={{ padding: "12px" }}>
             <div>

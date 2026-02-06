@@ -1,4 +1,6 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { useApp } from "../state/useApp";
+import { breakdownWithAi } from "../shared/aiClient";
 
 function buildSteps(task: string) {
   const cleanTask = task.trim();
@@ -14,10 +16,32 @@ function buildSteps(task: string) {
 }
 
 export function MagicTasks() {
+  const { data } = useApp();
   const [bigTask, setBigTask] = useState("");
-  const [submittedTask, setSubmittedTask] = useState("");
+  const [steps, setSteps] = useState<string[]>([]);
+  const [assistNote, setAssistNote] = useState("");
 
-  const steps = useMemo(() => buildSteps(submittedTask), [submittedTask]);
+  const runLocalBreakdown = () => {
+    const task = bigTask.trim();
+    if (!task) return;
+    setSteps(buildSteps(task));
+    setAssistNote("");
+  };
+
+  const runAiBreakdown = async () => {
+    const task = bigTask.trim();
+    if (!task) return;
+
+    const result = await breakdownWithAi(task, { tinFoilHat: data.preferences.tinFoil });
+    if (result.ok && Array.isArray(result.data.steps) && result.data.steps.length) {
+      setSteps(result.data.steps.slice(0, 5));
+      setAssistNote("AI assist complete.");
+      return;
+    }
+
+    setSteps(buildSteps(task));
+    setAssistNote(`AI unavailable, local breakdown used. ${result.ok ? "" : result.error}`.trim());
+  };
 
   return (
     <div className="stack">
@@ -39,21 +63,27 @@ export function MagicTasks() {
             placeholder="Example: clean the kitchen"
             onKeyDown={(e) => {
               if (e.key === "Enter" && bigTask.trim()) {
-                setSubmittedTask(bigTask);
+                runLocalBreakdown();
               }
             }}
           />
         </div>
 
-        <div className="row" style={{ justifyContent: "flex-end" }}>
+        <div className="row" style={{ justifyContent: "flex-end", flexWrap: "wrap" }}>
           <button
             className="btn primary"
-            onClick={() => setSubmittedTask(bigTask)}
+            onClick={runLocalBreakdown}
             disabled={!bigTask.trim()}
           >
             De-scary-fy
           </button>
+          {!data.preferences.tinFoil ? (
+            <button className="btn" onClick={() => void runAiBreakdown()} disabled={!bigTask.trim()}>
+              AI Assist
+            </button>
+          ) : null}
         </div>
+        {assistNote ? <div className="mini">{assistNote}</div> : null}
       </div>
 
       <div className="card stack">
