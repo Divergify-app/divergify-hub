@@ -20,6 +20,7 @@ export function Tabs() {
     <div className="tabs" aria-label="App navigation">
       <Tab to="/" label="Today" />
       <Tab to="/tasks" label="Tasks" />
+      <Tab to="/magic-tasks" label="Magic Tasks" />
       <Tab to="/lab" label="The Lab" />
       <Tab to="/habits" label="Habits" />
       <Tab to="/focus" label="Focus" />

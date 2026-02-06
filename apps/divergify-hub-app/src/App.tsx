@@ -6,6 +6,7 @@ import { Tasks } from "./routes/Tasks";
 import { Habits } from "./routes/Habits";
 import { Focus } from "./routes/Focus";
 import { Lab } from "./routes/Lab";
+import { MagicTasks } from "./routes/MagicTasks";
 import { Sidekicks } from "./routes/Sidekicks";
 import { Settings } from "./routes/Settings";
 import { Done } from "./routes/Done";
@@ -21,6 +22,7 @@ export function App() {
           <Route index element={<Today />} />
           <Route path="onboarding" element={<Onboarding />} />
           <Route path="tasks" element={<Tasks />} />
+          <Route path="magic-tasks" element={<MagicTasks />} />
           <Route path="lab" element={<Lab />} />
           <Route path="habits" element={<Habits />} />
           <Route path="focus" element={<Focus />} />
