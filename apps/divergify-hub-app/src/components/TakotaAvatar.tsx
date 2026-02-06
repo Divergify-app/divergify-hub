@@ -1,59 +1,31 @@
+type TakotaAvatarProps = {
+  className?: string;
+  showFoilRing?: boolean;
+  // Backward-compatible props for existing call sites.
+  mode?: "default" | "shades";
+  privacy?: "off" | "tinfoil";
+};
 
-export function TakotaAvatar(props: { mode: "default" | "shades"; privacy: "off" | "tinfoil" }) {
-  const { mode, privacy } = props;
-
-  // Pure CSS avatar: no external assets.
-  const glasses = mode === "shades";
-  const foil = privacy === "tinfoil";
+export function TakotaAvatar(props: TakotaAvatarProps) {
+  const { className, showFoilRing, privacy } = props;
+  const foil = showFoilRing ?? privacy === "tinfoil";
 
   return (
-    <div
-      aria-hidden="true"
-      style={{
-        width: 28,
-        height: 28,
-        borderRadius: 999,
-        border: "1px solid var(--border-strong)",
-        background: "rgba(255,255,255,0.06)",
-        display: "grid",
-        placeItems: "center",
-        position: "relative",
-        overflow: "visible"
-      }}
-    >
-      {foil ? (
-        <div
-          style={{
-            position: "absolute",
-            top: -10,
-            width: 0,
-            height: 0,
-            borderLeft: "8px solid transparent",
-            borderRight: "8px solid transparent",
-            borderBottom: "12px solid rgba(255,255,255,0.55)"
-          }}
-        />
-      ) : null}
-
-      <div style={{ display: "flex", gap: 4 }}>
-        <span style={{ width: 5, height: 5, borderRadius: 999, background: "var(--text)" }} />
-        <span style={{ width: 5, height: 5, borderRadius: 999, background: "var(--text)" }} />
-      </div>
-
-      {glasses ? (
-        <div
-          style={{
-            position: "absolute",
-            top: 10,
-            left: 5,
-            right: 5,
-            height: 10,
-            borderRadius: 6,
-            border: "1px solid rgba(255,255,255,0.55)",
-            background: "rgba(0,0,0,0.22)"
-          }}
-        />
-      ) : null}
-    </div>
+    <svg viewBox="0 0 100 100" className={className} aria-label="Takota North Star" role="img">
+      <g fill="none" stroke="currentColor" strokeWidth="6" strokeLinejoin="round">
+        <path d="M50 6 L58 38 L94 50 L58 62 L50 94 L42 62 L6 50 L42 38 Z" />
+      </g>
+      <circle cx="50" cy="50" r="6" fill="currentColor" />
+      <circle
+        cx="50"
+        cy="50"
+        r="40"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeDasharray="7 7"
+        opacity={foil ? 0.9 : 0}
+      />
+    </svg>
   );
 }
