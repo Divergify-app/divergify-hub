@@ -13,6 +13,7 @@ export function defaultData(): AppData {
       fontScale: 1,
       reduceMotion: false,
       shades: false,
+      lowStim: false,
       tinFoil: false,
       loopGuard: { enabled: true, softLimitPerHour: 18, cooldownMinutes: 2 }
     },
@@ -40,6 +41,10 @@ export function loadData(): AppData | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as AppData;
     if (!parsed || parsed.version !== 1) return null;
+    parsed.preferences = {
+      ...parsed.preferences,
+      lowStim: Boolean(parsed.preferences?.lowStim)
+    };
     return parsed;
   } catch {
     return null;

@@ -14,6 +14,23 @@ body {
   min-height: 100%;
 }
 
+body.low-stim {
+  --bg: #151426;
+  --panel: #1b192d;
+  --text: #c8c6d1;
+  --muted: #5e5c6b;
+  --border: rgba(200, 198, 209, 0.16);
+  --border-strong: rgba(200, 198, 209, 0.22);
+}
+
+body.low-stim *,
+body.low-stim *::before,
+body.low-stim *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
 a { color: var(--text); text-decoration: underline; }
 a:hover { color: var(--text); }
 
