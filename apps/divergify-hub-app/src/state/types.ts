@@ -13,6 +13,7 @@ export type Preferences = {
   reduceMotion: boolean;
 
   shades: boolean;
+  lowStim: boolean;
   tinFoil: boolean;
 
   // anti-hook

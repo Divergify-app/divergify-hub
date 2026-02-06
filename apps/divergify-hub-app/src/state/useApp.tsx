@@ -9,6 +9,7 @@ type Actions = {
 
   setPreferences: (p: Preferences) => void;
   toggleShades: () => void;
+  toggleLowStim: () => void;
   toggleTinFoil: () => void;
 
   addTask: (t: { title: string; notes?: string; dueDate?: string; tags?: string[] }) => void;
@@ -62,6 +63,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     applyDomPrefs(data.preferences);
   }, [data.preferences]);
 
+  useEffect(() => {
+    document.body.classList.toggle("low-stim", Boolean(data.preferences.lowStim));
+    document.body.classList.toggle("tin-foil", Boolean(data.preferences.tinFoil));
+    return () => {
+      document.body.classList.remove("low-stim");
+      document.body.classList.remove("tin-foil");
+    };
+  }, [data.preferences.lowStim, data.preferences.tinFoil]);
+
   const timer = useRef<number | null>(null);
   useEffect(() => {
     if (!hydrated) return;
@@ -88,6 +98,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setData((d) => ({
           ...d,
           preferences: { ...d.preferences, shades: !d.preferences.shades }
+        })),
+
+      toggleLowStim: () =>
+        setData((d) => ({
+          ...d,
+          preferences: { ...d.preferences, lowStim: !d.preferences.lowStim }
         })),
 
       toggleTinFoil: () =>

@@ -14,6 +14,23 @@ body {
   min-height: 100%;
 }
 
+body.low-stim {
+  --bg: #151426;
+  --panel: #1b192d;
+  --text: #c8c6d1;
+  --muted: #5e5c6b;
+  --border: rgba(200, 198, 209, 0.16);
+  --border-strong: rgba(200, 198, 209, 0.22);
+}
+
+body.low-stim *,
+body.low-stim *::before,
+body.low-stim *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
 a { color: var(--text); text-decoration: underline; }
 a:hover { color: var(--text); }
 
@@ -337,3 +354,53 @@ button, input, select, textarea { font: inherit; }
   background: rgba(255,255,255,0.02);
 }
 .notice.privacy { border-color: rgba(255,255,255,0.30); }
+
+.takota-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.takota-status-copy {
+  display: grid;
+  gap: 2px;
+  text-align: right;
+}
+
+.takota-status-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #0f766e;
+}
+
+.takota-status-line {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.takota-status-avatar {
+  width: 34px;
+  height: 34px;
+  color: #0f766e;
+  flex: 0 0 auto;
+}
+
+body.low-stim .takota-status-avatar {
+  color: #8f9aab;
+}
+
+body.tin-foil .takota-status-avatar {
+  color: #0f766e;
+}
+
+@media (max-width: 640px) {
+  .takota-status-copy {
+    display: none;
+  }
+}
