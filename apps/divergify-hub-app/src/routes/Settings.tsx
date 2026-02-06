@@ -31,12 +31,12 @@ export function Settings() {
         <label className="row">
           <input
             type="checkbox"
-            checked={data.preferences.shades}
-            onChange={actions.toggleShades}
+            checked={data.preferences.lowStim}
+            onChange={actions.toggleLowStim}
           />
           <div className="stack" style={{ gap: 2 }}>
-            <div>Shades (low-stim)</div>
-            <div className="p">Darker UI, reduced motion, fewer distractions.</div>
+            <div>Low Stim Mode</div>
+            <div className="p">Darker UI and reduced motion for a lower-noise experience.</div>
           </div>
         </label>
 
@@ -47,8 +47,8 @@ export function Settings() {
             onChange={actions.toggleTinFoil}
           />
           <div className="stack" style={{ gap: 2 }}>
-            <div>Tin Foil Hat (privacy)</div>
-            <div className="p">Disables integrations and hides embed-style content. No fake security claims.</div>
+            <div>Tin Foil Hat Mode</div>
+            <div className="p">Privacy mode. Disables integrations and hides embed-style content.</div>
           </div>
         </label>
 
