@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../state/useApp";
 import type { Humor, SidekickId } from "../state/types";
-import { SIDEKICKS } from "../sidekicks/defs";
+import { SIDEKICKS, getSidekick } from "../sidekicks/defs";
 
 export function Onboarding() {
   const { data, actions } = useApp();
@@ -25,12 +25,13 @@ export function Onboarding() {
   const setHumor = (humor: Humor) => actions.setPreferences({ ...data.preferences, humor });
 
   const setSidekick = (id: SidekickId) => actions.setActiveSidekickId(id);
+  const activeSidekick = getSidekick(data.activeSidekickId);
 
   return (
     <div className="stack">
       <div className="card stack">
         <div className="badge">Onboarding</div>
-        <h2 className="h2">Takota here.</h2>
+        <h2 className="h2">{activeSidekick.name} here.</h2>
         <p className="p">
           You opened Divergify. That counts as progress.
           Now we pick settings that do not fight your brain.
@@ -51,6 +52,15 @@ export function Onboarding() {
                   {s.name}
                 </button>
               ))}
+            </div>
+
+            <div className="card" style={{ padding: 14 }}>
+              <div style={{ fontWeight: 900 }}>{activeSidekick.name}</div>
+              <div className="p">{activeSidekick.tagline}</div>
+              <div className="mini" style={{ marginTop: 6 }}>{activeSidekick.description}</div>
+              <div className="mini" style={{ marginTop: 6 }}>
+                Focus: {activeSidekick.focus.join(" • ")}
+              </div>
             </div>
 
             <div className="field">

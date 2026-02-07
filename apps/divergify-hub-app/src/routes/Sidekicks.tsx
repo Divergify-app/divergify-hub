@@ -18,6 +18,7 @@ export function Sidekicks() {
                 <div className="stack" style={{ gap: 4 }}>
                   <div style={{ fontWeight: 900 }}>{s.name}</div>
                   <div className="p">{s.tagline}</div>
+                  <div className="mini">{s.description}</div>
                 </div>
                 <button
                   className={`btn ${data.activeSidekickId === s.id ? "primary" : ""}`}
@@ -27,6 +28,9 @@ export function Sidekicks() {
                 </button>
               </div>
               <div className="mini" style={{ marginTop: 10 }}>
+                Focus: {s.focus.join(" • ")}
+              </div>
+              <div className="mini" style={{ marginTop: 6 }}>
                 Boundaries: {s.boundaries.join(" • ")}
               </div>
             </div>

@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { mapOverwhelmToSupportLevel, useSessionState } from "../state/sessionState";
+import { useApp } from "../state/useApp";
+import { getSidekick } from "../sidekicks/defs";
 
 type Props = {
   open: boolean;
@@ -8,6 +10,8 @@ type Props = {
 
 export function TakotaCheckIn({ open, onClose }: Props) {
   const { setOverwhelm, skipCheckIn, session } = useSessionState();
+  const { data } = useApp();
+  const sidekick = getSidekick(data.activeSidekickId);
   // REMOVED snapOverwhelm here so it defaults to exactly what is saved
   const [value, setValue] = useState(() => session?.overwhelm ?? 50);
 
@@ -51,11 +55,11 @@ export function TakotaCheckIn({ open, onClose }: Props) {
       >
         <div className="stack" style={{ gap: 8 }}>
           <h2 id={titleId} style={{ margin: 0 }}>
-            Takota check-in
+            {sidekick.checkInTitle}
           </h2>
           <p id={descId} className="subtext">
             Set your stimulation level. <br />
-            Optional. I’ll adapt quietly for this session.
+            {sidekick.checkInHint}
           </p>
 
           <div className="checkin-slider">
@@ -77,9 +81,7 @@ export function TakotaCheckIn({ open, onClose }: Props) {
             {/* Kept the datalist so you still see the tick marks, but you don't snap to them */}
             <datalist id="takota-overwhelm-anchors">
               <option value="0" label="Calm" />
-              <option value="25" label="" />
               <option value="50" label="Stretched" />
-              <option value="75" label="" />
               <option value="100" label="Overloaded" />
             </datalist>
 
