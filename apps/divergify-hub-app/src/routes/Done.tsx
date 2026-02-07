@@ -2,9 +2,11 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useApp } from "../state/useApp";
 import { todayISO } from "../shared/utils";
+import { getPersonaCopy } from "../sidekicks/copy";
 
 export function Done() {
   const { data, actions } = useApp();
+  const persona = getPersonaCopy(data.activeSidekickId);
   const today = todayISO();
 
   const doneTasks = useMemo(() => data.tasks.filter((t) => t.done), [data.tasks]);
@@ -34,7 +36,7 @@ export function Done() {
         <div className="notice">
           One tiny next step for later:
           <div style={{ marginTop: 8, fontWeight: 800 }}>
-            {openTask ? openTask.title : "No open tasks. Protect that peace."}
+            {openTask ? openTask.title : persona.doneEmptyOpenTask}
           </div>
           <div className="mini" style={{ marginTop: 6 }}>
             Tomorrow micro-step: do 60 seconds of the easiest part. Then decide.

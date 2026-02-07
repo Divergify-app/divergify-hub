@@ -3,10 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../state/useApp";
 import { todayISO } from "../shared/utils";
 import { FocusTimer } from "../components/FocusTimer";
+import { getPersonaCopy } from "../sidekicks/copy";
 import { useSessionState } from "../state/sessionState";
 
 export function Today() {
   const { data, actions } = useApp();
+  const persona = getPersonaCopy(data.activeSidekickId);
   const nav = useNavigate();
   const { session } = useSessionState();
 
@@ -94,9 +96,7 @@ export function Today() {
           <h3 className="h2">Progress snapshot</h3>
           <span className="badge">{doneTasks.length} done</span>
         </div>
-        <p className="p">
-          Progress is movement, not perfection. No streak shame. No moral score.
-        </p>
+        <p className="p">{persona.todayProgressNote}</p>
       </div>
     </div>
   );

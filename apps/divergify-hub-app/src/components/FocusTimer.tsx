@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Task } from "../state/types";
 import { formatCountdown, nowIso } from "../shared/utils";
 import { useApp } from "../state/useApp";
+import { getPersonaCopy } from "../sidekicks/copy";
 
 type Status = "idle" | "running" | "paused" | "done";
 
@@ -9,7 +10,8 @@ const DURATIONS = [5, 10, 15, 25];
 
 export function FocusTimer(props: { openTasks: Task[] }) {
   const { openTasks } = props;
-  const { actions } = useApp();
+  const { actions, data } = useApp();
+  const persona = getPersonaCopy(data.activeSidekickId);
 
   const [status, setStatus] = useState<Status>("idle");
   const [minutes, setMinutes] = useState(10);
@@ -94,8 +96,8 @@ export function FocusTimer(props: { openTasks: Task[] }) {
       <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
         <div className="stack" style={{ gap: 6 }}>
           <div className="badge">Focus</div>
-          <h3 className="h2">One target. One timer. No side quests.</h3>
-          <p className="p">When it ends, you either stop or choose another sprint. No infinite grind.</p>
+          <h3 className="h2">{persona.focusTimerHeading}</h3>
+          <p className="p">{persona.focusTimerSub}</p>
         </div>
         <div className="badge">{status.toUpperCase()}</div>
       </div>
@@ -139,7 +141,7 @@ export function FocusTimer(props: { openTasks: Task[] }) {
             <div className="stack" style={{ gap: 6, flex: 1, minWidth: 240 }}>
               <div className="badge">Target</div>
               <div style={{ fontWeight: 700 }}>{targetLabel}</div>
-              <div className="p">Do the smallest next action. Ignore the rest.</div>
+              <div className="p">{persona.focusRunningHint}</div>
             </div>
             <div className="card" style={{ padding: "12px 14px", minWidth: 150, textAlign: "center" }}>
               <div className="badge">Time left</div>
@@ -172,7 +174,7 @@ export function FocusTimer(props: { openTasks: Task[] }) {
 
           {status === "done" ? (
             <div className="notice">
-              Sprint complete. Write one line: what changed? Then stop or choose the next sprint on purpose.
+              {persona.focusDoneNotice}
             </div>
           ) : null}
         </>

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useApp } from "../state/useApp";
 import { todayISO } from "../shared/utils";
+import { getPersonaCopy } from "../sidekicks/copy";
 
 function parseTags(s: string) {
   return s.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 8);
@@ -8,6 +9,7 @@ function parseTags(s: string) {
 
 export function Tasks() {
   const { data, actions } = useApp();
+  const persona = getPersonaCopy(data.activeSidekickId);
 
   const [title, setTitle] = useState("");
   const [notes, setNotes] = useState("");
@@ -31,8 +33,8 @@ export function Tasks() {
     <div className="stack">
       <div className="card stack">
         <div className="badge">Tasks</div>
-        <h2 className="h2">Small tasks count.</h2>
-        <p className="p">If it feels too big, shrink it until it is doable in 2 minutes.</p>
+        <h2 className="h2">{persona.tasksHeading}</h2>
+        <p className="p">{persona.tasksSub}</p>
 
         <div className="field">
           <label className="label" htmlFor="tTitle">Task</label>
@@ -73,7 +75,7 @@ export function Tasks() {
         </div>
 
         {openTasks.length === 0 ? (
-          <p className="p">No open tasks.</p>
+          <p className="p">{persona.tasksEmptyOpen}</p>
         ) : (
           <div className="stack">
             {openTasks.map((t) => (
@@ -103,7 +105,7 @@ export function Tasks() {
         </div>
 
         {doneTasks.length === 0 ? (
-          <p className="p">Nothing marked done yet. That is not a crime.</p>
+          <p className="p">{persona.tasksEmptyDone}</p>
         ) : (
           <div className="stack">
             {doneTasks.slice(0, 16).map((t) => (

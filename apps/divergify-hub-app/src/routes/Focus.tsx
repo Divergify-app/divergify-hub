@@ -2,9 +2,11 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../state/useApp";
 import { FocusTimer } from "../components/FocusTimer";
+import { getPersonaCopy } from "../sidekicks/copy";
 
 export function Focus() {
   const { data, actions } = useApp();
+  const persona = getPersonaCopy(data.activeSidekickId);
   const nav = useNavigate();
   const openTasks = useMemo(() => data.tasks.filter((t) => !t.done), [data.tasks]);
 
@@ -14,8 +16,8 @@ export function Focus() {
         <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
           <div className="stack" style={{ gap: 6 }}>
             <div className="badge">Focus</div>
-            <h2 className="h2">Timebox the chaos.</h2>
-            <p className="p">Pick one target. Run one timer. Stop on purpose when it ends.</p>
+            <h2 className="h2">{persona.focusHeading}</h2>
+            <p className="p">{persona.focusSub}</p>
           </div>
           <button
             className="btn primary"
@@ -38,7 +40,7 @@ export function Focus() {
         </div>
 
         {data.focus.length === 0 ? (
-          <p className="p">No focus sessions logged yet.</p>
+          <p className="p">{persona.focusEmptySessions}</p>
         ) : (
           <div className="stack">
             {data.focus.slice(0, 10).map((s) => (

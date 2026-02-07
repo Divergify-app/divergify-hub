@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
 import { useApp } from "../state/useApp";
 import { todayISO } from "../shared/utils";
+import { getPersonaCopy } from "../sidekicks/copy";
 
 export function Habits() {
   const { data, actions } = useApp();
+  const persona = getPersonaCopy(data.activeSidekickId);
 
   const [name, setName] = useState("");
   const [cue, setCue] = useState("");
@@ -36,8 +38,8 @@ export function Habits() {
     <div className="stack">
       <div className="card stack">
         <div className="badge">Habits</div>
-        <h2 className="h2">No streak shame. Just check-ins.</h2>
-        <p className="p">If it is not doable on a hard day, it is too big. Shrink it.</p>
+        <h2 className="h2">{persona.habitsHeading}</h2>
+        <p className="p">{persona.habitsSub}</p>
 
         <div className="field">
           <label className="label" htmlFor="hName">Habit name</label>
@@ -78,7 +80,7 @@ export function Habits() {
         </div>
 
         {data.habits.length === 0 ? (
-          <p className="p">No habits yet. Start with one tiny habit when you are ready.</p>
+          <p className="p">{persona.habitsEmpty}</p>
         ) : (
           <div className="stack">
             {data.habits.map((h) => {
@@ -109,7 +111,7 @@ export function Habits() {
                   </div>
 
                   <div className="notice">
-                    Backup plan: if you cannot do the habit, do the first 60 seconds. That still counts.
+                    {persona.habitsBackup}
                   </div>
 
                   <hr className="sep" />

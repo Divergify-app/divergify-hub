@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useApp } from "../state/useApp";
 import { breakdownWithAi } from "../shared/aiClient";
+import { getPersonaCopy } from "../sidekicks/copy";
 
 function buildSteps(task: string) {
   const cleanTask = task.trim();
@@ -17,6 +18,7 @@ function buildSteps(task: string) {
 
 export function MagicTasks() {
   const { data } = useApp();
+  const persona = getPersonaCopy(data.activeSidekickId);
   const [bigTask, setBigTask] = useState("");
   const [steps, setSteps] = useState<string[]>([]);
   const [assistNote, setAssistNote] = useState("");
@@ -47,8 +49,8 @@ export function MagicTasks() {
     <div className="stack">
       <div className="card stack">
         <div className="badge">Magic Tasks</div>
-        <h2 className="h2">Big task. Tiny steps.</h2>
-        <p className="p">Local-first breakdown with no external calls.</p>
+        <h2 className="h2">{persona.magicTasksHeading}</h2>
+        <p className="p">{persona.magicTasksSub}</p>
 
         <div className="field">
           <label className="label" htmlFor="magicTaskInput">
@@ -98,7 +100,7 @@ export function MagicTasks() {
             ))}
           </ol>
         ) : (
-          <p className="p">Enter a task and click De-scary-fy.</p>
+          <p className="p">{persona.magicTasksEmpty}</p>
         )}
       </div>
     </div>
