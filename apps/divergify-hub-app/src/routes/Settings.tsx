@@ -48,7 +48,9 @@ export function Settings() {
           />
           <div className="stack" style={{ gap: 2 }}>
             <div>Tin Foil Hat Mode</div>
-            <div className="p">Privacy mode. Disables integrations and hides embed-style content.</div>
+            <div className="p">
+              Privacy mode. Disables integrations and hides embed-style content. See Privacy for details.
+            </div>
           </div>
         </label>
 

@@ -14,6 +14,9 @@ export function LegalPrivacy() {
         <p className="p">
           Tin Foil Hat mode disables integrations and hides embed-style content. It does not claim network-level blocking.
         </p>
+        <p className="p">
+          We do not sell your data. Some third-party services and browsers may collect their own data outside our control.
+        </p>
         <div className="notice">
           Productivity support only. Not medical advice, diagnosis, or treatment.
         </div>
