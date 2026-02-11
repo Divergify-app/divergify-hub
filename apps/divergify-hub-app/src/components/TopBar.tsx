@@ -1,5 +1,6 @@
 import { useApp } from "../state/useApp";
-import { mapOverwhelmToSupportLevel, useSessionState } from "../state/sessionState";
+import { useSessionState } from "../state/sessionState";
+import { getSupportProfile } from "../shared/supportProfile";
 import { TakotaStatus } from "./TakotaStatus";
 
 type Props = {
@@ -10,10 +11,8 @@ export function TopBar({ onOpenState }: Props) {
   const { data, actions } = useApp();
   const { session } = useSessionState();
 
-  const support = session ? mapOverwhelmToSupportLevel(session.overwhelm) : null;
-  const supportLabel =
-    support === "overloaded" ? "High support" : support === "gentle" ? "Gentle support" : "Baseline";
-  const stateLabel = session ? `State: ${supportLabel}` : "Set state";
+  const profile = session ? getSupportProfile(session.overwhelm) : null;
+  const stateLabel = profile ? `State: ${profile.label}` : "Set state";
 
   return (
     <div className="panel" style={{ padding: "14px 16px", marginBottom: "16px" }}>

@@ -1,38 +1,44 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TopBar } from "../components/TopBar";
 import { Tabs } from "../components/Tabs";
 import { SidekickDrawer } from "../components/SidekickDrawer";
 import { useApp } from "../state/useApp";
 import { TakotaCheckIn } from "../components/TakotaCheckIn";
-import { mapOverwhelmToSupportLevel, useSessionState } from "../state/sessionState";
+import { useSessionState } from "../state/sessionState";
+import { getSupportProfile } from "../shared/supportProfile";
 
 export function Shell() {
   const { hydrated, data, actions } = useApp();
   const loc = useLocation();
   const { session, checkInRequired } = useSessionState();
   const [checkInOpen, setCheckInOpen] = useState(checkInRequired);
+  const appliedSessionAtRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (checkInRequired) setCheckInOpen(true);
   }, [checkInRequired]);
 
   useEffect(() => {
-    if (!session) return;
-    const support = mapOverwhelmToSupportLevel(session.overwhelm);
-    const desired =
-      support === "overloaded"
-        ? { shades: true, reduceMotion: true }
-        : support === "gentle"
-        ? { shades: true, reduceMotion: data.preferences.reduceMotion }
-        : { shades: false, reduceMotion: false };
-
-    if (
-      data.preferences.shades !== desired.shades ||
-      data.preferences.reduceMotion !== desired.reduceMotion
-    ) {
-      actions.setPreferences({ ...data.preferences, ...desired });
+    if (!session) {
+      appliedSessionAtRef.current = null;
+      return;
     }
+    if (appliedSessionAtRef.current === session.setAt) return;
+    appliedSessionAtRef.current = session.setAt;
+
+    const profile = getSupportProfile(session.overwhelm);
+    if (!profile.autoEnableShades && !profile.autoReduceMotion) return;
+
+    const desiredShades = profile.autoEnableShades || data.preferences.shades;
+    const desiredReduceMotion = profile.autoReduceMotion || data.preferences.reduceMotion;
+    if (data.preferences.shades === desiredShades && data.preferences.reduceMotion === desiredReduceMotion) return;
+
+    actions.setPreferences({
+      ...data.preferences,
+      shades: desiredShades,
+      reduceMotion: desiredReduceMotion
+    });
   }, [actions, data.preferences, session]);
 
   if (!hydrated) {

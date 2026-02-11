@@ -22,6 +22,14 @@ type RequestOptions = {
   tinFoilHat: boolean;
 };
 
+function cloudAssistBlocked(options: RequestOptions): string | null {
+  if (options.tinFoilHat) return "Tin Foil Hat is enabled.";
+  if (typeof navigator !== "undefined" && navigator.onLine === false) {
+    return "Device is offline.";
+  }
+  return null;
+}
+
 async function postJson<T>(url: string, payload: unknown): Promise<AiSuccessResult<T> | AiErrorResult> {
   try {
     const response = await fetch(url, {
@@ -45,8 +53,9 @@ export async function sortWithAi(
   text: string,
   options: RequestOptions
 ): Promise<AiSuccessResult<SortResponse> | AiErrorResult> {
-  if (options.tinFoilHat) {
-    return { ok: false, error: "Tin Foil Hat is enabled." };
+  const blockedReason = cloudAssistBlocked(options);
+  if (blockedReason) {
+    return { ok: false, error: blockedReason };
   }
   return await postJson<SortResponse>("/api/ai/sort", { text });
 }
@@ -55,8 +64,9 @@ export async function breakdownWithAi(
   task: string,
   options: RequestOptions
 ): Promise<AiSuccessResult<BreakdownResponse> | AiErrorResult> {
-  if (options.tinFoilHat) {
-    return { ok: false, error: "Tin Foil Hat is enabled." };
+  const blockedReason = cloudAssistBlocked(options);
+  if (blockedReason) {
+    return { ok: false, error: blockedReason };
   }
   return await postJson<BreakdownResponse>("/api/ai/breakdown", { task });
 }

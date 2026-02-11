@@ -12,7 +12,6 @@ export function TakotaCheckIn({ open, onClose }: Props) {
   const { setOverwhelm, skipCheckIn, session } = useSessionState();
   const { data } = useApp();
   const sidekick = getSidekick(data.activeSidekickId);
-  // REMOVED snapOverwhelm here so it defaults to exactly what is saved
   const [value, setValue] = useState(() => session?.overwhelm ?? 50);
 
   useEffect(() => {
@@ -27,7 +26,6 @@ export function TakotaCheckIn({ open, onClose }: Props) {
 
   useEffect(() => {
     if (!open) return;
-    // REMOVED snapOverwhelm here too
     setValue(session?.overwhelm ?? 50);
   }, [open, session?.overwhelm]);
 
@@ -45,19 +43,18 @@ export function TakotaCheckIn({ open, onClose }: Props) {
   if (!open) return null;
 
   return (
-    <div className="overlay-backdrop">
+    <div className="checkin-backdrop">
       <div
-        className="dialog-window"
+        className="panel checkin-panel"
         role="dialog"
         aria-labelledby={titleId}
         aria-describedby={descId}
-        style={{ maxWidth: 400, margin: "auto", marginTop: "10vh" }}
       >
         <div className="stack" style={{ gap: 8 }}>
           <h2 id={titleId} style={{ margin: 0 }}>
             {sidekick.checkInTitle}
           </h2>
-          <p id={descId} className="subtext">
+          <p id={descId} className="p">
             Set your stimulation level. <br />
             {sidekick.checkInHint}
           </p>
@@ -72,13 +69,12 @@ export function TakotaCheckIn({ open, onClose }: Props) {
               type="range"
               min={0}
               max={100}
-              step={1} 
+              step={1}
               list="takota-overwhelm-anchors"
               value={value}
               aria-valuetext={`${value} out of 100`}
               onChange={(event) => setValue(Number(event.target.value))}
             />
-            {/* Kept the datalist so you still see the tick marks, but you don't snap to them */}
             <datalist id="takota-overwhelm-anchors">
               <option value="0" label="Calm" />
               <option value="50" label="Stretched" />

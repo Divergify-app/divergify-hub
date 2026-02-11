@@ -67,7 +67,7 @@ export function getSessionState(): SessionState | null {
 }
 
 export function setSessionState(value: number, skipped = false): SessionState {
-  const overwhelm = snapOverwhelm(value);
+  const overwhelm = clampOverwhelm(value);
   const mode = mapOverwhelmToMode(overwhelm);
   const setAt = new Date().toISOString();
   try {

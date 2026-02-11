@@ -403,4 +403,19 @@ body.tin-foil .takota-status-avatar {
   .takota-status-copy {
     display: none;
   }
+
+  .drawer {
+    width: 100vw;
+    border-left: 0;
+  }
+
+  .fab {
+    right: 12px;
+    bottom: 12px;
+    padding: 10px 12px;
+  }
+
+  .btn {
+    min-height: 44px;
+  }
 }

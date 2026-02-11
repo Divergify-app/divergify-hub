@@ -3,21 +3,28 @@ import type { Task } from "../state/types";
 import { formatCountdown, nowIso } from "../shared/utils";
 import { useApp } from "../state/useApp";
 import { getPersonaCopy } from "../sidekicks/copy";
+import { mapOverwhelmToSupportLevel, useSessionState } from "../state/sessionState";
+import { getSupportProfile } from "../shared/supportProfile";
+import { buildFocusNudges } from "../sidekicks/nudges";
+import { getSidekick } from "../sidekicks/defs";
 
 type Status = "idle" | "running" | "paused" | "done";
-
-const DURATIONS = [5, 10, 15, 25];
 
 export function FocusTimer(props: { openTasks: Task[] }) {
   const { openTasks } = props;
   const { actions, data } = useApp();
+  const { session } = useSessionState();
   const persona = getPersonaCopy(data.activeSidekickId);
+  const sidekick = getSidekick(data.activeSidekickId);
+  const supportProfile = getSupportProfile(session?.overwhelm ?? 50);
+  const supportLevel = session ? mapOverwhelmToSupportLevel(session.overwhelm) : "normal";
 
   const [status, setStatus] = useState<Status>("idle");
-  const [minutes, setMinutes] = useState(10);
+  const [minutes, setMinutes] = useState(supportProfile.focusMinutesDefault);
   const [targetId, setTargetId] = useState("");
   const [customLabel, setCustomLabel] = useState("");
   const [note, setNote] = useState("");
+  const [nudge, setNudge] = useState("");
 
   const [startedAt, setStartedAt] = useState<string | null>(null);
   const [endedAt, setEndedAt] = useState<string | null>(null);
@@ -30,6 +37,18 @@ export function FocusTimer(props: { openTasks: Task[] }) {
     return t?.title || "";
   }, [targetId, customLabel, openTasks]);
 
+  const nudges = useMemo(
+    () => buildFocusNudges(data.activeSidekickId, supportLevel, targetLabel),
+    [data.activeSidekickId, supportLevel, targetLabel]
+  );
+
+  useEffect(() => {
+    if (status !== "idle") return;
+    setMinutes((current) =>
+      supportProfile.focusDurationOptions.includes(current) ? current : supportProfile.focusMinutesDefault
+    );
+  }, [status, supportProfile.focusDurationOptions, supportProfile.focusMinutesDefault]);
+
   const reset = () => {
     setStatus("idle");
     setStartedAt(null);
@@ -37,6 +56,7 @@ export function FocusTimer(props: { openTasks: Task[] }) {
     setEndsAt(0);
     setRemainingSeconds(0);
     setNote("");
+    setNudge("");
   };
 
   const finishSession = (outcome: "done" | "stopped" | "abandoned") => {
@@ -89,6 +109,22 @@ export function FocusTimer(props: { openTasks: Task[] }) {
     return () => window.clearInterval(id);
   }, [status, endsAt]);
 
+  useEffect(() => {
+    if (status !== "running") {
+      setNudge("");
+      return;
+    }
+    if (!nudges.length) return;
+
+    let idx = 0;
+    setNudge(nudges[idx]);
+    const id = window.setInterval(() => {
+      idx = (idx + 1) % nudges.length;
+      setNudge(nudges[idx]);
+    }, supportProfile.nudgeIntervalSeconds * 1000);
+    return () => window.clearInterval(id);
+  }, [nudges, status, supportProfile.nudgeIntervalSeconds]);
+
   const canStart = Boolean(targetId) && (targetId !== "__custom__" || Boolean(customLabel.trim()));
 
   return (
@@ -98,6 +134,9 @@ export function FocusTimer(props: { openTasks: Task[] }) {
           <div className="badge">Focus</div>
           <h3 className="h2">{persona.focusTimerHeading}</h3>
           <p className="p">{persona.focusTimerSub}</p>
+          <div className="mini">
+            Support profile: {supportProfile.label}. Suggested sprint: {supportProfile.focusMinutesDefault} minutes.
+          </div>
         </div>
         <div className="badge">{status.toUpperCase()}</div>
       </div>
@@ -119,7 +158,7 @@ export function FocusTimer(props: { openTasks: Task[] }) {
             <div className="field" style={{ width: 180 }}>
               <label className="label" htmlFor="focusMinutes">Minutes</label>
               <select id="focusMinutes" className="select" value={minutes} onChange={(e) => setMinutes(Number(e.target.value))}>
-                {DURATIONS.map((m) => <option key={m} value={m}>{m}</option>)}
+                {supportProfile.focusDurationOptions.map((m) => <option key={m} value={m}>{m}</option>)}
               </select>
             </div>
           </div>
@@ -148,6 +187,12 @@ export function FocusTimer(props: { openTasks: Task[] }) {
               <div style={{ fontSize: 28, fontWeight: 800 }}>{formatCountdown(remainingSeconds)}</div>
             </div>
           </div>
+
+          {status === "running" && nudge ? (
+            <div className="notice">
+              <strong>{sidekick.name} nudge:</strong> {nudge}
+            </div>
+          ) : null}
 
           <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
             <div className="row" style={{ flexWrap: "wrap" }}>

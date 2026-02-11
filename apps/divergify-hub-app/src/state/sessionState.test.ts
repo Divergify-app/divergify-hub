@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mapOverwhelmToSupportLevel, snapOverwhelm } from "./sessionState";
+import { clampOverwhelm, mapOverwhelmToSupportLevel, setSessionState, snapOverwhelm } from "./sessionState";
 
 describe("session state mapping", () => {
   it("maps overwhelm ranges to support levels", () => {
@@ -17,5 +17,15 @@ describe("session state mapping", () => {
     expect(snapOverwhelm(36)).toBe(25);
     expect(snapOverwhelm(50)).toBe(50);
     expect(snapOverwhelm(88)).toBe(100);
+  });
+
+  it("stores exact overwhelm value for session state", () => {
+    const state = setSessionState(63);
+    expect(state.overwhelm).toBe(63);
+  });
+
+  it("clamps out-of-range overwhelm values", () => {
+    expect(clampOverwhelm(-8)).toBe(0);
+    expect(clampOverwhelm(112)).toBe(100);
   });
 });

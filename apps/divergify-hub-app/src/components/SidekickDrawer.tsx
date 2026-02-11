@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useApp } from "../state/useApp";
+import { mapOverwhelmToSupportLevel, useSessionState } from "../state/sessionState";
 import { TakotaAvatar } from "./TakotaAvatar";
 import { SIDEKICKS, getSidekick } from "../sidekicks/defs";
 import { generateSidekickTurn } from "../sidekicks/engine";
@@ -13,6 +14,7 @@ function withinLastHour(ts: string) {
 
 export function SidekickDrawer() {
   const { data, actions } = useApp();
+  const { session } = useSessionState();
   const open = data.ui.sidekickDrawerOpen;
 
   const sidekick = useMemo(() => getSidekick(data.activeSidekickId), [data.activeSidekickId]);
@@ -43,16 +45,17 @@ export function SidekickDrawer() {
     const reply = generateSidekickTurn({
       sidekickId: data.activeSidekickId,
       message: text,
-      data
+      data,
+      supportLevel
     });
     actions.pushChat(reply);
     setMsg("");
   };
 
   const wrapUp = () => {
-    const text = "Wrap up: 3 bullets, one next micro-step (60 seconds), and tell me to close the app.";
+    const text = "Wrap up: 3 bullets, one next micro-step, and tell me to close the app.";
     actions.pushChat({ id: uid(), role: "user", sidekickId: data.activeSidekickId, content: text, ts: nowIso() });
-    actions.pushChat(generateSidekickTurn({ sidekickId: data.activeSidekickId, message: text, data }));
+    actions.pushChat(generateSidekickTurn({ sidekickId: data.activeSidekickId, message: text, data, supportLevel }));
   };
 
   const startBreak = () => {
@@ -62,6 +65,9 @@ export function SidekickDrawer() {
 
   const mode = data.preferences.shades ? "shades" : "default";
   const privacy = data.preferences.tinFoil ? "tinfoil" : "off";
+  const supportLevel = session ? mapOverwhelmToSupportLevel(session.overwhelm) : "normal";
+  const supportLabel =
+    supportLevel === "overloaded" ? "High support" : supportLevel === "gentle" ? "Gentle support" : "Baseline";
 
   return (
     <>
@@ -82,6 +88,7 @@ export function SidekickDrawer() {
                 <div className="badge">Active</div>
                 <div style={{ fontWeight: 800 }}>{sidekick.name}</div>
                 <div className="p">{sidekick.tagline}</div>
+                <div className="mini">Support profile: {supportLabel}</div>
               </div>
               <button className="btn" onClick={() => actions.setSidekickDrawerOpen(false)}>Close</button>
             </div>
