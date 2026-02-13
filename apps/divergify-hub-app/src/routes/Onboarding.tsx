@@ -55,7 +55,10 @@ export function Onboarding() {
             </div>
 
             <div className="card" style={{ padding: 14 }}>
-              <div style={{ fontWeight: 900 }}>{activeSidekick.name}</div>
+              <div className="row" style={{ gap: 8, alignItems: "center" }}>
+                <div style={{ fontWeight: 900 }}>{activeSidekick.name}</div>
+                <span className="badge">{activeSidekick.role}</span>
+              </div>
               <div className="p">{activeSidekick.tagline}</div>
               <div className="mini" style={{ marginTop: 6 }}>{activeSidekick.description}</div>
               <div className="mini" style={{ marginTop: 6 }}>

@@ -217,6 +217,29 @@ button, input, select, textarea { font: inherit; }
   gap: 10px;
 }
 
+.guide-list {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
+}
+
+details {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+details summary {
+  cursor: pointer;
+}
+
+details[open] summary {
+  margin-bottom: 8px;
+}
+
 .checkin-backdrop {
   position: fixed;
   inset: 0;

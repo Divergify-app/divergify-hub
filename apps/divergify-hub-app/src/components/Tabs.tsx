@@ -25,6 +25,7 @@ export function Tabs() {
       <Tab to="/habits" label="Habits" />
       <Tab to="/focus" label="Focus" />
       <Tab to="/sidekicks" label="Sidekicks" />
+      <Tab to="/guide" label="Guide" />
       <Tab to="/settings" label="Settings" />
     </div>
   );

@@ -16,7 +16,10 @@ export function Sidekicks() {
             <div key={s.id} className="card" style={{ padding: 14 }}>
               <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap" }}>
                 <div className="stack" style={{ gap: 4 }}>
-                  <div style={{ fontWeight: 900 }}>{s.name}</div>
+                  <div className="row" style={{ gap: 8, alignItems: "center" }}>
+                    <div style={{ fontWeight: 900 }}>{s.name}</div>
+                    <span className="badge">{s.role}</span>
+                  </div>
                   <div className="p">{s.tagline}</div>
                   <div className="mini">{s.description}</div>
                 </div>

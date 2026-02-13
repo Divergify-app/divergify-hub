@@ -9,6 +9,7 @@ import { Lab } from "./routes/Lab";
 import { MagicTasks } from "./routes/MagicTasks";
 import { Sidekicks } from "./routes/Sidekicks";
 import { Settings } from "./routes/Settings";
+import { Guide } from "./routes/Guide";
 import { Done } from "./routes/Done";
 import { LegalPrivacy } from "./routes/LegalPrivacy";
 import { LegalTerms } from "./routes/LegalTerms";
@@ -27,6 +28,7 @@ export function App() {
           <Route path="habits" element={<Habits />} />
           <Route path="focus" element={<Focus />} />
           <Route path="sidekicks" element={<Sidekicks />} />
+          <Route path="guide" element={<Guide />} />
           <Route path="settings" element={<Settings />} />
           <Route path="done" element={<Done />} />
           <Route path="legal/privacy" element={<LegalPrivacy />} />
