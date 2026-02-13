@@ -27,10 +27,10 @@ cp -R dist/* "$APP_OUT/"
 
 APP_INDEX="$APP_OUT/index.html"
 if [[ -f "$APP_INDEX" && -f "$HUB_PAGE" ]]; then
-  APP_CSS="$(rg -o 'href=\"[^\"]+assets/[^\"]+\\.css\"' "$APP_INDEX" | head -n1 | sed 's/href=\"//;s/\"$//' || true)"
-  APP_JS="$(rg -o 'src=\"[^\"]+assets/[^\"]+\\.js\"' "$APP_INDEX" | head -n1 | sed 's/src=\"//;s/\"$//' || true)"
-  APP_MANIFEST="$(rg -o 'href=\"[^\"]+manifest\\.webmanifest\"' "$APP_INDEX" | head -n1 | sed 's/href=\"//;s/\"$//' || true)"
-  APP_SW="$(rg -o 'src=\"[^\"]+registerSW\\.js\"' "$APP_INDEX" | head -n1 | sed 's/src=\"//;s/\"$//' || true)"
+  APP_CSS="$(rg -o 'href=\"[^\"]+assets/[^\"]+\.css\"' "$APP_INDEX" | head -n1 | sed 's/^href=\"//;s/\"$//' || true)"
+  APP_JS="$(rg -o 'src=\"[^\"]+assets/[^\"]+\.js\"' "$APP_INDEX" | head -n1 | sed 's/^src=\"//;s/\"$//' || true)"
+  APP_MANIFEST="$(rg -o 'href=\"[^\"]+manifest\.webmanifest\"' "$APP_INDEX" | head -n1 | sed 's/^href=\"//;s/\"$//' || true)"
+  APP_SW="$(rg -o 'src=\"[^\"]+registerSW\.js\"' "$APP_INDEX" | head -n1 | sed 's/^src=\"//;s/\"$//' || true)"
 
   if [[ -n "$APP_CSS" && -n "$APP_JS" && -n "$APP_MANIFEST" && -n "$APP_SW" ]]; then
     python3 - "$HUB_PAGE" "$APP_CSS" "$APP_JS" "$APP_MANIFEST" "$APP_SW" <<'PY'
