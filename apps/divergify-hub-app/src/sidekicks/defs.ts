@@ -44,12 +44,12 @@ export const SIDEKICKS: SidekickDef[] = [
   },
   {
     id: "chaos_buddy",
-    name: "Rick",
+    name: "Rex",
     role: "Chaos Buddy",
     tagline: "Chaos Buddy mode. Novelty and momentum. Friendly chaos, contained.",
     description: "Adds spark without spinning out. Short, weird, effective starts.",
     focus: ["Novelty", "Momentum", "Safe chaos"],
-    checkInTitle: "Rick check-in",
+    checkInTitle: "Rex check-in",
     checkInHint: "Optional. I’ll bring energy without flooding you.",
     style: "chaotic",
     boundaries: ["No risky dares.", "No mocking.", "Convert hype into one doable step."]

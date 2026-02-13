@@ -19,7 +19,7 @@ export const SIDEKICKS = [
   },
   {
     id: 'chaos_buddy',
-    name: 'Rick',
+    name: 'Rex',
     tagline: 'Chaos Buddy. Novelty and momentum. Friendly chaos, contained.',
     style: 'chaotic',
     boundaries: ['No risky dares.', 'No mocking.', 'Convert hype into one doable step.'],
