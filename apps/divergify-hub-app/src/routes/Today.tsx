@@ -1,23 +1,56 @@
 import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../state/useApp";
-import { todayISO } from "../shared/utils";
+import { nowIso, todayISO, uid } from "../shared/utils";
 import { FocusTimer } from "../components/FocusTimer";
 import { getPersonaCopy } from "../sidekicks/copy";
-import { useSessionState } from "../state/sessionState";
+import { mapOverwhelmToSupportLevel, useSessionState } from "../state/sessionState";
+import { generateSidekickTurn } from "../sidekicks/engine";
 
 export function Today() {
   const { data, actions } = useApp();
   const persona = getPersonaCopy(data.activeSidekickId);
   const nav = useNavigate();
   const { session } = useSessionState();
+  const supportLevel = session ? mapOverwhelmToSupportLevel(session.overwhelm) : "normal";
 
   const today = todayISO();
   const openTasks = useMemo(() => data.tasks.filter((t) => !t.done), [data.tasks]);
   const doneTasks = useMemo(() => data.tasks.filter((t) => t.done), [data.tasks]);
   const dueToday = useMemo(() => openTasks.filter((t) => t.dueDate === today), [openTasks, today]);
+  const anchorTask = useMemo(() => dueToday[0] ?? openTasks[0] ?? null, [dueToday, openTasks]);
 
   const doneToday = Boolean(data.doneForTodayAt);
+
+  const openFocusForAnchor = () => {
+    if (!anchorTask) {
+      nav("/focus");
+      return;
+    }
+    nav(`/focus?target=${encodeURIComponent(anchorTask.id)}`);
+  };
+
+  const askSidekickForAnchor = () => {
+    actions.setSidekickDrawerOpen(true);
+    if (!anchorTask) return;
+
+    const message = `Help me start this task now: "${anchorTask.title}". Give me one 2-minute starter and one follow-up step.`;
+    actions.pushChat({
+      id: uid(),
+      role: "user",
+      sidekickId: data.activeSidekickId,
+      content: message,
+      ts: nowIso()
+    });
+    actions.pushChat(
+      generateSidekickTurn({
+        sidekickId: data.activeSidekickId,
+        message,
+        data,
+        supportLevel
+      })
+    );
+  };
 
   return (
     <div className="stack">
@@ -64,6 +97,32 @@ export function Today() {
               Add scaffold
             </Link>
           ) : null}
+        </div>
+      </div>
+
+      <div className="card stack">
+        <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
+          <h3 className="h2">Launch lane</h3>
+          <span className="badge">{anchorTask ? "Anchor ready" : "Needs anchor"}</span>
+        </div>
+        {anchorTask ? (
+          <div className="notice">
+            <strong>Current anchor:</strong> {anchorTask.title}
+            {anchorTask.dueDate === today ? " (due today)" : ""}
+          </div>
+        ) : (
+          <p className="p">No open tasks yet. Create one tiny anchor task and run one short sprint.</p>
+        )}
+        <div className="row" style={{ flexWrap: "wrap" }}>
+          {anchorTask ? (
+            <button className="btn primary" onClick={openFocusForAnchor}>Start sprint on anchor</button>
+          ) : (
+            <Link to="/tasks" className="btn primary" style={{ textDecoration: "none" }}>Create anchor task</Link>
+          )}
+          <button className="btn" onClick={askSidekickForAnchor}>
+            {anchorTask ? "Ask sidekick to break it down" : "Open sidekick"}
+          </button>
+          <Link to="/habits" className="btn" style={{ textDecoration: "none" }}>Pair with habit</Link>
         </div>
       </div>
 

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import type { Task } from "../state/types";
 import { formatCountdown, nowIso } from "../shared/utils";
 import { useApp } from "../state/useApp";
@@ -13,6 +14,7 @@ type Status = "idle" | "running" | "paused" | "done";
 export function FocusTimer(props: { openTasks: Task[] }) {
   const { openTasks } = props;
   const { actions, data } = useApp();
+  const location = useLocation();
   const { session } = useSessionState();
   const persona = getPersonaCopy(data.activeSidekickId);
   const sidekick = getSidekick(data.activeSidekickId);
@@ -33,9 +35,10 @@ export function FocusTimer(props: { openTasks: Task[] }) {
 
   const targetLabel = useMemo(() => {
     if (targetId === "__custom__") return customLabel.trim() || "Custom focus";
-    const t = openTasks.find((x) => x.id === targetId);
+    const t = data.tasks.find((x) => x.id === targetId);
     return t?.title || "";
-  }, [targetId, customLabel, openTasks]);
+  }, [customLabel, data.tasks, targetId]);
+  const targetTask = useMemo(() => data.tasks.find((task) => task.id === targetId) ?? null, [data.tasks, targetId]);
 
   const nudges = useMemo(
     () => buildFocusNudges(data.activeSidekickId, supportLevel, targetLabel),
@@ -48,6 +51,21 @@ export function FocusTimer(props: { openTasks: Task[] }) {
       supportProfile.focusDurationOptions.includes(current) ? current : supportProfile.focusMinutesDefault
     );
   }, [status, supportProfile.focusDurationOptions, supportProfile.focusMinutesDefault]);
+
+  useEffect(() => {
+    if (status !== "idle") return;
+    const routeTargetId = new URLSearchParams(location.search).get("target");
+    if (!routeTargetId) return;
+    if (!openTasks.some((task) => task.id === routeTargetId)) return;
+    setTargetId(routeTargetId);
+  }, [location.search, openTasks, status]);
+
+  useEffect(() => {
+    if (status !== "idle") return;
+    if (targetId) return;
+    if (!openTasks.length) return;
+    setTargetId(openTasks[0].id);
+  }, [openTasks, status, targetId]);
 
   const reset = () => {
     setStatus("idle");
@@ -91,6 +109,11 @@ export function FocusTimer(props: { openTasks: Task[] }) {
     setEndsAt(end);
     setStatus("running");
   };
+  const markTargetDone = () => {
+    if (!targetTask || targetTask.done) return;
+    actions.toggleTaskDone(targetTask.id);
+  };
+  const openSidekickDebrief = () => actions.setSidekickDrawerOpen(true);
 
   useEffect(() => {
     if (status !== "running") return;
@@ -201,8 +224,18 @@ export function FocusTimer(props: { openTasks: Task[] }) {
               {status !== "done" ? <button className="btn" onClick={stop}>Stop</button> : null}
             </div>
 
+            {status !== "done" ? (
+              <button className="btn" onClick={openSidekickDebrief}>Ask {sidekick.name}</button>
+            ) : null}
+
             {status === "done" ? (
-              <button className="btn primary" onClick={() => finishSession("done")}>Close sprint</button>
+              <div className="row" style={{ flexWrap: "wrap" }}>
+                {targetTask && !targetTask.done ? (
+                  <button className="btn" onClick={markTargetDone}>Mark target task done</button>
+                ) : null}
+                <button className="btn" onClick={openSidekickDebrief}>Debrief with {sidekick.name}</button>
+                <button className="btn primary" onClick={() => finishSession("done")}>Close sprint</button>
+              </div>
             ) : null}
           </div>
 

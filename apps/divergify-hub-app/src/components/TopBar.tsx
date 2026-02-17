@@ -9,10 +9,11 @@ type Props = {
 
 export function TopBar({ onOpenState }: Props) {
   const { data, actions } = useApp();
-  const { session } = useSessionState();
+  const { session, checkInRequired } = useSessionState();
 
   const profile = session ? getSupportProfile(session.overwhelm) : null;
-  const stateLabel = profile ? `State: ${profile.label}` : "Set state";
+  const stateNeedsAttention = checkInRequired || !profile;
+  const stateLabel = stateNeedsAttention ? "Open state check-in" : `State: ${profile.label}`;
 
   return (
     <div className="panel" style={{ padding: "14px 16px", marginBottom: "16px" }}>
@@ -25,7 +26,7 @@ export function TopBar({ onOpenState }: Props) {
         <div className="stack" style={{ alignItems: "flex-end", gap: "10px" }}>
           <TakotaStatus />
           <div className="row" style={{ flexWrap: "wrap" }}>
-            <button className="btn" onClick={onOpenState}>
+            <button className={`btn ${stateNeedsAttention ? "primary" : ""}`} onClick={onOpenState}>
               {stateLabel}
             </button>
             <button className="btn" onClick={actions.toggleShades} aria-pressed={data.preferences.shades}>
@@ -35,6 +36,9 @@ export function TopBar({ onOpenState }: Props) {
               Tin Foil: {data.preferences.tinFoil ? "ON" : "OFF"}
             </button>
           </div>
+          {stateNeedsAttention ? (
+            <div className="mini">Set your state when ready. It tunes focus and sidekick intensity.</div>
+          ) : null}
         </div>
       </div>
 

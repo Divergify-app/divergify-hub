@@ -11,13 +11,9 @@ import { getSupportProfile } from "../shared/supportProfile";
 export function Shell() {
   const { hydrated, data, actions } = useApp();
   const loc = useLocation();
-  const { session, checkInRequired } = useSessionState();
-  const [checkInOpen, setCheckInOpen] = useState(checkInRequired);
+  const { session } = useSessionState();
+  const [checkInOpen, setCheckInOpen] = useState(false);
   const appliedSessionAtRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (checkInRequired) setCheckInOpen(true);
-  }, [checkInRequired]);
 
   useEffect(() => {
     if (!session) {
