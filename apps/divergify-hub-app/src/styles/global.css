@@ -198,6 +198,10 @@ button, input, select, textarea { font: inherit; }
   padding: 10px 12px;
   color: var(--text);
 }
+.select option {
+  color: #1b1938;
+  background: #f9eed2;
+}
 .input:focus, .textarea:focus, .select:focus { outline: var(--focus-ring); outline-offset: 2px; }
 .textarea { min-height: 92px; resize: vertical; }
 
