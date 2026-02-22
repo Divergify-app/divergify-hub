@@ -2,7 +2,7 @@
 export default [
   {
     id: "takoda",
-    name: "Takoda",
+    name: "TAKOTA",
     role: "Behavioral Scientist",
     language: "en",
     color: "#3B82F6",
@@ -10,9 +10,9 @@ export default [
     voice: "en-US",
     lowStimDefault: false,
     greeting: {
-      en: "Hey there. I'm Takoda. Let's decode your chaos scientifically.",
-      es: "Hola. Soy Takoda. Vamos a decodificar tu caos científicamente.",
-      fr: "Salut. Je suis Takoda. Décodons ton chaos scientifiquement.",
+      en: "Hey there. I'm TAKOTA. Let's decode your chaos scientifically.",
+      es: "Hola. Soy TAKOTA. Vamos a decodificar tu caos científicamente.",
+      fr: "Salut. Je suis TAKOTA. Décodons ton chaos scientifiquement.",
       hi: "नमस्ते, मैं तक़ोदा हूँ। चलो तुम्हारे अराजकता को विज्ञान से समझते हैं।"
     }
   },

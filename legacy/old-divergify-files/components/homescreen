@@ -9,7 +9,7 @@ export default function HomeScreen() {
   const [currentProtocol, setCurrentProtocol] = useState(null);
   const [sessionDone, setSessionDone] = useState(false);
   const persona = {
-    name: "Takoda",
+    name: "TAKOTA",
     startMessage: "Alright, chaos brain—time to anchor in.",
     endMessage: "Baseline obliterated. You just rewired something.",
     pauseMessage: "Pause acknowledged. Don’t drift too long.",

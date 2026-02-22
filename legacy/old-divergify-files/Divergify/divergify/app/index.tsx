@@ -15,7 +15,7 @@ interface Task {
 }
 
 const personas: Persona[] = [
-  { id: 'takoda', name: 'Takoda', color: '#FF6B35', tagline: 'Blunt truth, zero BS' },
+  { id: 'takoda', name: 'TAKOTA', color: '#FF6B35', tagline: 'Blunt truth, zero BS' },
   { id: 'coach', name: 'Coach', color: '#4ECDC4', tagline: 'One more rep' },
   { id: 'avery', name: 'Avery', color: '#95E1D3', tagline: 'Plan first, execute smart' },
   { id: 'maya', name: 'Maya', color: '#C7CEEA', tagline: 'Breathe, you got this' },

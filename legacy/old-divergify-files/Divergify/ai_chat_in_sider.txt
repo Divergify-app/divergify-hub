@@ -835,7 +835,7 @@ You want the **ACTUAL Divergify app** — the full React Native productivity bea
 ### **Core App Requirements:**
 
 1. **Full-blown productivity app** (React Native, mobile-first)
-2. **5 AI personas** (Takoda, Coach, Strategist/Avery, Soothe/Maya, Gremlin/Mox) switchable at onboarding + anytime
+2. **5 AI personas** (TAKOTA, Coach, Strategist/Avery, Soothe/Maya, Gremlin/Mox) switchable at onboarding + anytime
 3. **Behavioral science foundation** using principles from Chase Hughes's work (behavioral influence, attention management, habit formation)
 4. **Psychological research-based features:**
    - Ellipsis effect (open loops for task completion drive)
@@ -873,7 +873,7 @@ You mentioned **Chase Hughes's books** as the foundation. I can build systems **
 ### **2. App Architecture — Confirm Core Flow:**
 
 **Onboarding:**
-- User selects primary persona (Takoda/Coach/Strategist/Soothe/Gremlin)
+- User selects primary persona (TAKOTA/Coach/Strategist/Soothe/Gremlin)
 - Quick ADHD assessment? (optional)
 - Privacy settings (Tin Foil Hat Mode toggle)
 
@@ -1061,7 +1061,7 @@ Step 4: ??? (unlocks after Step 3)
 - **Embedded commands**: "You're already starting..." (presupposes action)
 - **Rhythm patterns**: Short. Punchy. Then longer explanatory sentence. Back to short.
 
-**Takoda Examples:**
+**TAKOTA Examples:**
 ```
 "You're already moving." (embedded command)
 "One rep. That's it." (simplicity, repetition)
@@ -1156,7 +1156,7 @@ Step 4: ??? (unlocks after Step 3)
     - EllipsisEngine.js (open loop management)
     - FractuationEngine.js (task breakdown AI)
   /personas
-    - Takoda.js
+    - TAKOTA.js
     - Coach.js
     - Strategist.js
     - Soothe.js
@@ -1612,7 +1612,7 @@ export class FractuationEngine {
 export class PersonaSystem {
   static personas = {
     takoda: {
-      name: 'Takoda',
+      name: 'TAKOTA',
       emoji: '🧠',
       description: 'Blunt, funny, immortal cofounder energy',
       color: '#2FB3FF',
@@ -2386,7 +2386,7 @@ const styles = StyleSheet.create({
 - **Hypnotic Messaging**: Persona-specific language with embedded commands
 
 ### **✅ 5 Fully-Baked Personas**
-- Takoda (blunt, direct)
+- TAKOTA (blunt, direct)
 - Coach (motivational)
 - Avery/Strategist (analytical)
 - Maya/Soothe (nurturing)
@@ -4064,7 +4064,7 @@ You have testers. You're ready to move. Let's DO THIS.
 ### **What I'm Building You RIGHT NOW:**
 
 1. **Complete Divergify PWA** with:
-   - All 5 voices (Takoda, Coach, Strategist, Soothe, Gremlin)
+   - All 5 voices (TAKOTA, Coach, Strategist, Soothe, Gremlin)
    - Task management
    - Dopamine rewards
    - Works on any phone
@@ -4123,7 +4123,7 @@ You have testers. You're ready to move. Let's DO THIS.
         
         <div class="space-y-4 w-full max-w-md">
             <button onclick="selectVoice('takoda')" class="voice-btn w-full bg-purple-600 hover:bg-purple-700 p-6 rounded-xl text-left transition">
-                <div class="text-2xl font-bold mb-2">🔥 Takoda</div>
+                <div class="text-2xl font-bold mb-2">🔥 TAKOTA</div>
                 <div class="text-sm text-purple-200">Blunt, funny, no-BS accountability</div>
             </button>
             
@@ -4218,7 +4218,7 @@ You have testers. You're ready to move. Let's DO THIS.
         // Voice Responses
         const voices = {
             takoda: {
-                name: "🔥 Takoda",
+                name: "🔥 TAKOTA",
                 rewards: [
                     "BOOM. One down. Keep that energy.",
                     "Look at you being productive. Shocking.",
@@ -4447,7 +4447,7 @@ You have testers. You're ready to move. Let's DO THIS.
 
 ## **🎉 WHAT YOU JUST GOT:**
 
-✅ **All 5 voices** (Takoda, Coach, Strategist, Soothe, Gremlin)  
+✅ **All 5 voices** (TAKOTA, Coach, Strategist, Soothe, Gremlin)  
 ✅ **Task management** with dopamine rewards  
 ✅ **Stats tracking** (total, completed, streak)  
 ✅ **Works offline** once loaded  
@@ -4663,7 +4663,7 @@ Then we'll plan Phase 2 (the calendar/appointment stuff) as a separate feature.
         
         <div class="space-y-4 w-full max-w-md">
             <button onclick="selectVoice('takoda')" class="voice-btn w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 p-6 rounded-xl text-left transition shadow-lg">
-                <div class="text-2xl font-bold mb-2">🔥 Takoda</div>
+                <div class="text-2xl font-bold mb-2">🔥 TAKOTA</div>
                 <div class="text-sm text-white/90">Blunt, funny, no-BS accountability</div>
             </button>
             
@@ -4797,7 +4797,7 @@ Then we'll plan Phase 2 (the calendar/appointment stuff) as a separate feature.
         // Voice Responses
         const voices = {
             takoda: {
-                name: "🔥 Takoda",
+                name: "🔥 TAKOTA",
                 rewards: [
                     "BOOM. One down. Keep that energy.",
                     "Look at you being productive. Shocking.",
@@ -5692,7 +5692,7 @@ Either way, I'm putting it FRONT AND CENTER on everything.
         
         <div class="space-y-4 w-full max-w-md">
             <button onclick="selectVoice('takoda')" class="voice-btn w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 p-6 rounded-xl text-left transition shadow-lg">
-                <div class="text-2xl font-bold mb-2">🔥 Takoda</div>
+                <div class="text-2xl font-bold mb-2">🔥 TAKOTA</div>
                 <div class="text-sm text-white/90">Blunt, funny, no-BS accountability</div>
             </button>
             
@@ -5846,7 +5846,7 @@ Either way, I'm putting it FRONT AND CENTER on everything.
         // Voice Responses
         const voices = {
             takoda: {
-                name: "🔥 Takoda",
+                name: "🔥 TAKOTA",
                 rewards: [
                     "BOOM. One down. Keep that energy.",
                     "Look at you being productive. Shocking.",
@@ -6688,7 +6688,7 @@ Now building your complete landing page with all features...
                     <div class="text-5xl mb-4">🧠</div>
                     <h3 class="text-2xl font-bold text-cyan-400 mb-4">Task OS</h3>
                     <p class="text-gray-300">5 different brain voices. Dopamine rewards. Quick-add presets. Built FOR your processing style.</p>
-                    <p class="hidden-message text-xs text-green-400 mt-3" id="card3Secret">💬 Takoda, Coach, Strategist, Soothe, Gremlin</p>
+                    <p class="hidden-message text-xs text-green-400 mt-3" id="card3Secret">💬 TAKOTA, Coach, Strategist, Soothe, Gremlin</p>
                 </div>
             </div>
             

@@ -24,7 +24,7 @@ if (OPENAI_API_KEY) {
 }
 
 const sysPrompts = {
-  snark: "You are Takoda, a sarcastic but loyal productivity coach. Be brief, practical, funny, never mean.",
+  snark: "You are TAKOTA, a sarcastic but loyal productivity coach. Be brief, practical, funny, never mean.",
   soft: "You are a warm, reassuring productivity companion. Be brief, kind, and encouraging.",
   deadpan: "You are a concise, no-nonsense planner. Be brief and structured."
 };
