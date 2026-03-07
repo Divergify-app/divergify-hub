@@ -1,10 +1,22 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import type { AppData, ChatTurn, FocusSession, Habit, Preferences, SidekickId, Task } from "./types";
+import type {
+  AppData,
+  ChatTurn,
+  FocusSession,
+  Habit,
+  Preferences,
+  SidekickId,
+  Task,
+  TaskPriority,
+  TaskRecurrence
+} from "./types";
 import { defaultData, loadData, saveData } from "./store";
 import { clamp, nowIso, todayISO, uid } from "../shared/utils";
+import { nextDueDateForRecurrence } from "../shared/tasks";
 
 type Actions = {
   setHasOnboarded: (v: boolean) => void;
+  setHasCompletedKickoff: (v: boolean) => void;
   setActiveSidekickId: (id: SidekickId) => void;
 
   setPreferences: (p: Preferences) => void;
@@ -12,7 +24,16 @@ type Actions = {
   toggleLowStim: () => void;
   toggleTinFoil: () => void;
 
-  addTask: (t: { title: string; notes?: string; dueDate?: string; tags?: string[] }) => void;
+  addTask: (t: {
+    title: string;
+    notes?: string;
+    dueDate?: string;
+    tags?: string[];
+    project?: string;
+    priority?: TaskPriority;
+    recurrence?: TaskRecurrence;
+    estimateMinutes?: number;
+  }) => void;
   updateTask: (id: string, patch: Partial<Omit<Task, "id">>) => void;
   toggleTaskDone: (id: string) => void;
   deleteTask: (id: string) => void;
@@ -82,6 +103,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const actions: Actions = useMemo(() => {
     return {
       setHasOnboarded: (v) => setData((d) => ({ ...d, hasOnboarded: v })),
+      setHasCompletedKickoff: (v) => setData((d) => ({ ...d, hasCompletedKickoff: v })),
 
       setActiveSidekickId: (id) => setData((d) => ({ ...d, activeSidekickId: id })),
 
@@ -112,14 +134,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           preferences: { ...d.preferences, tinFoil: !d.preferences.tinFoil }
         })),
 
-      addTask: ({ title, notes, dueDate, tags }) => {
+      addTask: ({ title, notes, dueDate, tags, project, priority, recurrence, estimateMinutes }) => {
         const t: Task = {
           id: uid(),
           title: title.trim(),
           notes: notes?.trim() || undefined,
           dueDate: dueDate || undefined,
+          project: project?.trim() || "Inbox",
+          priority: priority ?? 3,
+          recurrence: recurrence ?? "none",
+          estimateMinutes:
+            typeof estimateMinutes === "number" && Number.isFinite(estimateMinutes) && estimateMinutes > 0
+              ? Math.round(estimateMinutes)
+              : undefined,
           tags: (tags ?? []).map((x) => x.trim()).filter(Boolean),
           done: false,
+          completedAt: undefined,
           createdAt: nowIso(),
           updatedAt: nowIso()
         };
@@ -135,10 +165,39 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       },
 
       toggleTaskDone: (id) => {
-        setData((d) => ({
-          ...d,
-          tasks: d.tasks.map((t) => (t.id === id ? { ...t, done: !t.done, updatedAt: nowIso() } : t))
-        }));
+        setData((d) => {
+          const now = nowIso();
+          const next: Task[] = [];
+
+          for (const task of d.tasks) {
+            if (task.id !== id) {
+              next.push(task);
+              continue;
+            }
+
+            if (task.done) {
+              next.push({ ...task, done: false, completedAt: undefined, updatedAt: now });
+              continue;
+            }
+
+            const completed = { ...task, done: true, completedAt: now, updatedAt: now };
+            next.push(completed);
+
+            if (task.recurrence !== "none") {
+              next.unshift({
+                ...task,
+                id: uid(),
+                done: false,
+                completedAt: undefined,
+                dueDate: nextDueDateForRecurrence(task.recurrence, task.dueDate, todayISO()),
+                createdAt: now,
+                updatedAt: now
+              });
+            }
+          }
+
+          return { ...d, tasks: next };
+        });
       },
 
       deleteTask: (id) => setData((d) => ({ ...d, tasks: d.tasks.filter((t) => t.id !== id) })),

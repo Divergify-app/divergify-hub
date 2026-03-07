@@ -10,10 +10,12 @@ import { MagicTasks } from "./routes/MagicTasks";
 import { Sidekicks } from "./routes/Sidekicks";
 import { Settings } from "./routes/Settings";
 import { Guide } from "./routes/Guide";
+import { Kickoff } from "./routes/Kickoff";
 import { Done } from "./routes/Done";
 import { LegalPrivacy } from "./routes/LegalPrivacy";
 import { LegalTerms } from "./routes/LegalTerms";
 import { NotFound } from "./routes/NotFound";
+import { Scaffold } from "./routes/Scaffold";
 
 export function App() {
   return (
@@ -22,12 +24,14 @@ export function App() {
         <Route path="/" element={<Shell />}>
           <Route index element={<Today />} />
           <Route path="onboarding" element={<Onboarding />} />
+          <Route path="kickoff" element={<Kickoff />} />
           <Route path="tasks" element={<Tasks />} />
           <Route path="magic-tasks" element={<MagicTasks />} />
           <Route path="lab" element={<Lab />} />
           <Route path="habits" element={<Habits />} />
           <Route path="focus" element={<Focus />} />
           <Route path="sidekicks" element={<Sidekicks />} />
+          <Route path="scaffold" element={<Scaffold />} />
           <Route path="guide" element={<Guide />} />
           <Route path="settings" element={<Settings />} />
           <Route path="done" element={<Done />} />

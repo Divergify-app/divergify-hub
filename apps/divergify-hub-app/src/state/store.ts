@@ -1,4 +1,4 @@
-import type { AppData } from "./types";
+import type { AppData, Task, TaskPriority, TaskRecurrence } from "./types";
 import { nowIso, uid } from "../shared/utils";
 
 const KEY = "divergify:app:v1";
@@ -7,6 +7,7 @@ export function defaultData(): AppData {
   return {
     version: 1,
     hasOnboarded: false,
+    hasCompletedKickoff: false,
     activeSidekickId: "takota",
     preferences: {
       humor: "light",
@@ -35,16 +36,58 @@ export function defaultData(): AppData {
   };
 }
 
+function normalizePriority(value: unknown): TaskPriority {
+  if (value === 1 || value === 2 || value === 3 || value === 4) return value;
+  return 3;
+}
+
+function normalizeRecurrence(value: unknown): TaskRecurrence {
+  if (value === "daily" || value === "weekdays" || value === "weekly" || value === "monthly" || value === "none") {
+    return value;
+  }
+  return "none";
+}
+
+function normalizeTask(value: unknown): Task | null {
+  if (!value || typeof value !== "object") return null;
+  const task = value as Partial<Task>;
+  if (!task.id || !task.title) return null;
+  return {
+    id: task.id,
+    title: task.title,
+    notes: task.notes?.trim() || undefined,
+    dueDate: task.dueDate || undefined,
+    project: task.project?.trim() || "Inbox",
+    priority: normalizePriority(task.priority),
+    recurrence: normalizeRecurrence(task.recurrence),
+    estimateMinutes:
+      typeof task.estimateMinutes === "number" && Number.isFinite(task.estimateMinutes) && task.estimateMinutes > 0
+        ? Math.round(task.estimateMinutes)
+        : undefined,
+    tags: Array.isArray(task.tags) ? task.tags.map((tag) => String(tag).trim()).filter(Boolean).slice(0, 10) : [],
+    done: Boolean(task.done),
+    completedAt: task.completedAt || undefined,
+    createdAt: task.createdAt || nowIso(),
+    updatedAt: task.updatedAt || nowIso()
+  };
+}
+
 export function loadData(): AppData | null {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as AppData;
     if (!parsed || parsed.version !== 1) return null;
+    parsed.tasks = Array.isArray(parsed.tasks)
+      ? parsed.tasks
+          .map((task) => normalizeTask(task))
+          .filter((task): task is Task => task !== null)
+      : [];
     parsed.preferences = {
       ...parsed.preferences,
       lowStim: Boolean(parsed.preferences?.lowStim)
     };
+    parsed.hasCompletedKickoff = Boolean((parsed as Partial<AppData>).hasCompletedKickoff);
     return parsed;
   } catch {
     return null;

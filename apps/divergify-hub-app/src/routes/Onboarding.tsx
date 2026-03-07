@@ -19,7 +19,8 @@ export function Onboarding() {
     if (firstTask.trim()) actions.addTask({ title: firstTask.trim() });
     if (firstHabit.trim()) actions.addHabit({ name: firstHabit.trim(), frequency: "daily", tinyVersion: "60 seconds" });
     actions.setHasOnboarded(true);
-    nav("/", { replace: true });
+    actions.setHasCompletedKickoff(false);
+    nav("/kickoff", { replace: true });
   };
 
   const setHumor = (humor: Humor) => actions.setPreferences({ ...data.preferences, humor });
@@ -34,7 +35,7 @@ export function Onboarding() {
         <h2 className="h2">{activeSidekick.name} here.</h2>
         <p className="p">
           You opened Divergify. That counts as progress.
-          Now we pick settings that do not fight your brain.
+          We will set your defaults, then move you into a guided kickoff flow.
         </p>
 
         {step === 0 ? (

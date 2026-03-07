@@ -15,10 +15,10 @@ export function Guide() {
       <div className="card stack">
         <h3 className="h2">Start In 4 Steps</h3>
         <ol className="guide-list">
-          <li>Pick a sidekick name that fits your current bandwidth.</li>
-          <li>Set one tiny task and one timer.</li>
+          <li>Pick a sidekick and complete onboarding questions.</li>
+          <li>Complete Kickoff Flow checklist (state, tasks, first sprint).</li>
           <li>Turn on Shades if you need lower stimulation.</li>
-          <li>Turn on Tin Foil Hat if you want local-only behavior and no integrations.</li>
+          <li>Use Today as the default entry point for next-step decisions.</li>
         </ol>
       </div>
 
@@ -81,6 +81,8 @@ export function Guide() {
       </div>
 
       <div className="row" style={{ flexWrap: "wrap" }}>
+        <Link className="btn primary" to="/kickoff" style={{ textDecoration: "none" }}>Open Kickoff Flow</Link>
+        <Link className="btn" to="/scaffold" style={{ textDecoration: "none" }}>Open Scaffold Map</Link>
         <Link className="btn" to="/sidekicks" style={{ textDecoration: "none" }}>Open Sidekicks</Link>
         <Link className="btn" to="/settings" style={{ textDecoration: "none" }}>Open Settings</Link>
         <Link className="btn" to="/legal/privacy" style={{ textDecoration: "none" }}>Privacy</Link>

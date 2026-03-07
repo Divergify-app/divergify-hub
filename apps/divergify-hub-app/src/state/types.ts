@@ -20,13 +20,21 @@ export type Preferences = {
   loopGuard: { enabled: boolean; softLimitPerHour: number; cooldownMinutes: number };
 };
 
+export type TaskPriority = 1 | 2 | 3 | 4;
+export type TaskRecurrence = "none" | "daily" | "weekdays" | "weekly" | "monthly";
+
 export type Task = {
   id: string;
   title: string;
   notes?: string;
   dueDate?: string;
+  project: string;
+  priority: TaskPriority;
+  recurrence: TaskRecurrence;
+  estimateMinutes?: number;
   tags: string[];
   done: boolean;
+  completedAt?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -63,6 +71,7 @@ export type ChatTurn = {
 export type AppData = {
   version: 1;
   hasOnboarded: boolean;
+  hasCompletedKickoff: boolean;
   activeSidekickId: SidekickId;
 
   preferences: Preferences;

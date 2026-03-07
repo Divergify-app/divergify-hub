@@ -50,6 +50,9 @@ export function Shell() {
   if (!data.hasOnboarded && loc.pathname !== "/onboarding") {
     return <Navigate to="/onboarding" replace />;
   }
+  if (data.hasOnboarded && !data.hasCompletedKickoff && loc.pathname !== "/kickoff") {
+    return <Navigate to="/kickoff" replace />;
+  }
 
   return (
     <div className="container">
