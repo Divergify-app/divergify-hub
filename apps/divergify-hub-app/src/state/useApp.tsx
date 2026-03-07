@@ -4,6 +4,7 @@ import type {
   ChatTurn,
   FocusSession,
   Habit,
+  OnboardingProfile,
   Preferences,
   SidekickId,
   Task,
@@ -18,6 +19,7 @@ type Actions = {
   setHasOnboarded: (v: boolean) => void;
   setHasCompletedKickoff: (v: boolean) => void;
   setActiveSidekickId: (id: SidekickId) => void;
+  setOnboardingProfile: (p: OnboardingProfile | null) => void;
 
   setPreferences: (p: Preferences) => void;
   toggleShades: () => void;
@@ -106,6 +108,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setHasCompletedKickoff: (v) => setData((d) => ({ ...d, hasCompletedKickoff: v })),
 
       setActiveSidekickId: (id) => setData((d) => ({ ...d, activeSidekickId: id })),
+      setOnboardingProfile: (p) => setData((d) => ({ ...d, onboardingProfile: p })),
 
       setPreferences: (p) =>
         setData((d) => ({

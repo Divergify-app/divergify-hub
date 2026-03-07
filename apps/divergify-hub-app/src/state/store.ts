@@ -9,6 +9,7 @@ export function defaultData(): AppData {
     hasOnboarded: false,
     hasCompletedKickoff: false,
     activeSidekickId: "takota",
+    onboardingProfile: null,
     preferences: {
       humor: "light",
       fontScale: 1,
@@ -88,6 +89,21 @@ export function loadData(): AppData | null {
       lowStim: Boolean(parsed.preferences?.lowStim)
     };
     parsed.hasCompletedKickoff = Boolean((parsed as Partial<AppData>).hasCompletedKickoff);
+    parsed.onboardingProfile =
+      parsed.onboardingProfile && typeof parsed.onboardingProfile === "object"
+        ? {
+            reason: String((parsed.onboardingProfile as any).reason ?? ""),
+            primaryGoal: String((parsed.onboardingProfile as any).primaryGoal ?? ""),
+            focusArea: String((parsed.onboardingProfile as any).focusArea ?? ""),
+            anchorTask: String((parsed.onboardingProfile as any).anchorTask ?? ""),
+            stimulationLevel: Number((parsed.onboardingProfile as any).stimulationLevel ?? 50),
+            selectedTemplateId:
+              typeof (parsed.onboardingProfile as any).selectedTemplateId === "string"
+                ? (parsed.onboardingProfile as any).selectedTemplateId
+                : null,
+            createdAt: String((parsed.onboardingProfile as any).createdAt ?? nowIso())
+          }
+        : null;
     return parsed;
   } catch {
     return null;

@@ -39,6 +39,16 @@ export type Task = {
   updatedAt: string;
 };
 
+export type OnboardingProfile = {
+  reason: string;
+  primaryGoal: string;
+  focusArea: string;
+  anchorTask: string;
+  stimulationLevel: number;
+  selectedTemplateId: string | null;
+  createdAt: string;
+};
+
 export type Habit = {
   id: string;
   name: string;
@@ -73,6 +83,7 @@ export type AppData = {
   hasOnboarded: boolean;
   hasCompletedKickoff: boolean;
   activeSidekickId: SidekickId;
+  onboardingProfile: OnboardingProfile | null;
 
   preferences: Preferences;
 

@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 import { useApp } from "../state/useApp";
-import { useSessionState } from "../state/sessionState";
+import { mapOverwhelmToSupportLevel, useSessionState } from "../state/sessionState";
 import { pickAnchorTask, sortOpenTasks } from "../shared/tasks";
 import { todayISO } from "../shared/utils";
 
@@ -24,6 +24,12 @@ export function Kickoff() {
   const focusReady = focusTodayCount > 0;
 
   const checklistDoneCount = [stateReady, tasksReady, focusReady].filter(Boolean).length;
+  const onboarding = data.onboardingProfile;
+  const supportLabel = onboarding
+    ? mapOverwhelmToSupportLevel(onboarding.stimulationLevel)
+    : session
+      ? mapOverwhelmToSupportLevel(session.overwhelm)
+      : "normal";
 
   const completeKickoff = () => {
     actions.setHasCompletedKickoff(true);
@@ -58,6 +64,18 @@ export function Kickoff() {
         <div className="notice">
           <strong>Progress:</strong> {checklistDoneCount}/3 setup checks complete.
         </div>
+        {onboarding ? (
+          <div className="card stack" style={{ padding: 14 }}>
+            <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
+              <strong>Onboarding summary</strong>
+              <span className="badge">{supportLabel}</span>
+            </div>
+            <div className="mini">Goal: {onboarding.primaryGoal}</div>
+            <div className="mini">Focus area: {onboarding.focusArea}</div>
+            <div className="mini">Anchor task: {onboarding.anchorTask}</div>
+            {onboarding.reason ? <div className="mini">Why now: {onboarding.reason}</div> : null}
+          </div>
+        ) : null}
       </div>
 
       <div className="card stack">
