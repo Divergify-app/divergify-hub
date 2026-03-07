@@ -21,11 +21,11 @@ Deliver a clear TickTick-style flow while keeping Divergify personality, overwhe
 - Post-onboarding kickoff lane
 - Anchor-task and next-step guidance
 - Focus timer with sidekick nudges
+- Calendar board (day/week drag scheduling)
 
 ### Scaffolded (next implementation)
-- Calendar board (day/week)
 - Reminder rules and alerts
-- Drag scheduling
+- Conflict hints + schedule balancing prompts
 
 ### Next
 - Account auth + cloud sync

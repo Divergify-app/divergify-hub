@@ -16,6 +16,7 @@ import { LegalPrivacy } from "./routes/LegalPrivacy";
 import { LegalTerms } from "./routes/LegalTerms";
 import { NotFound } from "./routes/NotFound";
 import { Scaffold } from "./routes/Scaffold";
+import { Calendar } from "./routes/Calendar";
 
 export function App() {
   return (
@@ -26,6 +27,7 @@ export function App() {
           <Route path="onboarding" element={<Onboarding />} />
           <Route path="kickoff" element={<Kickoff />} />
           <Route path="tasks" element={<Tasks />} />
+          <Route path="calendar" element={<Calendar />} />
           <Route path="magic-tasks" element={<MagicTasks />} />
           <Route path="lab" element={<Lab />} />
           <Route path="habits" element={<Habits />} />

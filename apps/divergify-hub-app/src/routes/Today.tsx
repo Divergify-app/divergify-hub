@@ -149,6 +149,9 @@ export function Today() {
           <Link to="/tasks" className="btn" style={{ textDecoration: "none" }}>
             Open planner
           </Link>
+          <Link to="/calendar" className="btn" style={{ textDecoration: "none" }}>
+            Calendar board
+          </Link>
           <Link to="/magic-tasks" className="btn" style={{ textDecoration: "none" }}>
             Break down a big task
           </Link>

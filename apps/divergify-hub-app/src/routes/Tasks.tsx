@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { useApp } from "../state/useApp";
 import { todayISO } from "../shared/utils";
 import { getPersonaCopy } from "../sidekicks/copy";
@@ -117,6 +118,9 @@ export function Tasks() {
               {option[0].toUpperCase() + option.slice(1)} ({viewCounts[option]})
             </button>
           ))}
+          <Link to="/calendar" className="btn" style={{ textDecoration: "none" }}>
+            Calendar board
+          </Link>
         </div>
 
         <div className="field">

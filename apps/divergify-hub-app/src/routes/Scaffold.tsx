@@ -54,9 +54,9 @@ const FEATURES: FeatureRow[] = [
   },
   {
     feature: "Calendar (Day/Week Drag)",
-    status: "Scaffolded",
-    route: "/tasks",
-    value: "Planned next: scheduling board connected to task due dates."
+    status: "Live",
+    route: "/calendar",
+    value: "Day/week scheduling board with drag drops and due-date reassignment."
   },
   {
     feature: "Reminders + Notifications",
