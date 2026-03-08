@@ -101,7 +101,7 @@ export function Tasks() {
     <div className="stack">
       <div className="card stack">
         <div className="badge">Tasks</div>
-        <h2 className="h2">Planner: TickTick-style, Divergify brain model</h2>
+        <h2 className="h2">Planner: structured, Divergify brain model</h2>
         <p className="p">{persona.tasksSub}</p>
         <div className="notice">
           <strong>Daily load target:</strong> {cap} key tasks based on your current check-in.

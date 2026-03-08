@@ -17,7 +17,7 @@ const FEATURES: FeatureRow[] = [
     value: "Sets support level and daily task cap so planning stays realistic."
   },
   {
-    feature: "TickTick-Style Planner Views",
+    feature: "Structured Planner Views",
     status: "Live",
     route: "/tasks",
     value: "Today/Upcoming/Overdue/Inbox views with quick scheduling actions."

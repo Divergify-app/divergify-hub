@@ -1,7 +1,7 @@
 # Divergify Scaffold Snapshot (2026-03-07)
 
 ## Goal
-Deliver a clear TickTick-style flow while keeping Divergify personality, overwhelm-aware planning, and sidekick support.
+Deliver a clear structured-planner flow while keeping Divergify personality, overwhelm-aware planning, and sidekick support.
 
 ## User Flow
 1. Onboarding (`/onboarding`)
@@ -15,7 +15,7 @@ Deliver a clear TickTick-style flow while keeping Divergify personality, overwhe
 
 ### Live
 - Overwhelm gauge + support levels
-- TickTick-style planner views (Today/Upcoming/Overdue/Inbox/All)
+- Structured planner views (Today/Upcoming/Overdue/Inbox/All)
 - Task priority, project, repeat, estimate
 - Recurring task regeneration on completion
 - Post-onboarding kickoff lane

@@ -1,7 +1,7 @@
-# Divergify TickTick-Style Product Plan
+# Divergify Structured Planner Product Plan
 
 ## Product Goal
-Build a productivity app with TickTick-level utility, then layer Divergify-native behavior on top:
+Build a productivity app with strong planner utility, then layer Divergify-native behavior on top:
 - overwhelm-aware planning (your gauge/check-in),
 - adaptive task scaffolding,
 - personality-driven support (sidekicks),
