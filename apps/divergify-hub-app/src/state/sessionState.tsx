@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 export type SessionMode = "overloaded" | "neutral" | "ready";
-export type SupportLevel = "normal" | "gentle" | "overloaded";
+export type SupportLevel = "normal" | "medium" | "gentle" | "overloaded";
 
 type SessionState = { mode: SessionMode; setAt: string; overwhelm: number };
 
@@ -17,15 +17,25 @@ const STATE_KEY = "divergify.session.state";
 const STATE_AT_KEY = "divergify.session.stateSetAt";
 const OVERWHELM_KEY = "divergify.session.overwhelm";
 const SKIP_AT_KEY = "divergify.session.stateSkippedAt";
-const TTL_MS = 12 * 60 * 60 * 1000;
 
 const SessionStateCtx = createContext<SessionCtx | null>(null);
 
-function isFresh(setAt: string | null) {
-  if (!setAt) return false;
-  const ts = Date.parse(setAt);
-  if (Number.isNaN(ts)) return false;
-  return Date.now() - ts < TTL_MS;
+function toLocalDayKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function dayKeyFromIso(value: string | null) {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return toLocalDayKey(parsed);
+}
+
+function isCurrentDay(value: string | null) {
+  return dayKeyFromIso(value) === toLocalDayKey(new Date());
 }
 
 export function clampOverwhelm(value: number) {
@@ -41,14 +51,15 @@ export function snapOverwhelm(value: number) {
 export function mapOverwhelmToSupportLevel(value: number): SupportLevel {
   const clamped = clampOverwhelm(value);
   if (clamped >= 75) return "overloaded";
-  if (clamped >= 25) return "gentle";
+  if (clamped >= 50) return "gentle";
+  if (clamped >= 25) return "medium";
   return "normal";
 }
 
 export function mapOverwhelmToMode(value: number): SessionMode {
   const support = mapOverwhelmToSupportLevel(value);
   if (support === "overloaded") return "overloaded";
-  if (support === "gentle") return "neutral";
+  if (support === "gentle" || support === "medium") return "neutral";
   return "ready";
 }
 
@@ -90,6 +101,7 @@ export function clearSessionState() {
     localStorage.removeItem(STATE_KEY);
     localStorage.removeItem(STATE_AT_KEY);
     localStorage.removeItem(OVERWHELM_KEY);
+    localStorage.removeItem(SKIP_AT_KEY);
   } catch {
     // ignore storage errors
   }
@@ -97,10 +109,10 @@ export function clearSessionState() {
 
 export function isCheckInRequired(): boolean {
   const state = getSessionState();
-  if (state && isFresh(state.setAt)) return false;
+  if (state && isCurrentDay(state.setAt)) return false;
   try {
     const skippedAt = localStorage.getItem(SKIP_AT_KEY);
-    if (isFresh(skippedAt)) return false;
+    if (isCurrentDay(skippedAt)) return false;
   } catch {
     return true;
   }
@@ -110,7 +122,7 @@ export function isCheckInRequired(): boolean {
 function getValidSessionState() {
   const state = getSessionState();
   if (!state) return null;
-  return isFresh(state.setAt) ? state : null;
+  return isCurrentDay(state.setAt) ? state : null;
 }
 
 function applySessionClass(mode: SessionMode | null) {

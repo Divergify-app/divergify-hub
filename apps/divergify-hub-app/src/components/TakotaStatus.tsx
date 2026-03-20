@@ -8,7 +8,7 @@ export function TakotaStatus() {
   const lowStim = data.preferences.lowStim;
   const sidekick = getSidekick(data.activeSidekickId);
 
-  const label = tinFoilHat ? "Privacy Mode" : `${sidekick.name} active`;
+  const label = tinFoilHat ? "Tinfoil Hat" : `${sidekick.name} active`;
   const line = tinFoilHat ? "Local-only guidance." : sidekick.tagline;
 
   return (

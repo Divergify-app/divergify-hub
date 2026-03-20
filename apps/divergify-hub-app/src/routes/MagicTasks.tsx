@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useApp } from "../state/useApp";
-import { breakdownWithAi } from "../shared/aiClient";
 import { getPersonaCopy } from "../sidekicks/copy";
+import { useSessionState } from "../state/sessionState";
+import { breakdownWithAi } from "../shared/aiClient";
+import { getSupportProfile } from "../shared/supportProfile";
 
 function buildSteps(task: string) {
   const cleanTask = task.trim();
@@ -18,32 +21,46 @@ function buildSteps(task: string) {
 
 export function MagicTasks() {
   const { data } = useApp();
+  const { session } = useSessionState();
   const persona = getPersonaCopy(data.activeSidekickId);
+  const [searchParams] = useSearchParams();
   const [bigTask, setBigTask] = useState("");
   const [steps, setSteps] = useState<string[]>([]);
-  const [assistNote, setAssistNote] = useState("");
+  const [status, setStatus] = useState<string | null>(null);
+  const [isThinking, setIsThinking] = useState(false);
 
-  const runLocalBreakdown = () => {
+  useEffect(() => {
+    const incomingTask = searchParams.get("task");
+    if (!incomingTask) return;
+    setBigTask(incomingTask);
+  }, [searchParams]);
+
+  const runBreakdown = async () => {
     const task = bigTask.trim();
     if (!task) return;
-    setSteps(buildSteps(task));
-    setAssistNote("");
-  };
-
-  const runAiBreakdown = async () => {
-    const task = bigTask.trim();
-    if (!task) return;
+    setIsThinking(true);
+    setStatus(null);
 
     const result = await breakdownWithAi(task, { tinFoilHat: data.preferences.tinFoil });
-    if (result.ok && Array.isArray(result.data.steps) && result.data.steps.length) {
-      setSteps(result.data.steps.slice(0, 5));
-      setAssistNote("AI assist complete.");
+    if (result.ok && result.data.steps.length) {
+      setSteps(result.data.steps);
+      setStatus("Cloud breakdown complete.");
+      setIsThinking(false);
       return;
     }
 
     setSteps(buildSteps(task));
-    setAssistNote(`AI unavailable, local breakdown used. ${result.ok ? "" : result.error}`.trim());
+    setStatus(
+      result.ok
+        ? "Local fallback used."
+        : result.error === "Tinfoil Hat is enabled."
+          ? "Tinfoil Hat kept this breakdown local."
+          : "Cloud breakdown was unavailable, so Divergify used the local fallback."
+    );
+    setIsThinking(false);
   };
+
+  const supportProfile = getSupportProfile(session?.overwhelm ?? 50);
 
   return (
     <div className="stack">
@@ -65,7 +82,7 @@ export function MagicTasks() {
             placeholder="Example: clean the kitchen"
             onKeyDown={(e) => {
               if (e.key === "Enter" && bigTask.trim()) {
-                runLocalBreakdown();
+                void runBreakdown();
               }
             }}
           />
@@ -74,18 +91,16 @@ export function MagicTasks() {
         <div className="row" style={{ justifyContent: "flex-end", flexWrap: "wrap" }}>
           <button
             className="btn primary"
-            onClick={runLocalBreakdown}
-            disabled={!bigTask.trim()}
+            onClick={() => void runBreakdown()}
+            disabled={!bigTask.trim() || isThinking}
           >
-            De-scary-fy
+            {isThinking ? "Breaking it down..." : "Break it down"}
           </button>
-          {!data.preferences.tinFoil ? (
-            <button className="btn" onClick={() => void runAiBreakdown()} disabled={!bigTask.trim()}>
-              AI Assist
-            </button>
-          ) : null}
         </div>
-        {assistNote ? <div className="mini">{assistNote}</div> : null}
+        <div className="mini">
+          Cloud assist is used when available. Tinfoil Hat keeps this flow local. Current support profile: {supportProfile.label}.
+        </div>
+        {status ? <div className="notice">{status}</div> : null}
       </div>
 
       <div className="card stack">

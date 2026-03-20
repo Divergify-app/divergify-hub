@@ -47,10 +47,10 @@ const FEATURES: FeatureRow[] = [
     value: "Break intimidating tasks into smaller executable steps."
   },
   {
-    feature: "Post-Onboarding Kickoff Lane",
+    feature: "Dashboard + Daily Check-In",
     status: "Live",
-    route: "/kickoff",
-    value: "Guided checklist so new users know exactly what to do first."
+    route: "/",
+    value: "Onboarding lands in the dashboard, and the daily state check opens there when needed."
   },
   {
     feature: "Calendar (Day/Week Drag)",
@@ -87,7 +87,7 @@ export function Scaffold() {
         <h3 className="h2">Current flow</h3>
         <ol className="guide-list">
           <li>Onboarding: sidekick, preferences, first task/habit seed.</li>
-          <li>Kickoff lane: state check, starter plan, first focus sprint.</li>
+          <li>Dashboard opens first, then the daily state check appears as needed.</li>
           <li>Today: anchor task and next executable action.</li>
           <li>Tasks planner: prioritize, schedule, repeat, and re-balance.</li>
           <li>Focus + Sidekick: execute work with low-friction support.</li>
@@ -108,8 +108,8 @@ export function Scaffold() {
       </div>
 
       <div className="row" style={{ flexWrap: "wrap" }}>
-        <Link to="/kickoff" className="btn primary" style={{ textDecoration: "none" }}>
-          Open kickoff flow
+        <Link to="/" className="btn primary" style={{ textDecoration: "none" }}>
+          Open dashboard
         </Link>
         <Link to="/tasks" className="btn" style={{ textDecoration: "none" }}>
           Open planner

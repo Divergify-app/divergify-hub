@@ -1,8 +1,0 @@
-{
-  "apex_A": [
-    "75.2.60.5",
-    "99.83.190.102"
-  ],
-  "www_CNAME": "REPLACE_WITH_YOUR_SUBDOMAIN.netlify.app",
-  "ttl_seconds": 3600
-}

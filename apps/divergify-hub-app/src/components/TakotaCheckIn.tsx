@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { mapOverwhelmToSupportLevel, useSessionState } from "../state/sessionState";
+import { useSessionState } from "../state/sessionState";
 import { useApp } from "../state/useApp";
 import { getSidekick } from "../sidekicks/defs";
+import { formatNudgeCadence, getSupportProfile } from "../shared/supportProfile";
 
 type Props = {
   open: boolean;
@@ -32,13 +33,7 @@ export function TakotaCheckIn({ open, onClose }: Props) {
   const titleId = useMemo(() => "takota-checkin-title", []);
   const descId = useMemo(() => "takota-checkin-desc", []);
 
-  const level = mapOverwhelmToSupportLevel(value);
-  const levelLabel =
-    level === "overloaded"
-      ? "High support"
-      : level === "gentle"
-      ? "Gentle support"
-      : "Baseline";
+  const supportProfile = getSupportProfile(value);
 
   if (!open) return null;
 
@@ -58,6 +53,10 @@ export function TakotaCheckIn({ open, onClose }: Props) {
             Set your stimulation level. <br />
             {sidekick.checkInHint}
           </p>
+          <div className="mini">
+            This is a scale, not a switch. Divergify uses it to change sprint length, daily task cap, nudge pace,
+            and when calmer defaults turn on.
+          </div>
 
           <div className="checkin-slider">
             <label className="label" htmlFor="takota-overwhelm">
@@ -76,19 +75,22 @@ export function TakotaCheckIn({ open, onClose }: Props) {
               onChange={(event) => setValue(Number(event.target.value))}
             />
             <datalist id="takota-overwhelm-anchors">
-              <option value="0" label="Calm" />
-              <option value="50" label="Stretched" />
+              <option value="0" label="Baseline" />
+              <option value="25" label="Medium" />
+              <option value="50" label="Gentle" />
+              <option value="75" label="High" />
               <option value="100" label="Overloaded" />
             </datalist>
 
             <div className="checkin-anchors">
-              <span>0 calm</span>
-              <span>50 stretched</span>
-              <span>100 overloaded</span>
+              <span>0-24 baseline</span>
+              <span>25-49 medium</span>
+              <span>50-74 gentle</span>
+              <span>75-100 high</span>
             </div>
 
             <div className="checkin-level">
-              <span className="badge">{levelLabel}</span>
+              <span className="badge">{supportProfile.label}</span>
               <label className="mini" htmlFor="takota-overwhelm-input">
                 Value
               </label>
@@ -102,6 +104,18 @@ export function TakotaCheckIn({ open, onClose }: Props) {
                 value={value}
                 onChange={(event) => setValue(Number(event.target.value))}
               />
+            </div>
+
+            <div className="checkin-effects">
+              <div className="mini">
+                <strong>{supportProfile.label}</strong> ({supportProfile.rangeLabel}) is active at this value.
+              </div>
+              <div className="checkin-effects-row">
+                <span>Sprint {supportProfile.focusMinutesDefault} min</span>
+                <span>Cap {supportProfile.dailyTaskCap}</span>
+                <span>Nudges {formatNudgeCadence(supportProfile.nudgeIntervalSeconds)}</span>
+                <span>{supportProfile.autoEnableShades ? "Auto calmer on" : "Auto calmer off"}</span>
+              </div>
             </div>
           </div>
 

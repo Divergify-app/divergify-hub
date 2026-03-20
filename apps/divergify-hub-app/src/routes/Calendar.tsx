@@ -2,6 +2,7 @@ import { useMemo, useState, type DragEvent } from "react";
 import { Link } from "react-router-dom";
 import type { Task } from "../state/types";
 import { useApp } from "../state/useApp";
+import { getGoogleCalendarUrl, getWazeUrl, openGoogleCalendarForTask, openWazeForTask } from "../shared/integrations";
 import { priorityLabel, sortOpenTasks } from "../shared/tasks";
 import { todayISO } from "../shared/utils";
 
@@ -87,6 +88,28 @@ function TaskCard(props: {
       </div>
       {extra ?? null}
     </div>
+  );
+}
+
+function IntegrationButtons({ task }: { task: Task }) {
+  const calendarUrl = getGoogleCalendarUrl(task);
+  const wazeUrl = getWazeUrl(task);
+
+  if (!calendarUrl && !wazeUrl) return null;
+
+  return (
+    <>
+      {calendarUrl ? (
+        <button className="btn" onClick={() => openGoogleCalendarForTask(task)}>
+          Google Calendar
+        </button>
+      ) : null}
+      {wazeUrl ? (
+        <button className="btn" onClick={() => openWazeForTask(task)}>
+          Waze
+        </button>
+      ) : null}
+    </>
   );
 }
 
@@ -224,6 +247,7 @@ export function Calendar() {
                     <button className="btn" onClick={() => actions.updateTask(task.id, { dueDate: boardDays[0] })}>
                       Schedule to {shortDayLabel(boardDays[0] ?? today)}
                     </button>
+                    <IntegrationButtons task={task} />
                   </div>
                 }
               />
@@ -254,6 +278,7 @@ export function Calendar() {
                       <button className="btn" onClick={() => setCursor(task.dueDate ?? today)}>
                         Jump to {task.dueDate}
                       </button>
+                      <IntegrationButtons task={task} />
                     </div>
                   }
                 />
@@ -318,6 +343,7 @@ export function Calendar() {
                             <button className="btn" onClick={() => actions.updateTask(task.id, { dueDate: undefined })}>
                               Unschedule
                             </button>
+                            <IntegrationButtons task={task} />
                           </div>
                         }
                       />

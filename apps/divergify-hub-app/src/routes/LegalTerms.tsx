@@ -9,7 +9,7 @@ export function LegalTerms() {
           Divergify provides productivity support tools. It is not medical advice, diagnosis, or treatment.
         </p>
         <p className="p">
-          This beta may change or break. Use it as a support tool, not a source of obligation or guilt.
+          The app will evolve over time. Use it as a support tool, not a source of obligation or guilt.
         </p>
         <p className="p">
           By using the app you accept that you control your own data, backups, and exports.

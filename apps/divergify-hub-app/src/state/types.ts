@@ -23,16 +23,25 @@ export type Preferences = {
 export type TaskPriority = 1 | 2 | 3 | 4;
 export type TaskRecurrence = "none" | "daily" | "weekdays" | "weekly" | "monthly";
 
+export type TaskChecklistItem = {
+  id: string;
+  text: string;
+  done: boolean;
+};
+
 export type Task = {
   id: string;
   title: string;
   notes?: string;
   dueDate?: string;
+  startAt?: string;
+  location?: string;
   project: string;
   priority: TaskPriority;
   recurrence: TaskRecurrence;
   estimateMinutes?: number;
   tags: string[];
+  checklist: TaskChecklistItem[];
   done: boolean;
   completedAt?: string;
   createdAt: string;

@@ -3,8 +3,9 @@ import { useApp } from "../state/useApp";
 import { mapOverwhelmToSupportLevel, useSessionState } from "../state/sessionState";
 import { TakotaAvatar } from "./TakotaAvatar";
 import { SIDEKICKS, getSidekick } from "../sidekicks/defs";
-import { generateSidekickTurn } from "../sidekicks/engine";
 import { nowIso, uid } from "../shared/utils";
+import { requestSidekickTurn } from "../shared/sidekickAssist";
+import { getSupportProfile } from "../shared/supportProfile";
 
 function withinLastHour(ts: string) {
   const t = Date.parse(ts);
@@ -19,6 +20,8 @@ export function SidekickDrawer() {
 
   const sidekick = useMemo(() => getSidekick(data.activeSidekickId), [data.activeSidekickId]);
   const [msg, setMsg] = useState("");
+  const [assistNotice, setAssistNotice] = useState<string | null>(null);
+  const [isThinking, setIsThinking] = useState(false);
 
   const loopGuard = data.preferences.loopGuard;
   const userMsgsLastHour = useMemo(
@@ -30,9 +33,9 @@ export function SidekickDrawer() {
   const inBreak = now < breakUntil;
   const overLimit = loopGuard.enabled && userMsgsLastHour >= loopGuard.softLimitPerHour && !inBreak;
 
-  const send = () => {
+  const send = async () => {
     const text = msg.trim();
-    if (!text || inBreak) return;
+    if (!text || inBreak || isThinking) return;
 
     actions.pushChat({
       id: uid(),
@@ -42,20 +45,47 @@ export function SidekickDrawer() {
       ts: nowIso()
     });
 
-    const reply = generateSidekickTurn({
-      sidekickId: data.activeSidekickId,
-      message: text,
-      data,
-      supportLevel
-    });
-    actions.pushChat(reply);
     setMsg("");
+    setIsThinking(true);
+    try {
+      const result = await requestSidekickTurn({
+        message: text,
+        data,
+        supportLevel,
+        sidekickId: data.activeSidekickId
+      });
+      actions.pushChat(result.turn);
+      setAssistNotice(
+        result.source === "local" && !data.preferences.tinFoil && result.error
+          ? `Cloud assist was unavailable, so ${sidekick.name} stayed local.`
+          : null
+      );
+    } finally {
+      setIsThinking(false);
+    }
   };
 
-  const wrapUp = () => {
+  const wrapUp = async () => {
     const text = "Wrap up: 3 bullets, one next micro-step, and tell me to close the app.";
+    if (isThinking) return;
     actions.pushChat({ id: uid(), role: "user", sidekickId: data.activeSidekickId, content: text, ts: nowIso() });
-    actions.pushChat(generateSidekickTurn({ sidekickId: data.activeSidekickId, message: text, data, supportLevel }));
+    setIsThinking(true);
+    try {
+      const result = await requestSidekickTurn({
+        message: text,
+        data,
+        supportLevel,
+        sidekickId: data.activeSidekickId
+      });
+      actions.pushChat(result.turn);
+      setAssistNotice(
+        result.source === "local" && !data.preferences.tinFoil && result.error
+          ? `Cloud assist was unavailable, so ${sidekick.name} stayed local.`
+          : null
+      );
+    } finally {
+      setIsThinking(false);
+    }
   };
 
   const startBreak = () => {
@@ -66,8 +96,7 @@ export function SidekickDrawer() {
   const mode = data.preferences.shades ? "shades" : "default";
   const privacy = data.preferences.tinFoil ? "tinfoil" : "off";
   const supportLevel = session ? mapOverwhelmToSupportLevel(session.overwhelm) : "normal";
-  const supportLabel =
-    supportLevel === "overloaded" ? "High support" : supportLevel === "gentle" ? "Gentle support" : "Baseline";
+  const supportProfile = getSupportProfile(session?.overwhelm ?? 50);
 
   return (
     <>
@@ -88,7 +117,8 @@ export function SidekickDrawer() {
                 <div className="badge">Active</div>
                 <div style={{ fontWeight: 800 }}>{sidekick.name}</div>
                 <div className="p">{sidekick.tagline}</div>
-                <div className="mini">Support profile: {supportLabel}</div>
+                <div className="mini">Support profile: {supportProfile.label}</div>
+                <div className="mini">{supportProfile.description}</div>
               </div>
               <button className="btn" onClick={() => actions.setSidekickDrawerOpen(false)}>Close</button>
             </div>
@@ -109,9 +139,11 @@ export function SidekickDrawer() {
 
             {data.preferences.tinFoil ? (
               <div className="notice privacy">
-                Tin Foil Hat is on. Integrations are disabled. This chat is local-only.
+                Tinfoil Hat is on. Integrations are disabled. This chat stays local-only.
               </div>
             ) : null}
+
+            {assistNotice ? <div className="notice">{assistNotice}</div> : null}
 
             {overLimit ? (
               <div className="notice">
@@ -130,6 +162,8 @@ export function SidekickDrawer() {
               </div>
             ) : null}
 
+            {isThinking ? <div className="notice">Sidekick is thinking.</div> : null}
+
             <div className="chat" aria-label="Chat history">
               {data.chat.map((t) => (
                 <div key={t.id} className={`turn ${t.role === "user" ? "user" : ""}`}>
@@ -142,7 +176,7 @@ export function SidekickDrawer() {
 
             <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
               <button className="btn" onClick={actions.clearChat}>Clear</button>
-              <button className="btn" onClick={wrapUp}>Wrap up</button>
+              <button className="btn" onClick={() => void wrapUp()} disabled={isThinking}>Wrap up</button>
             </div>
 
             <div className="field">
@@ -158,8 +192,8 @@ export function SidekickDrawer() {
             </div>
 
             <div className="row" style={{ justifyContent: "flex-end" }}>
-              <button className="btn primary" onClick={send} disabled={!msg.trim() || inBreak}>
-                Send
+              <button className="btn primary" onClick={() => void send()} disabled={!msg.trim() || inBreak || isThinking}>
+                {isThinking ? "Thinking..." : "Send"}
               </button>
             </div>
 

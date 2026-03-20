@@ -1,11 +1,29 @@
 [build]
-  command = "npm ci && npm run build"
+  command = "npm ci --include=dev && npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
   NODE_ENV = "production"
   NPM_FLAGS = "--include=dev"
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/ai/sidekick"
+  to = "/.netlify/functions/sidekick"
+  status = 200
+
+[[redirects]]
+  from = "/api/ai/breakdown"
+  to = "/.netlify/functions/breakdown"
+  status = 200
+
+[[redirects]]
+  from = "/api/ai/sort"
+  to = "/.netlify/functions/sort"
+  status = 200
 
 [[redirects]]
   from = "/*"

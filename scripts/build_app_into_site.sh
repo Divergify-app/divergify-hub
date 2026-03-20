@@ -17,9 +17,11 @@ cd "$APP_SRC"
 # Ensure the build uses the hub base path.
 export VITE_BASE_PATH="$APP_BASE"
 
-# Requires network the first time (npm install).
-# npm install
-# npm run build
+if [[ ! -d node_modules ]]; then
+  npm install
+fi
+
+npm run build
 
 rm -rf "$APP_OUT"
 mkdir -p "$APP_OUT"

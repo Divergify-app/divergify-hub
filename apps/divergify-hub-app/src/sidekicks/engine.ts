@@ -27,6 +27,7 @@ function humorLine(h: "neutral" | "light" | "sarcastic_supportive") {
 
 function stepSeconds(level: SupportLevel) {
   if (level === "overloaded") return 30;
+  if (level === "medium") return 75;
   if (level === "gentle") return 60;
   return 90;
 }
@@ -42,6 +43,7 @@ function stopPointLine(level: SupportLevel) {
 
 function supportLead(level: SupportLevel) {
   if (level === "overloaded") return "Support mode: high. We go very small and very clear.";
+  if (level === "medium") return "Support mode: medium. We tighten the scope and keep the pace steady.";
   if (level === "gentle") return "Support mode: gentle. We keep this steady and low-noise.";
   return "Support mode: baseline. We can push a little harder.";
 }
@@ -189,7 +191,7 @@ function replyScholar(message: string, data: AppData, supportLevel: SupportLevel
 
 function replyChaos(data: AppData, supportLevel: SupportLevel) {
   const ctx = summarizeContext(data);
-  const intervalMinutes = supportLevel === "overloaded" ? 1 : 2;
+  const intervalMinutes = supportLevel === "overloaded" ? 1 : supportLevel === "normal" ? 3 : 2;
   return [
     supportLead(supportLevel),
     "",

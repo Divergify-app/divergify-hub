@@ -1,2 +1,0 @@
-import { AppState } from 'react-native'; let last='active';
-export function startDriftWatcher(onDrift:()=>void){ const sub = AppState.addEventListener('change', (s)=>{ if(last==='active' && s!=='active'){ onDrift(); } last = s as any; }); return ()=> sub.remove(); }

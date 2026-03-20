@@ -1,1 +1,0 @@
-export default function Divergipedia(){ return (<div><h1>Divergipedia</h1><p style={{color:'#9ca3af'}}>Our living glossary and canon. For brains that zig when the world zags.</p><div style={{border:'1px solid #222',borderRadius:12,overflow:'hidden',marginTop:12}}><iframe src='/docs/divergipedia.pdf' style={{width:'100%',height:'70vh',border:'0'}} /></div></div>); }

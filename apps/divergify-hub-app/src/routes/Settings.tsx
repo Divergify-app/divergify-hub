@@ -2,9 +2,14 @@ import { Link } from "react-router-dom";
 import { useApp } from "../state/useApp";
 import { downloadJson, readTextFile, safeParseJson } from "../shared/utils";
 import type { Humor } from "../state/types";
+import { useSessionState } from "../state/sessionState";
+import { formatNudgeCadence, getSupportProfile, getSupportScale } from "../shared/supportProfile";
 
 export function Settings() {
   const { data, actions } = useApp();
+  const { session } = useSessionState();
+  const supportProfile = getSupportProfile(session?.overwhelm ?? 50);
+  const supportScale = getSupportScale();
 
   const exportData = () => downloadJson("divergify-export.json", data);
 
@@ -31,12 +36,24 @@ export function Settings() {
         <label className="row">
           <input
             type="checkbox"
+            checked={data.preferences.shades}
+            onChange={actions.toggleShades}
+          />
+          <div className="stack" style={{ gap: 2 }}>
+            <div>Shades</div>
+            <div className="p">Cuts motion, lowers stimulation, and keeps the interface calmer when the day is loud.</div>
+          </div>
+        </label>
+
+        <label className="row">
+          <input
+            type="checkbox"
             checked={data.preferences.lowStim}
             onChange={actions.toggleLowStim}
           />
           <div className="stack" style={{ gap: 2 }}>
             <div>Low Stim Mode</div>
-            <div className="p">Darker UI and reduced motion for a lower-noise experience.</div>
+            <div className="p">Turns down visual noise without changing what the app can do.</div>
           </div>
         </label>
 
@@ -47,9 +64,9 @@ export function Settings() {
             onChange={actions.toggleTinFoil}
           />
           <div className="stack" style={{ gap: 2 }}>
-            <div>Tin Foil Hat Mode</div>
+            <div>Tinfoil Hat</div>
             <div className="p">
-              Privacy mode. Blocks cloud assist calls, keeps local sidekicks/tools active, and hides embed-style content.
+              Blocks cloud assist calls, keeps local sidekicks and tools active, and hides embed-style content.
             </div>
           </div>
         </label>
@@ -93,8 +110,52 @@ export function Settings() {
         <hr className="sep" />
 
         <div className="card stack" style={{ padding: 14 }}>
+          <h3 className="h2">Modes right now</h3>
+          <div className="stack" style={{ gap: 10 }}>
+            <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
+              <strong>Support profile</strong>
+              <span className="badge">{supportProfile.label}</span>
+            </div>
+            <div className="mini">
+              Daily check-ins move the app through baseline, medium, gentle, and high support. Higher support shortens
+              sprint suggestions, lowers the daily cap, and speeds up nudges. High support auto-enables Shades and
+              reduced motion.
+            </div>
+            <div className="mini">
+              {supportProfile.description}
+            </div>
+            <div className="mini">
+              Suggested sprint: {supportProfile.focusMinutesDefault} minutes. Daily cap: {supportProfile.dailyTaskCap} core task{supportProfile.dailyTaskCap === 1 ? "" : "s"}.
+            </div>
+            <div className="mini">
+              Shades changes the presentation. Low Stim lowers the visual noise. Tinfoil Hat blocks cloud assist calls and keeps support local.
+            </div>
+            <div className="support-scale-list">
+              {supportScale.map((item) => (
+                <div
+                  key={item.level}
+                  className={`support-scale-item ${item.level === supportProfile.level ? "is-active" : ""}`}
+                >
+                  <div className="row" style={{ justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+                    <strong>{item.label}</strong>
+                    <span className="badge">{item.rangeLabel}</span>
+                  </div>
+                  <div className="mini">{item.description}</div>
+                  <div className="mini">
+                    Sprint {item.focusMinutesDefault} min • Daily cap {item.dailyTaskCap} • Nudges {formatNudgeCadence(item.nudgeIntervalSeconds)}
+                    {item.autoEnableShades ? " • Auto calmer on" : ""}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <hr className="sep" />
+
+        <div className="card stack" style={{ padding: 14 }}>
           <h3 className="h2">Loop guard</h3>
-          <p className="p">If you are spiraling in chat, this gives you a gentle pause prompt.</p>
+          <p className="p">If you start running in circles in chat, this adds a gentle pause prompt.</p>
 
           <label className="row">
             <input

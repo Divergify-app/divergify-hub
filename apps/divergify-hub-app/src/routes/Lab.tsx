@@ -118,11 +118,11 @@ export function Lab() {
         shopping: result.data.shopping ?? [],
         notes: result.data.notes ?? []
       });
-      setSortNotice("AI assist complete.");
+      setSortNotice("Assisted sort complete.");
       return;
     }
     setSorted(sortBrainDump(text));
-    setSortNotice(`AI unavailable, local sorter used. ${result.error}`);
+    setSortNotice(`Assisted sort unavailable, local sort used. ${result.error}`);
   };
 
   return (
@@ -130,7 +130,7 @@ export function Lab() {
       <div className="card stack">
         <div className="badge">The Lab</div>
         <h2 className="h2">Tools that make time and thoughts behave.</h2>
-        <p className="p">Local-only tools. No external AI calls required.</p>
+        <p className="p">Runs locally first. Extra help is optional, never required.</p>
       </div>
 
       <div className="row" style={{ alignItems: "stretch", flexWrap: "wrap" }}>
@@ -206,7 +206,7 @@ export function Lab() {
             </button>
             {!data.preferences.tinFoil ? (
               <button className="btn" onClick={() => void runAiSorter()} disabled={!brainDump.trim()}>
-                AI Assist
+                Extra help
               </button>
             ) : null}
           </div>

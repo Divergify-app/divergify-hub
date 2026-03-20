@@ -1,12 +1,17 @@
 # Divergify Hub
 
-This repo is for the Divergify app and is the deploy target for divergify.app.
+This repo is the active workspace for the Divergify app product.
 
-Important:
-- The website repo inside `active-site/` is NOT committed here.
-- This repo will contain the app source in `apps/divergify-hub-app/`.
+It is not the live `divergify.app` website deploy target. The live website source lives in:
 
-Deploy:
-- Point Netlify at this repo root (or set base dir to `apps/divergify-hub-app`).
-- Build: `npm ci && npm run build`
-- Publish: `apps/divergify-hub-app/dist` (or `dist` if base dir is set).
+- `/home/jessibelle/Divergify/active/Divergify_Website`
+
+Use this repo for:
+
+- app source in `apps/divergify-hub-app`
+- product docs and planning
+- app-facing support files that belong with the hub
+
+For the current active/repo inventory, use:
+
+- `/home/jessibelle/Divergify/ACTIVE_SURFACES.md`

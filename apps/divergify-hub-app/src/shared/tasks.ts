@@ -107,9 +107,9 @@ export function countByView(tasks: Task[], today: string) {
 }
 
 export function recommendedDailyTaskCap(overwhelm: number): number {
-  if (overwhelm >= 80) return 2;
-  if (overwhelm >= 60) return 3;
-  if (overwhelm >= 35) return 5;
+  if (overwhelm >= 75) return 2;
+  if (overwhelm >= 50) return 3;
+  if (overwhelm >= 25) return 5;
   return 7;
 }
 
@@ -127,4 +127,10 @@ export function priorityLabel(priority: TaskPriority): string {
   if (priority === 2) return "P2";
   if (priority === 3) return "P3";
   return "P4";
+}
+
+export function checklistProgress(task: Task) {
+  const total = task.checklist.length;
+  const done = task.checklist.filter((item) => item.done).length;
+  return { done, total };
 }

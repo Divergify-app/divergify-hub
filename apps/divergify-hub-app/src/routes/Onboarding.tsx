@@ -68,6 +68,15 @@ function buildAdaptiveSteps(anchorTask: string, support: ReturnType<typeof mapOv
     ];
   }
 
+  if (support === "medium") {
+    return [
+      `Write the smallest useful definition of done for "${task}".`,
+      `Run one 10-minute starter sprint.`,
+      `Remove one obvious blocker before you expand scope.`,
+      `Run one 15-minute follow-up sprint and stop cleanly.`
+    ];
+  }
+
   return [
     `Define the single outcome for "${task}".`,
     `Run one 15-minute sprint and capture progress.`,
@@ -141,10 +150,10 @@ export function Onboarding() {
     scaffoldSteps.forEach((stepTitle, index) => {
       actions.addTask({
         title: stepTitle,
-        project: "Scaffold",
+        project: "Starter Plan",
         priority: index < 2 ? 2 : 3,
         dueDate: index < 2 ? today : addDays(today, 1),
-        tags: ["scaffold", "onboarding"],
+        tags: ["starter-plan", "onboarding"],
         recurrence: "none"
       });
     });
@@ -158,8 +167,8 @@ export function Onboarding() {
     }
 
     actions.setHasOnboarded(true);
-    actions.setHasCompletedKickoff(false);
-    nav("/kickoff", { replace: true });
+    actions.setHasCompletedKickoff(true);
+    nav("/", { replace: true });
   };
 
   return (
@@ -174,6 +183,11 @@ export function Onboarding() {
           We will learn what you need, tune your support level, create your anchor task,
           and hand you a clear next step.
         </p>
+        <div className="onboarding-pill-row">
+          <span className="topbar-meta-pill">Task-first planner</span>
+          <span className="topbar-meta-pill">Adaptive support</span>
+          <span className="topbar-meta-pill">Local-first privacy</span>
+        </div>
 
         {step === 0 ? (
           <div className="stack">
@@ -229,6 +243,10 @@ export function Onboarding() {
                   </button>
                 ))}
               </div>
+              <div className="notice">
+                <strong>{activeSidekick.name}</strong> • {activeSidekick.role}
+                <div className="mini" style={{ marginTop: 6 }}>{activeSidekick.description}</div>
+              </div>
             </div>
 
             <div className="field">
@@ -275,7 +293,13 @@ export function Onboarding() {
             <div className="notice">
               Support mode:{" "}
               <strong>
-                {supportLevel === "overloaded" ? "High support" : supportLevel === "gentle" ? "Gentle support" : "Baseline"}
+                {supportLevel === "overloaded"
+                  ? "High support"
+                  : supportLevel === "gentle"
+                    ? "Gentle support"
+                    : supportLevel === "medium"
+                      ? "Medium support"
+                      : "Baseline"}
               </strong>
             </div>
 
@@ -289,7 +313,7 @@ export function Onboarding() {
         {step === 2 ? (
           <div className="stack">
             <h3 className="h2">Choose your anchor task</h3>
-            <p className="p">You can pick a common starter or write your own. We will auto-scaffold it.</p>
+            <p className="p">You can pick a common starter or write your own. We will turn it into a small starter plan.</p>
 
             <div className="field">
               <label className="label">Common starters</label>
@@ -330,7 +354,7 @@ export function Onboarding() {
 
             <div className="card stack" style={{ padding: 14 }}>
               <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
-                <strong>Adaptive scaffold preview</strong>
+                <strong>Starter plan preview</strong>
                 <span className="badge">{supportLevel}</span>
               </div>
               {scaffoldSteps.length > 0 ? (
@@ -340,7 +364,7 @@ export function Onboarding() {
                   ))}
                 </ol>
               ) : (
-                <p className="p">Enter a main task to generate your first scaffold.</p>
+                <p className="p">Enter a main task to generate your first starter plan.</p>
               )}
             </div>
 
@@ -367,18 +391,18 @@ export function Onboarding() {
             <label className="row">
               <input type="checkbox" checked={data.preferences.tinFoil} onChange={actions.toggleTinFoil} />
               <div className="stack" style={{ gap: 2 }}>
-                <div>Tin Foil Hat (privacy)</div>
-                <div className="p">Disables integrations and external embed-style content.</div>
+                <div>Tinfoil Hat</div>
+                <div className="p">Blocks cloud assist features and keeps the session local-only.</div>
               </div>
             </label>
 
             <div className="card stack" style={{ padding: 14 }}>
               <strong>How the app works next</strong>
               <ol className="guide-list">
-                <li>Kickoff screen confirms your setup and first actions.</li>
-                <li>Today screen gives one clear next step.</li>
-                <li>Tasks planner lets you prioritize/schedule/repeat work.</li>
-                <li>Focus runs execution sprints on your anchor task.</li>
+                <li>The dashboard opens straight into your real task system.</li>
+                <li>The daily check-in tunes support after the shell loads.</li>
+                <li>The planner keeps smart views and project lanes visible.</li>
+                <li>Focus, habits, sidekicks, and Magic Tasks stay one tap away.</li>
               </ol>
             </div>
 

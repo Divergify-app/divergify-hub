@@ -1,5 +1,0 @@
-create table if not exists users ( id uuid primary key, created_at timestamptz default now());
-create table if not exists prefs ( user_id uuid primary key references users(id) on delete cascade, persona text, privacy_mode boolean default false, nudge_intensity int default 1 );
-create table if not exists tasks ( id uuid primary key, user_id uuid references users(id) on delete cascade, title text not null, notes text, tags text[], estimate_min int, due_at timestamptz, status text check (status in ('open','done','archived')) default 'open', weights jsonb, created_at timestamptz default now(), updated_at timestamptz default now());
-create table if not exists checkins ( id uuid primary key, user_id uuid references users(id) on delete cascade, mood int, energy int, notes text, created_at timestamptz default now());
-alter table tasks enable row level security; create policy if not exists "own-tasks" on tasks for all using (auth.uid() = user_id) with check (auth.uid() = user_id);

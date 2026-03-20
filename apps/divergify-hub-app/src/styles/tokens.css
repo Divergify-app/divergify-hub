@@ -1,15 +1,25 @@
 :root {
-  --bg: #232147;
-  --panel: #1B1938;
-  --text: #F9EED2;
-  --muted: #918FA2;
-  --accent: #CDA977;
+  --bg: #090d1f;
+  --bg-deep: #050712;
+  --panel: rgba(23, 28, 67, 0.82);
+  --panel-strong: #1e2558;
+  --panel-soft: rgba(255, 255, 255, 0.05);
+  --text: #fbf1da;
+  --muted: #b9c0d5;
+  --accent: #e2c483;
+  --accent-strong: #f4deb1;
+  --success: #6fae86;
+  --brand-indigo: #17193f;
+  --brand-indigo-soft: #24275f;
+  --brand-gold: #e2c483;
+  --brand-lilac: #cec2ff;
+  --brand-line: rgba(248, 229, 196, 0.9);
 
-  --border: rgba(249, 238, 210, 0.18);
-  --border-strong: rgba(249, 238, 210, 0.26);
+  --border: rgba(251, 241, 218, 0.12);
+  --border-strong: rgba(251, 241, 218, 0.26);
 
-  --radius: 16px;
-  --radius-sm: 12px;
+  --radius: 22px;
+  --radius-sm: 14px;
 
   --space-1: 6px;
   --space-2: 10px;
@@ -18,34 +28,40 @@
   --space-5: 20px;
   --space-6: 28px;
 
-  --max: 980px;
+  --max: 1400px;
+  --nav-width: 286px;
 
   --font: "Avenir Next", "Avenir", "Trebuchet MS", "Gill Sans", "Tahoma", sans-serif;
+  --font-display: "Trebuchet MS", "Avenir Next", "Gill Sans", "Tahoma", sans-serif;
   --line: 1.45;
 
-  --focus-ring: 2px solid rgba(205, 169, 119, 0.7);
+  --focus-ring: 2px solid rgba(226, 196, 131, 0.82);
+  --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.42);
+  --glow-soft: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 18px 46px rgba(8, 10, 28, 0.42);
 
-  /* user adjustable */
   --scale: 1;
 }
 
 :root[data-mode="shades"] {
-  --bg: #151426;
-  --panel: #1B192D;
-  --text: #C8C6D1;
-  --muted: #5E5C6B;
-  --accent: #8C7A5E;
-  --border: rgba(200, 198, 209, 0.16);
-  --border-strong: rgba(200, 198, 209, 0.22);
+  --bg: #0d1019;
+  --bg-deep: #070910;
+  --panel: rgba(18, 21, 31, 0.92);
+  --panel-strong: #171b28;
+  --panel-soft: rgba(255, 255, 255, 0.03);
+  --text: #d9dde6;
+  --muted: #8e97aa;
+  --accent: #bca27a;
+  --accent-strong: #d6b98d;
+  --border: rgba(217, 221, 230, 0.12);
+  --border-strong: rgba(217, 221, 230, 0.2);
+  --brand-line: rgba(217, 221, 230, 0.72);
 }
 
 :root[data-privacy="tinfoil"] {
-  /* keep brand colors; just alter emphasis slightly */
   --border-strong: rgba(255, 255, 255, 0.34);
 }
 
 :root.state-overloaded {
-  --border: rgba(200, 198, 209, 0.14);
-  --border-strong: rgba(200, 198, 209, 0.2);
-  --accent: #8C7A5E;
+  --accent: #b9936a;
+  --accent-strong: #d6b086;
 }

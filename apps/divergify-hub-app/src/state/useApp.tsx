@@ -30,13 +30,19 @@ type Actions = {
     title: string;
     notes?: string;
     dueDate?: string;
+    startAt?: string;
+    location?: string;
     tags?: string[];
     project?: string;
     priority?: TaskPriority;
     recurrence?: TaskRecurrence;
     estimateMinutes?: number;
-  }) => void;
+  }) => string | null;
   updateTask: (id: string, patch: Partial<Omit<Task, "id">>) => void;
+  addTaskChecklistItem: (taskId: string, text: string) => void;
+  toggleTaskChecklistItem: (taskId: string, itemId: string) => void;
+  updateTaskChecklistItem: (taskId: string, itemId: string, text: string) => void;
+  deleteTaskChecklistItem: (taskId: string, itemId: string) => void;
   toggleTaskDone: (id: string) => void;
   deleteTask: (id: string) => void;
 
@@ -137,12 +143,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           preferences: { ...d.preferences, tinFoil: !d.preferences.tinFoil }
         })),
 
-      addTask: ({ title, notes, dueDate, tags, project, priority, recurrence, estimateMinutes }) => {
+      addTask: ({ title, notes, dueDate, startAt, location, tags, project, priority, recurrence, estimateMinutes }) => {
         const t: Task = {
           id: uid(),
           title: title.trim(),
           notes: notes?.trim() || undefined,
           dueDate: dueDate || undefined,
+          startAt: startAt || undefined,
+          location: location?.trim() || undefined,
           project: project?.trim() || "Inbox",
           priority: priority ?? 3,
           recurrence: recurrence ?? "none",
@@ -151,19 +159,89 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
               ? Math.round(estimateMinutes)
               : undefined,
           tags: (tags ?? []).map((x) => x.trim()).filter(Boolean),
+          checklist: [],
           done: false,
           completedAt: undefined,
           createdAt: nowIso(),
           updatedAt: nowIso()
         };
-        if (!t.title) return;
+        if (!t.title) return null;
         setData((d) => ({ ...d, tasks: [t, ...d.tasks] }));
+        return t.id;
       },
 
       updateTask: (id, patch) => {
         setData((d) => ({
           ...d,
           tasks: d.tasks.map((t) => (t.id === id ? { ...t, ...patch, updatedAt: nowIso() } : t))
+        }));
+      },
+
+      addTaskChecklistItem: (taskId, text) => {
+        const cleanText = text.trim();
+        if (!cleanText) return;
+        setData((d) => ({
+          ...d,
+          tasks: d.tasks.map((task) =>
+            task.id === taskId
+              ? {
+                  ...task,
+                  checklist: [...task.checklist, { id: uid(), text: cleanText, done: false }],
+                  updatedAt: nowIso()
+                }
+              : task
+          )
+        }));
+      },
+
+      toggleTaskChecklistItem: (taskId, itemId) => {
+        setData((d) => ({
+          ...d,
+          tasks: d.tasks.map((task) =>
+            task.id === taskId
+              ? {
+                  ...task,
+                  checklist: task.checklist.map((item) =>
+                    item.id === itemId ? { ...item, done: !item.done } : item
+                  ),
+                  updatedAt: nowIso()
+                }
+              : task
+          )
+        }));
+      },
+
+      updateTaskChecklistItem: (taskId, itemId, text) => {
+        const cleanText = text.trim();
+        if (!cleanText) return;
+        setData((d) => ({
+          ...d,
+          tasks: d.tasks.map((task) =>
+            task.id === taskId
+              ? {
+                  ...task,
+                  checklist: task.checklist.map((item) =>
+                    item.id === itemId ? { ...item, text: cleanText } : item
+                  ),
+                  updatedAt: nowIso()
+                }
+              : task
+          )
+        }));
+      },
+
+      deleteTaskChecklistItem: (taskId, itemId) => {
+        setData((d) => ({
+          ...d,
+          tasks: d.tasks.map((task) =>
+            task.id === taskId
+              ? {
+                  ...task,
+                  checklist: task.checklist.filter((item) => item.id !== itemId),
+                  updatedAt: nowIso()
+                }
+              : task
+          )
         }));
       },
 
@@ -190,6 +268,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
               next.unshift({
                 ...task,
                 id: uid(),
+                checklist: task.checklist.map((item) => ({ ...item, done: false })),
                 done: false,
                 completedAt: undefined,
                 dueDate: nextDueDateForRecurrence(task.recurrence, task.dueDate, todayISO()),

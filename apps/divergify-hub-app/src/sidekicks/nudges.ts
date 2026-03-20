@@ -7,6 +7,11 @@ const BASE_NUDGES: Record<SupportLevel, string[]> = {
     "Only this step exists right now.",
     "Half speed is still forward."
   ],
+  medium: [
+    "Keep the target narrow and the pace steady.",
+    "Finish this chunk before you renegotiate the day.",
+    "Clean progress is enough."
+  ],
   gentle: [
     "Keep the scope tiny and steady.",
     "You are building momentum, not proving worth.",

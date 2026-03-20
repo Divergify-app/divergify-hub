@@ -1,4 +1,4 @@
-import type { AppData, Task, TaskPriority, TaskRecurrence } from "./types";
+import type { AppData, Task, TaskChecklistItem, TaskPriority, TaskRecurrence } from "./types";
 import { nowIso, uid } from "../shared/utils";
 
 const KEY = "divergify:app:v1";
@@ -53,11 +53,28 @@ function normalizeTask(value: unknown): Task | null {
   if (!value || typeof value !== "object") return null;
   const task = value as Partial<Task>;
   if (!task.id || !task.title) return null;
+  const checklist = Array.isArray(task.checklist)
+    ? task.checklist
+        .map((item) => {
+          if (!item || typeof item !== "object") return null;
+          const candidate = item as Partial<TaskChecklistItem>;
+          if (!candidate.id || !candidate.text) return null;
+          return {
+            id: String(candidate.id),
+            text: String(candidate.text).trim(),
+            done: Boolean(candidate.done)
+          };
+        })
+        .filter((item): item is TaskChecklistItem => item !== null && Boolean(item.text))
+        .slice(0, 32)
+    : [];
   return {
     id: task.id,
     title: task.title,
     notes: task.notes?.trim() || undefined,
     dueDate: task.dueDate || undefined,
+    startAt: typeof task.startAt === "string" ? task.startAt : undefined,
+    location: task.location?.trim() || undefined,
     project: task.project?.trim() || "Inbox",
     priority: normalizePriority(task.priority),
     recurrence: normalizeRecurrence(task.recurrence),
@@ -66,6 +83,7 @@ function normalizeTask(value: unknown): Task | null {
         ? Math.round(task.estimateMinutes)
         : undefined,
     tags: Array.isArray(task.tags) ? task.tags.map((tag) => String(tag).trim()).filter(Boolean).slice(0, 10) : [],
+    checklist,
     done: Boolean(task.done),
     completedAt: task.completedAt || undefined,
     createdAt: task.createdAt || nowIso(),
@@ -88,7 +106,9 @@ export function loadData(): AppData | null {
       ...parsed.preferences,
       lowStim: Boolean(parsed.preferences?.lowStim)
     };
-    parsed.hasCompletedKickoff = Boolean((parsed as Partial<AppData>).hasCompletedKickoff);
+    parsed.hasCompletedKickoff = parsed.hasOnboarded
+      ? true
+      : Boolean((parsed as Partial<AppData>).hasCompletedKickoff);
     parsed.onboardingProfile =
       parsed.onboardingProfile && typeof parsed.onboardingProfile === "object"
         ? {

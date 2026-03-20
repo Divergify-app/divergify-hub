@@ -11,22 +11,34 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["icon.svg"],
+      includeAssets: ["icon.svg", "icon-192.png", "icon-512.png", "apple-touch-icon.png"],
       manifest: {
         name: "Divergify",
         short_name: "Divergify",
-        description: "A bridge between outdated systems and future-forward brains.",
+        description: "Adaptive task planning with local-first support, focus, habits, and private guidance.",
         start_url: base,
         scope: base,
         display: "standalone",
-        background_color: "#00466C",
-        theme_color: "#00466C",
+        background_color: "#17193f",
+        theme_color: "#17193f",
         icons: [
           {
-            src: "icon.svg",
-            sizes: "any",
-            type: "image/svg+xml",
-            purpose: "any maskable"
+            src: "icon-192.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "any"
+          },
+          {
+            src: "icon-512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any"
+          },
+          {
+            src: "icon-512-maskable.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable"
           }
         ]
       }
