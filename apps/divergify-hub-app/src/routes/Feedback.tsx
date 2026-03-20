@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const SUPPORT_EMAIL = "chaoscontrol@divergify.app";
 const PRIVACY_URL = "https://divergify.app/privacy.html";
-const CONTACT_URL = "https://divergify.app/contact.html";
+const CONTACT_URL = "https://divergify.app/contact";
 
 export function Feedback() {
   return (
