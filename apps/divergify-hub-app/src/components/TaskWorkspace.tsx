@@ -38,9 +38,12 @@ type TaskSectionProps = {
 };
 
 type TaskDetailProps = {
+  mode: WorkspaceMode;
   task: Task | null;
+  anchorTask: Task | null;
   today: string;
   projectOptions: string[];
+  onSelectTask: (taskId: string) => void;
   onToggleDone: (taskId: string) => void;
   onDelete: (taskId: string) => void;
   onOpenFocus: (taskId: string) => void;
@@ -232,7 +235,20 @@ function TaskChecklistEditor({ task }: { task: Task }) {
 }
 
 function TaskDetail(props: TaskDetailProps) {
-  const { task, today, projectOptions, onToggleDone, onDelete, onOpenFocus, onBreakDown, onAskSidekick, sidekickBusy } = props;
+  const {
+    mode,
+    task,
+    anchorTask,
+    today,
+    projectOptions,
+    onSelectTask,
+    onToggleDone,
+    onDelete,
+    onOpenFocus,
+    onBreakDown,
+    onAskSidekick,
+    sidekickBusy
+  } = props;
   const { actions } = useApp();
   const [tagText, setTagText] = useState("");
 
@@ -243,12 +259,42 @@ function TaskDetail(props: TaskDetailProps) {
   if (!task) {
     return (
       <section className="workspace-card stack">
-        <div className="badge">Task detail</div>
-        <h3 className="h2">Pick a task to edit the details.</h3>
+        <div className="badge">{mode === "today" ? "Start here" : "Task detail"}</div>
+        <h3 className="h2">
+          {mode === "today" ? "You do not need to open the full editor first." : "Pick a task to edit the details."}
+        </h3>
         <p className="p">
-          Divergify keeps the list visible and the task editor close, so you do not lose the thread every time you need
-          to adjust the plan.
+          {mode === "today"
+            ? "Start with the anchor or one due-now task. Open the editor only when you actually need to change the plan."
+            : "Divergify keeps the list visible and the task editor close, so you do not lose the thread every time you need to adjust the plan."}
         </p>
+        {mode === "today" ? (
+          <>
+            <ol className="guide-list">
+              <li>Pick the anchor task or the first due-now task.</li>
+              <li>Use Focus or Ask sidekick if you need help starting.</li>
+              <li>Use Brain Dump if your head is louder than the list.</li>
+            </ol>
+            <div className="row" style={{ flexWrap: "wrap" }}>
+              {anchorTask ? (
+                <button className="btn primary" onClick={() => onSelectTask(anchorTask.id)}>
+                  Select anchor task
+                </button>
+              ) : null}
+              {anchorTask ? (
+                <button className="btn" onClick={() => onOpenFocus(anchorTask.id)}>
+                  Focus on anchor
+                </button>
+              ) : null}
+              <button className="btn" onClick={() => onAskSidekick(anchorTask ?? null)} disabled={sidekickBusy}>
+                {sidekickBusy ? "Asking..." : "Ask sidekick"}
+              </button>
+              <Link to="/brain-dump" className="btn" style={{ textDecoration: "none" }}>
+                Brain dump
+              </Link>
+            </div>
+          </>
+        ) : null}
       </section>
     );
   }
@@ -545,8 +591,12 @@ export function TaskWorkspace(props: { mode: WorkspaceMode; onOpenCheckIn: () =>
 
   useEffect(() => {
     if (selectedTaskId && selectableTasks.some((task) => task.id === selectedTaskId)) return;
+    if (mode === "today") {
+      setSelectedTaskId("");
+      return;
+    }
     setSelectedTaskId(selectableTasks[0]?.id ?? "");
-  }, [selectableTasks, selectedTaskId]);
+  }, [mode, selectableTasks, selectedTaskId]);
 
   const addTask = () => {
     const cleanTitle = title.trim();
@@ -855,9 +905,12 @@ export function TaskWorkspace(props: { mode: WorkspaceMode; onOpenCheckIn: () =>
 
           <div className="stack">
             <TaskDetail
+              mode={mode}
               task={selectedTask}
+              anchorTask={anchorTask ?? null}
               today={today}
               projectOptions={projectOptions}
+              onSelectTask={setSelectedTaskId}
               onToggleDone={actions.toggleTaskDone}
               onDelete={actions.deleteTask}
               onOpenFocus={openFocus}
@@ -1028,9 +1081,12 @@ export function TaskWorkspace(props: { mode: WorkspaceMode; onOpenCheckIn: () =>
 
           <div className="stack">
             <TaskDetail
+              mode={mode}
               task={selectedTask}
+              anchorTask={anchorTask ?? null}
               today={today}
               projectOptions={projectOptions}
+              onSelectTask={setSelectedTaskId}
               onToggleDone={actions.toggleTaskDone}
               onDelete={actions.deleteTask}
               onOpenFocus={openFocus}
