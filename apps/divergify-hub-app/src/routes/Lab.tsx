@@ -1,79 +1,7 @@
 import { useMemo, useState } from "react";
 import { useApp } from "../state/useApp";
 import { sortWithAi } from "../shared/aiClient";
-
-type SortBuckets = {
-  tasks: string[];
-  shopping: string[];
-  notes: string[];
-};
-
-const SHOPPING_KEYWORDS = [
-  "milk",
-  "eggs",
-  "bread",
-  "coffee",
-  "butter",
-  "cheese",
-  "banana",
-  "apples",
-  "chicken",
-  "rice",
-  "toilet paper",
-  "paper towels"
-];
-
-const TASK_VERBS = [
-  "call",
-  "email",
-  "schedule",
-  "pay",
-  "clean",
-  "fix",
-  "send",
-  "make",
-  "book",
-  "cancel",
-  "reply",
-  "write"
-];
-
-function parseItems(text: string) {
-  return text
-    .split(/[,\n]+/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-function isShoppingItem(item: string) {
-  const lower = item.toLowerCase();
-  return SHOPPING_KEYWORDS.some((keyword) => lower.includes(keyword));
-}
-
-function isTaskItem(item: string) {
-  const lower = item.toLowerCase();
-  return TASK_VERBS.some((verb) => {
-    if (lower === verb) return true;
-    if (lower.startsWith(`${verb} `)) return true;
-    return lower.includes(` ${verb} `);
-  });
-}
-
-function sortBrainDump(text: string): SortBuckets {
-  const buckets: SortBuckets = { tasks: [], shopping: [], notes: [] };
-  parseItems(text).forEach((item) => {
-    if (isShoppingItem(item)) {
-      buckets.shopping.push(item);
-      return;
-    }
-    if (isTaskItem(item)) {
-      buckets.tasks.push(item);
-      return;
-    }
-    buckets.notes.push(item);
-  });
-  return buckets;
-}
+import { sortBrainDumpLocally, type BrainDumpBuckets } from "../shared/brainDump";
 
 function timeToMinutes(value: string) {
   const [hour, minute] = value.split(":").map(Number);
@@ -93,7 +21,7 @@ export function Lab() {
   const [travelMinutes, setTravelMinutes] = useState(30);
   const [bufferMinutes, setBufferMinutes] = useState(15);
   const [brainDump, setBrainDump] = useState("");
-  const [sorted, setSorted] = useState<SortBuckets | null>(null);
+  const [sorted, setSorted] = useState<BrainDumpBuckets | null>(null);
   const [sortNotice, setSortNotice] = useState("");
 
   const actAt = useMemo(() => {
@@ -105,7 +33,7 @@ export function Lab() {
 
   const runSorter = () => {
     setSortNotice("");
-    setSorted(sortBrainDump(brainDump));
+    setSorted(sortBrainDumpLocally(brainDump));
   };
 
   const runAiSorter = async () => {
@@ -114,14 +42,14 @@ export function Lab() {
     const result = await sortWithAi(text, { tinFoilHat: data.preferences.tinFoil });
     if (result.ok) {
       setSorted({
-        tasks: result.data.tasks ?? [],
-        shopping: result.data.shopping ?? [],
+        now: result.data.now ?? [],
+        later: result.data.later ?? [],
         notes: result.data.notes ?? []
       });
       setSortNotice("Assisted sort complete.");
       return;
     }
-    setSorted(sortBrainDump(text));
+    setSorted(sortBrainDumpLocally(text));
     setSortNotice(`Assisted sort unavailable, local sort used. ${result.error}`);
   };
 
@@ -215,12 +143,12 @@ export function Lab() {
 
           <div className="panel stack" style={{ padding: "12px" }}>
             <div>
-              <strong>Tasks</strong>
-              <div className="mini">{sorted ? (sorted.tasks.length ? sorted.tasks.join(", ") : "None") : "Sorted output appears here."}</div>
+              <strong>Do now</strong>
+              <div className="mini">{sorted ? (sorted.now.length ? sorted.now.join(", ") : "None") : "Sorted output appears here."}</div>
             </div>
             <div>
-              <strong>Shopping</strong>
-              <div className="mini">{sorted ? (sorted.shopping.length ? sorted.shopping.join(", ") : "None") : "Sorted output appears here."}</div>
+              <strong>Park for later</strong>
+              <div className="mini">{sorted ? (sorted.later.length ? sorted.later.join(", ") : "None") : "None"}</div>
             </div>
             <div>
               <strong>Notes parked</strong>

@@ -20,7 +20,7 @@ function pickOne<T>(arr: T[]): T | null {
 }
 
 function humorLine(h: "neutral" | "light" | "sarcastic_supportive") {
-  if (h === "sarcastic_supportive") return "Your brain just tried to open 12 tabs. We are closing 11.";
+  if (h === "sarcastic_supportive") return "Your brain opened 12 tabs again. We are working with one.";
   if (h === "light") return "We do this small. Small works.";
   return "";
 }
@@ -86,13 +86,14 @@ function replyWrapUp(data: AppData, supportLevel: SupportLevel) {
 function replyTakota(message: string, data: AppData, supportLevel: SupportLevel) {
   const ctx = summarizeContext(data);
   const h = humorLine(data.preferences.humor);
+  const sarcasmAllowed = data.preferences.humor === "sarcastic_supportive";
 
   if (containsAny(message, ["overwhelm", "overwhelmed", "panic", "spinning", "too much", "cant", "can't"])) {
     return [
       supportLead(supportLevel),
       "",
-      "Okay. We are not fixing your whole life today.",
-      h ? h : "",
+      sarcasmAllowed ? "Okay. We are not solving your entire existence before lunch." : "Okay. We are not fixing your whole life today.",
+      h || "",
       "",
       "Pick one:",
       `- Option A: do the easiest ${stepSeconds(supportLevel)} seconds.`,
@@ -109,7 +110,7 @@ function replyTakota(message: string, data: AppData, supportLevel: SupportLevel)
     return [
       supportLead(supportLevel),
       "",
-      "Plan, but make it usable.",
+      sarcasmAllowed ? "Plan, but an actual usable plan. Not a decorative fantasy spreadsheet." : "Plan, but make it usable.",
       "",
       "Two-step plan:",
       "1) Pick ONE outcome for the next 25 minutes.",
@@ -126,7 +127,7 @@ function replyTakota(message: string, data: AppData, supportLevel: SupportLevel)
     return [
       supportLead(supportLevel),
       "",
-      "Habits are not a morality contest.",
+      sarcasmAllowed ? "Habits are not a morality contest. You do not get bonus points for suffering." : "Habits are not a morality contest.",
       "",
       "Make it smaller until it is easy on a bad day.",
       "If you want, write a cue and a tiny version.",
@@ -141,7 +142,7 @@ function replyTakota(message: string, data: AppData, supportLevel: SupportLevel)
     return [
       supportLead(supportLevel),
       "",
-      "We can do focus. We can also stop.",
+      sarcasmAllowed ? "We can do focus. We do not need to make it dramatic." : "We can do focus. We can also stop.",
       "",
       "Rule: one target, one timer, no side quests.",
       microStepPrompt("Go to Focus, pick a task, start one sprint.", supportLevel),
@@ -153,8 +154,10 @@ function replyTakota(message: string, data: AppData, supportLevel: SupportLevel)
   return [
     supportLead(supportLevel),
     "",
-    "What is the smallest thing you want done in the next 10 minutes?",
-    h ? h : "",
+    sarcasmAllowed
+      ? "What is the smallest useful thing you can get done in the next 10 minutes, not the imaginary perfect version?"
+      : "What is the smallest thing you want done in the next 10 minutes?",
+    h || "",
     "",
     "If you do not know, pick one:",
     "- ship one tiny task",
@@ -255,7 +258,7 @@ function replySystems(data: AppData, supportLevel: SupportLevel) {
   return [
     supportLead(supportLevel),
     "",
-    "Systems mode: literal and predictable.",
+    "Operator mode: literal and predictable.",
     "",
     "Answer these in order:",
     "1) What is the output?",

@@ -106,6 +106,11 @@ export function Onboarding() {
   );
   const activeSidekick = getSidekick(data.activeSidekickId);
   const totalSteps = 4;
+  const stepBadge =
+    step === 0 ? "Meet your guide" :
+    step === 1 ? "Tune support" :
+    step === 2 ? "Choose anchor" :
+    "Finish setup";
 
   const next = () => setStep((value) => Math.min(totalSteps - 1, value + 1));
   const back = () => setStep((value) => Math.max(0, value - 1));
@@ -175,7 +180,7 @@ export function Onboarding() {
     <div className="stack">
       <div className="card stack">
         <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
-          <div className="badge">Onboarding</div>
+          <div className="badge">{stepBadge}</div>
           <div className="badge">Step {step + 1}/{totalSteps}</div>
         </div>
         <h2 className="h2">{activeSidekick.name} here.</h2>

@@ -324,6 +324,47 @@ textarea:disabled {
   flex-wrap: wrap;
 }
 
+.toggle-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.toggle-chip:hover {
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.toggle-chip.is-on {
+  border-color: rgba(226, 196, 131, 0.42);
+  background: linear-gradient(180deg, rgba(226, 196, 131, 0.14), rgba(206, 194, 255, 0.08));
+}
+
+.toggle-chip-state {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(6, 8, 26, 0.42);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand-cream);
+}
+
 .topbar-meta-row {
   display: flex;
   gap: 10px;
@@ -670,6 +711,75 @@ details[open] summary { margin-bottom: 8px; }
 .brain-dump-actions {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
+}
+
+.brain-bucket-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.brain-bucket {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.brain-bucket-now {
+  background: linear-gradient(180deg, rgba(226, 196, 131, 0.1), rgba(255, 255, 255, 0.02));
+}
+
+.brain-bucket-later {
+  background: linear-gradient(180deg, rgba(206, 194, 255, 0.1), rgba(255, 255, 255, 0.02));
+}
+
+.brain-bucket-notes {
+  background: linear-gradient(180deg, rgba(111, 174, 134, 0.08), rgba(255, 255, 255, 0.02));
+}
+
+.brain-sticky-list {
+  display: grid;
+  gap: 10px;
+}
+
+.brain-sticky {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 16, 48, 0.48);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.brain-sticky.selected {
+  border-color: rgba(226, 196, 131, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 12px 24px rgba(6, 8, 26, 0.18);
+}
+
+.brain-sticky-pin {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--brand-gold);
+  box-shadow: 0 0 0 4px rgba(226, 196, 131, 0.12);
+}
+
+.brain-sticky-input {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.brain-sticky-actions {
+  display: flex;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -1272,6 +1382,10 @@ body.tin-foil .takota-status-avatar {
   .brain-dump-item .btn {
     grid-column: 2;
     justify-self: flex-start;
+  }
+
+  .brain-bucket-grid {
+    grid-template-columns: 1fr;
   }
 }
 

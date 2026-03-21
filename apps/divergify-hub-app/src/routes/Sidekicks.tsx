@@ -8,8 +8,8 @@ export function Sidekicks() {
     <div className="stack">
       <div className="card stack">
         <div className="badge">Sidekicks</div>
-        <h2 className="h2">Different brains need different tools.</h2>
-        <p className="p">Pick a personality. Switch anytime. You are not locked in.</p>
+        <h2 className="h2">Pick the voice that gets you moving.</h2>
+        <p className="p">Same support brain underneath. Different delivery on top. Switch anytime without changing the rules.</p>
 
         <div className="stack">
           {SIDEKICKS.map((s) => (
@@ -32,6 +32,9 @@ export function Sidekicks() {
               </div>
               <div className="mini" style={{ marginTop: 10 }}>
                 Focus: {s.focus.join(" • ")}
+              </div>
+              <div className="mini" style={{ marginTop: 6 }}>
+                Try asking: {s.starterPrompts[0]}
               </div>
               <div className="mini" style={{ marginTop: 6 }}>
                 Boundaries: {s.boundaries.join(" • ")}

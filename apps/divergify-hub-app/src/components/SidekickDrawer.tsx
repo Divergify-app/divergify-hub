@@ -33,15 +33,15 @@ export function SidekickDrawer() {
   const inBreak = now < breakUntil;
   const overLimit = loopGuard.enabled && userMsgsLastHour >= loopGuard.softLimitPerHour && !inBreak;
 
-  const send = async () => {
-    const text = msg.trim();
-    if (!text || inBreak || isThinking) return;
+  const submitMessage = async (text: string) => {
+    const cleanText = text.trim();
+    if (!cleanText || inBreak || isThinking) return;
 
     actions.pushChat({
       id: uid(),
       role: "user",
       sidekickId: data.activeSidekickId,
-      content: text,
+      content: cleanText,
       ts: nowIso()
     });
 
@@ -49,7 +49,7 @@ export function SidekickDrawer() {
     setIsThinking(true);
     try {
       const result = await requestSidekickTurn({
-        message: text,
+        message: cleanText,
         data,
         supportLevel,
         sidekickId: data.activeSidekickId
@@ -63,6 +63,14 @@ export function SidekickDrawer() {
     } finally {
       setIsThinking(false);
     }
+  };
+
+  const send = async () => {
+    await submitMessage(msg);
+  };
+
+  const sendStarterPrompt = async (text: string) => {
+    await submitMessage(text);
   };
 
   const wrapUp = async () => {
@@ -126,15 +134,32 @@ export function SidekickDrawer() {
             <hr className="sep" />
 
             <div className="field">
-              <label className="label" htmlFor="sidekickSelect">Switch personality</label>
+              <label className="label" htmlFor="sidekickSelect">Sidekick voice</label>
               <select
                 id="sidekickSelect"
                 className="select"
                 value={data.activeSidekickId}
                 onChange={(e) => actions.setActiveSidekickId(e.target.value as any)}
               >
-                {SIDEKICKS.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                {SIDEKICKS.map((s) => <option key={s.id} value={s.id}>{s.name} • {s.role}</option>)}
               </select>
+            </div>
+
+            <div className="field">
+              <label className="label">Try one</label>
+              <div className="row" style={{ flexWrap: "wrap" }}>
+                {sidekick.starterPrompts.map((prompt) => (
+                  <button
+                    key={prompt}
+                    className="btn"
+                    onClick={() => void sendStarterPrompt(prompt)}
+                    disabled={inBreak || isThinking}
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+              <div className="mini">One tap to start the conversation with something useful instead of a blank box.</div>
             </div>
 
             {data.preferences.tinFoil ? (
@@ -186,7 +211,7 @@ export function SidekickDrawer() {
                 className="textarea"
                 value={msg}
                 onChange={(e) => setMsg(e.target.value)}
-                placeholder="Example: I am stuck. What is the smallest next step?"
+                placeholder={`Example: ${sidekick.starterPrompts[0]}`}
               />
               <div className="mini">Press Send. Then do one real-world step. This is not an infinite chat pit.</div>
             </div>

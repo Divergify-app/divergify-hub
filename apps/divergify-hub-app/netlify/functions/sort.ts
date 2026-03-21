@@ -23,11 +23,11 @@ export const handler: Handler = async (event) => {
     const body = parseBody(event, sortRequestSchema);
     const result = await runStructuredJson({
       systemPrompt: [
-        "You sort a messy brain dump into three buckets for a productivity app.",
-        "Return JSON only with keys: tasks, shopping, notes.",
-        "Move actionable task-sized items into tasks.",
-        "Move purchasable items into shopping.",
-        "Keep reminders, ideas, or context notes in notes.",
+        "You sort a messy brain dump into three buckets for a neurodivergent productivity app.",
+        "Return JSON only with keys: now, later, notes.",
+        "Move actionable items that likely need attention today or soon into now.",
+        "Move actionable items that can be parked, scheduled later, or revisited into later.",
+        "Keep reminders, ideas, reference material, and non-actionable context in notes.",
         "Do not invent content and do not duplicate items across buckets."
       ].join("\n"),
       userPayload: {

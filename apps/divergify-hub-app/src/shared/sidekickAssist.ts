@@ -41,6 +41,7 @@ export async function requestSidekickTurn(input: Input): Promise<Result> {
       description: sidekick.description,
       style: sidekick.style,
       boundaries: sidekick.boundaries,
+      promptOverlay: sidekick.promptOverlay,
       supportLevel: input.supportLevel,
       message: input.message,
       context: {

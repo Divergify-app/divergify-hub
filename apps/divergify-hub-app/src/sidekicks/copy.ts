@@ -50,7 +50,8 @@ const OVERRIDES: Partial<Record<SidekickId, Partial<PersonaCopy>>> = {
   takota: {
     tasksSub: "Keep it small and honest. Two minutes counts.",
     focusHeading: "Timebox the noise.",
-    focusSub: "Pick one target. Run one timer. Stop on purpose."
+    focusSub: "Pick one target. Run one timer. No fake urgency, no side quests.",
+    todayProgressNote: "Progress counts. Drama does not. Keep the next step honest."
   },
   scholar: {
     tasksHeading: "Define done. Then do the first step.",
@@ -89,7 +90,7 @@ const OVERRIDES: Partial<Record<SidekickId, Partial<PersonaCopy>>> = {
     focusDoneNotice: "Sprint complete. Breathe once. Then stop or choose another sprint."
   },
   systems: {
-    tasksHeading: "Define the system step.",
+    tasksHeading: "Define the operator step.",
     tasksSub: "Name the output, then the smallest input that produces it.",
     habitsHeading: "Build the loop.",
     habitsSub: "If it fails, reduce the step size until it is reliable.",

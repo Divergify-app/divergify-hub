@@ -715,12 +715,12 @@ export function TaskWorkspace(props: { mode: WorkspaceMode; onOpenCheckIn: () =>
             <span className="mini">{sidekick.tagline}</span>
           </article>
           <article className="signal-card">
-            <span className="metric-label">Privacy</span>
-            <strong>{data.preferences.tinFoil ? "Tinfoil Hat on" : "Standard mode"}</strong>
+            <span className="metric-label">Mode</span>
+            <strong>{data.preferences.tinFoil ? "Tinfoil Hat on" : "Cloud assist available"}</strong>
             <span className="mini">
               {data.preferences.tinFoil
-                ? "Cloud-assisted actions stay blocked and guidance remains local."
-                : "Turn on Tinfoil Hat when you want a tighter, local-only session."}
+                ? "Cloud assist is blocked. Planner tools and sidekicks stay local."
+                : "Turn on Tinfoil Hat anytime if you want this session to stay strictly local."}
             </span>
           </article>
         </div>

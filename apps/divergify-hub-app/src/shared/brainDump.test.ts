@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeBrainDumpEntry, parseBrainDump } from "./brainDump";
+import { normalizeBrainDumpEntry, parseBrainDump, sortBrainDumpLocally } from "./brainDump";
 
 describe("brain dump parsing", () => {
   it("drops empty lines and keeps each task-sized chunk", () => {
@@ -34,5 +34,19 @@ describe("brain dump parsing", () => {
 
   it("normalizes repeated whitespace", () => {
     expect(normalizeBrainDumpEntry("   email   the   landlord   ")).toBe("email the landlord");
+  });
+
+  it("sorts actionable items into now, later prompts into later, and context into notes", () => {
+    expect(
+      sortBrainDumpLocally(`
+        email Alex back
+        later maybe research standing desks
+        idea: different sidekick opening lines
+      `)
+    ).toEqual({
+      now: ["email Alex back"],
+      later: ["later maybe research standing desks"],
+      notes: ["idea: different sidekick opening lines"]
+    });
   });
 });

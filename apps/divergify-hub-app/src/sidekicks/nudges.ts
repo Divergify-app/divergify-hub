@@ -29,7 +29,7 @@ function personaPrefix(sidekickId: SidekickId) {
   if (sidekickId === "chaos_buddy") return "Chaos nudge";
   if (sidekickId === "drill_coach") return "Coach nudge";
   if (sidekickId === "zen") return "Zen nudge";
-  if (sidekickId === "systems") return "Systems nudge";
+  if (sidekickId === "systems") return "Operator nudge";
   return "Takota nudge";
 }
 
@@ -38,8 +38,8 @@ function personaFlavor(sidekickId: SidekickId) {
   if (sidekickId === "chaos_buddy") return "If stuck, make the next step weirder and smaller.";
   if (sidekickId === "drill_coach") return "No side quests until this timer ends.";
   if (sidekickId === "zen") return "Quietly continue with the same small action.";
-  if (sidekickId === "systems") return "Run the next system step exactly once.";
-  return "Stay small, stay honest, keep moving.";
+  if (sidekickId === "systems") return "Run the next process step exactly once.";
+  return "Stay small, stay honest, and stop pretending the whole day has to be solved at once.";
 }
 
 export function buildFocusNudges(sidekickId: SidekickId, supportLevel: SupportLevel, targetLabel: string) {

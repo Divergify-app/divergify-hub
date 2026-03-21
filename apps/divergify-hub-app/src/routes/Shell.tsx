@@ -29,7 +29,7 @@ export function Shell() {
   const dueNowCount = openTasks.filter((task) => task.dueDate && task.dueDate <= today).length;
   const focusTodayCount = data.focus.filter((entry) => entry.startedAt.slice(0, 10) === today).length;
   const supportProfile = getSupportProfile(session?.overwhelm ?? 50);
-  const systemsOn = data.activeSidekickId === "systems";
+  const operatorOn = data.activeSidekickId === "systems";
 
   useEffect(() => {
     if (!session) {
@@ -98,25 +98,31 @@ export function Shell() {
                 </p>
                 <div className="setup-action-row">
                   <button
-                    className={`btn ${systemsOn ? "primary" : ""}`}
-                    onClick={() => actions.setActiveSidekickId(systemsOn ? "takota" : "systems")}
-                    aria-pressed={systemsOn}
+                    className={`toggle-chip ${operatorOn ? "is-on" : ""}`}
+                    onClick={() => actions.setActiveSidekickId(operatorOn ? "takota" : "systems")}
+                    role="switch"
+                    aria-checked={operatorOn}
                   >
-                    Systems {systemsOn ? "ON" : "OFF"}
+                    <span>Operator</span>
+                    <span className="toggle-chip-state">{operatorOn ? "ON" : "OFF"}</span>
                   </button>
                   <button
-                    className={`btn ${data.preferences.shades ? "primary" : ""}`}
+                    className={`toggle-chip ${data.preferences.shades ? "is-on" : ""}`}
                     onClick={actions.toggleShades}
-                    aria-pressed={data.preferences.shades}
+                    role="switch"
+                    aria-checked={data.preferences.shades}
                   >
-                    Shades {data.preferences.shades ? "ON" : "OFF"}
+                    <span>Shades</span>
+                    <span className="toggle-chip-state">{data.preferences.shades ? "ON" : "OFF"}</span>
                   </button>
                   <button
-                    className={`btn ${data.preferences.tinFoil ? "primary" : ""}`}
+                    className={`toggle-chip ${data.preferences.tinFoil ? "is-on" : ""}`}
                     onClick={actions.toggleTinFoil}
-                    aria-pressed={data.preferences.tinFoil}
+                    role="switch"
+                    aria-checked={data.preferences.tinFoil}
                   >
-                    Tinfoil Hat {data.preferences.tinFoil ? "ON" : "OFF"}
+                    <span>Tinfoil Hat</span>
+                    <span className="toggle-chip-state">{data.preferences.tinFoil ? "ON" : "OFF"}</span>
                   </button>
                 </div>
               </div>
@@ -129,9 +135,9 @@ export function Shell() {
                 <span className="mini">Daily check-ins tune sprint length, task cap, and nudge pace before the list gets louder than the work.</span>
               </div>
               <div className="setup-feature-card">
-                <span className="metric-label">Local-first</span>
-                <strong>Private by default</strong>
-                <span className="mini">Tasks, habits, focus history, and sidekick chat stay on the device.</span>
+                <span className="metric-label">Privacy</span>
+                <strong>Local-first tools</strong>
+                <span className="mini">Tasks, habits, focus history, and sidekick chat stay on the device unless you choose extra help.</span>
               </div>
               <div className="setup-feature-card">
                 <span className="metric-label">Phone-ready</span>

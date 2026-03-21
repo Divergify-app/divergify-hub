@@ -28,6 +28,7 @@ export const sidekickRequestSchema = z.object({
   description: z.string().trim().min(1).max(600),
   style: z.string().trim().min(1).max(80),
   boundaries: z.array(z.string().trim().min(1).max(200)).min(1).max(8),
+  promptOverlay: z.string().trim().min(1).max(1400),
   supportLevel: supportLevelSchema,
   message: z.string().trim().min(1).max(4000),
   context: z.object({
@@ -62,8 +63,8 @@ export const sortRequestSchema = z.object({
 });
 
 export const sortResponseSchema = z.object({
-  tasks: z.array(z.string().trim().min(1).max(180)).max(40),
-  shopping: z.array(z.string().trim().min(1).max(180)).max(40),
+  now: z.array(z.string().trim().min(1).max(180)).max(40),
+  later: z.array(z.string().trim().min(1).max(180)).max(40),
   notes: z.array(z.string().trim().min(1).max(220)).max(40)
 });
 
@@ -320,6 +321,7 @@ export function sidekickSystemPrompt(body: z.infer<typeof sidekickRequestSchema>
     `Persona tagline: ${body.tagline}.`,
     `Persona description: ${body.description}.`,
     `Persona style keyword: ${body.style}.`,
+    `Persona overlay: ${body.promptOverlay}.`,
     `Boundaries: ${body.boundaries.join(" | ")}.`,
     supportInstructions(body.supportLevel),
     "Be warm, competent, and specific. Never shame the user.",

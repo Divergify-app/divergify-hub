@@ -9,8 +9,8 @@ type AiSuccessResult<T> = {
 };
 
 type SortResponse = {
-  tasks: string[];
-  shopping: string[];
+  now: string[];
+  later: string[];
   notes: string[];
 };
 
@@ -30,6 +30,7 @@ export type SidekickRequest = {
   description: string;
   style: string;
   boundaries: string[];
+  promptOverlay: string;
   supportLevel: "normal" | "medium" | "gentle" | "overloaded";
   message: string;
   context: {

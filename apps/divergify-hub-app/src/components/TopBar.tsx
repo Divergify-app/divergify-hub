@@ -5,6 +5,7 @@ import { getSupportProfile } from "../shared/supportProfile";
 import { TakotaStatus } from "./TakotaStatus";
 import { BrandMark } from "./BrandMark";
 import { BrandWordmark } from "./BrandWordmark";
+import { getSidekick } from "../sidekicks/defs";
 
 type Props = {
   onOpenState?: () => void;
@@ -78,7 +79,8 @@ export function TopBar({ onOpenState }: Props) {
   const currentCopy = COPY.find((entry) => entry.match(location.pathname)) ?? COPY[COPY.length - 1];
   const focusArea = data.onboardingProfile?.focusArea || "Adaptive planning";
   const openTaskCount = data.tasks.filter((task) => !task.done).length;
-  const systemsOn = data.activeSidekickId === "systems";
+  const operatorOn = data.activeSidekickId === "systems";
+  const activeSidekick = getSidekick(data.activeSidekickId);
 
   return (
     <div className="topbar panel">
@@ -104,20 +106,34 @@ export function TopBar({ onOpenState }: Props) {
           {stateNeedsAttention ? "Run check-in" : `Support: ${profile?.label ?? "set"}`}
         </button>
         <button className="btn" onClick={() => actions.setSidekickDrawerOpen(true)}>
-          Ask sidekick
+          Talk to {activeSidekick.name}
         </button>
         <button
-          className={`btn ${systemsOn ? "primary" : ""}`}
-          onClick={() => actions.setActiveSidekickId(systemsOn ? "takota" : "systems")}
-          aria-pressed={systemsOn}
+          className={`toggle-chip ${operatorOn ? "is-on" : ""}`}
+          onClick={() => actions.setActiveSidekickId(operatorOn ? "takota" : "systems")}
+          role="switch"
+          aria-checked={operatorOn}
         >
-          Systems {systemsOn ? "ON" : "OFF"}
+          <span>Operator</span>
+          <span className="toggle-chip-state">{operatorOn ? "ON" : "OFF"}</span>
         </button>
-        <button className={`btn ${data.preferences.shades ? "primary" : ""}`} onClick={actions.toggleShades} aria-pressed={data.preferences.shades}>
-          Shades {data.preferences.shades ? "ON" : "OFF"}
+        <button
+          className={`toggle-chip ${data.preferences.shades ? "is-on" : ""}`}
+          onClick={actions.toggleShades}
+          role="switch"
+          aria-checked={data.preferences.shades}
+        >
+          <span>Shades</span>
+          <span className="toggle-chip-state">{data.preferences.shades ? "ON" : "OFF"}</span>
         </button>
-        <button className={`btn ${data.preferences.tinFoil ? "primary" : ""}`} onClick={actions.toggleTinFoil} aria-pressed={data.preferences.tinFoil}>
-          Tinfoil Hat {data.preferences.tinFoil ? "ON" : "OFF"}
+        <button
+          className={`toggle-chip ${data.preferences.tinFoil ? "is-on" : ""}`}
+          onClick={actions.toggleTinFoil}
+          role="switch"
+          aria-checked={data.preferences.tinFoil}
+        >
+          <span>Tinfoil Hat</span>
+          <span className="toggle-chip-state">{data.preferences.tinFoil ? "ON" : "OFF"}</span>
         </button>
       </div>
     </div>
