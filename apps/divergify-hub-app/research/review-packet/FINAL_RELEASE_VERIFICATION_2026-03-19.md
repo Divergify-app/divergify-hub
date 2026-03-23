@@ -1,6 +1,6 @@
 # Divergify Final Release Verification
 
-Date: 2026-03-21
+Date: 2026-03-23
 
 This note records what was verified for the current Play submission package and what still requires a physical-device pass.
 
@@ -19,15 +19,15 @@ Build command used:
 
 Artifact timestamps:
 
-- AAB: `2026-03-21 15:45:12 -0400`
-- APK: `2026-03-21 15:45:13 -0400`
+- AAB: `2026-03-23 06:03:55 -0400`
+- APK: `2026-03-23 06:03:56 -0400`
 
 Checksums in the assembled submission packet:
 
 - `app-release.aab`
-  - `e74f77c4a5bdb981aaae9fa5b55e139d4ab2a2714c27372f4f125a138b69cf29`
+  - `ae440a847fc18d555d5d2caef57817126117373c8962276a27f90b63811ae959`
 - `app-release.apk`
-  - `b3587f0d24f30313920f925ada26843d36ad85c6e19353b555854e6dfeaf2717`
+  - `81cbc8f2117d6b271c4c1c5c93ce5d630b02287c7b736d2c65d2f90000e3626f`
 
 ### Android release config
 
@@ -99,6 +99,18 @@ Interpretation:
 
 - This is a low-risk clarity improvement for first use and overload moments.
 - It reduces the amount of editing chrome shown before the user has picked a task.
+
+### Icon refresh
+
+Verified in generated assets:
+
+- The app launcher icon, PWA icons, and Play hi-res icon now use the approved North Star icon instead of the older constellation-style app mark.
+- Android launcher resources were rebuilt from the same North Star source set.
+
+Interpretation:
+
+- This better matches the current brand guide and the product owner direction.
+- A fresh install or app update is required on the phone before the new launcher icon appears.
 
 ### Listing assets
 

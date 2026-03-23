@@ -10,11 +10,12 @@ APP_ROOT = Path(__file__).resolve().parent.parent
 PUBLIC_DIR = APP_ROOT / "public"
 OUTPUT_DIR = APP_ROOT / "output" / "playwright" / "play-store" / "branding"
 
-MARK_PATH = PUBLIC_DIR / "brand-constellation-mark.png"
+MARK_PATH = PUBLIC_DIR / "brand-north-star.png"
 WORDMARK_PATH = PUBLIC_DIR / "brand-wordmark-clean.png"
 
 BG = (35, 33, 71)
 BG_GLOW = (47, 45, 96)
+TEXT = (249, 238, 210, 255)
 
 
 def ensure_rgba(path: Path) -> Image.Image:
@@ -50,6 +51,12 @@ def paste_centered(canvas: Image.Image, asset: Image.Image, center_x: int, cente
     canvas.paste(asset, (x, y), asset)
 
 
+def tint_asset(image: Image.Image, color: tuple[int, int, int, int]) -> Image.Image:
+    tinted = Image.new("RGBA", image.size, color)
+    tinted.putalpha(image.getchannel("A"))
+    return tinted
+
+
 def build_hi_res_icon(mark: Image.Image) -> Path:
     canvas = make_background(512, 512)
     mark_resized = contain(mark, 320, 360)
@@ -62,7 +69,7 @@ def build_hi_res_icon(mark: Image.Image) -> Path:
 def build_feature_graphic(mark: Image.Image, wordmark: Image.Image) -> Path:
     canvas = make_background(1024, 500).convert("RGBA")
     mark_resized = contain(mark, 180, 210)
-    wordmark_resized = contain(wordmark, 500, 120)
+    wordmark_resized = contain(tint_asset(wordmark, TEXT), 500, 120)
 
     paste_centered(canvas, mark_resized, 512, 160)
     paste_centered(canvas, wordmark_resized, 512, 360)

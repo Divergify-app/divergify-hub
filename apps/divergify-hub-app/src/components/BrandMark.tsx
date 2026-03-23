@@ -2,7 +2,7 @@ type BrandMarkProps = {
   className?: string;
 };
 
-const ICON_SRC = `${import.meta.env.BASE_URL}brand-constellation-mark.png`;
+const ICON_SRC = `${import.meta.env.BASE_URL}brand-north-star.png`;
 
 export function BrandMark({ className }: BrandMarkProps) {
   return (

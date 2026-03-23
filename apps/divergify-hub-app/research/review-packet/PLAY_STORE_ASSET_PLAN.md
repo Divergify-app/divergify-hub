@@ -22,7 +22,7 @@ Existing research screenshots:
 
 Existing in-app brand assets:
 
-- `public/brand-constellation-mark.png`
+- `public/brand-north-star.png`
 - `public/brand-wordmark-clean.png`
 - `public/icon-192.png`
 - `public/icon-512.png`
@@ -108,7 +108,7 @@ Do not lead the Play listing with:
 
 Use the approved direction the product owner has been consistent about:
 
-- constellation-style `D` mark
+- North Star icon
 - light cream wordmark
 - dark navy background
 - human, grounded tone
@@ -124,8 +124,8 @@ Avoid:
 
 ### Needed immediately
 
-1. Final Play app icon export using the approved constellation mark
-2. Feature graphic built from the approved constellation + wordmark lockup
+1. Final Play app icon export using the approved North Star icon
+2. Feature graphic built from the approved North Star + wordmark lockup
 3. At least 4 compliant phone screenshots
 
 Current generated outputs:
