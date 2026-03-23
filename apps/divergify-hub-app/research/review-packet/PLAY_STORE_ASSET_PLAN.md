@@ -49,15 +49,16 @@ Those are valid research captures but not valid Play listing screenshots.
 
 ### App icon
 
-Status: `Still needs final Play export review`
+Status: `Generated locally and ready for owner review`
 
 Reason:
 
-- The in-app constellation mark is back, but the final store icon package should be reviewed as a dedicated Play asset, not assumed from app runtime assets.
+- The Play hi-res icon has been regenerated from the approved North Star icon.
+- It still needs a human look check before final Play upload.
 
 ### Feature graphic
 
-Status: `Still missing as a final Play asset`
+Status: `Generated locally and ready for owner review`
 
 Required spec from Google Play:
 
@@ -124,9 +125,9 @@ Avoid:
 
 ### Needed immediately
 
-1. Final Play app icon export using the approved North Star icon
-2. Feature graphic built from the approved North Star + wordmark lockup
-3. At least 4 compliant phone screenshots
+1. Owner review of the regenerated North Star app icon and feature graphic
+2. At least 4 compliant phone screenshots
+3. Final Play Console upload pass using the refreshed bundle and branding
 
 Current generated outputs:
 
