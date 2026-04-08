@@ -103,6 +103,48 @@ textarea:disabled {
   display: none;
 }
 
+/* Systems mode: direct, literal, structured layout for autistic users.
+   Reduces decorative noise. Increases visual structure and predictability. */
+
+/* Remove decorative background overlays */
+:root[data-systems="on"] html {
+  background: var(--bg);
+}
+
+:root[data-systems="on"] #root::before {
+  opacity: 0;
+}
+
+/* Teal top border = clear visual signal that Systems mode is active */
+:root[data-systems="on"] .topbar {
+  border-bottom: 3px solid var(--accent);
+}
+
+/* More structured, flat panels - reduce glass-morphism visual noise */
+:root[data-systems="on"] .panel,
+:root[data-systems="on"] .card {
+  background: rgba(12, 15, 28, 0.97);
+  border-color: rgba(110, 207, 207, 0.16);
+  backdrop-filter: none;
+}
+
+/* Tighter spacing on interactive elements for clearer hierarchy */
+:root[data-systems="on"] .btn {
+  border: 1px solid var(--border-strong);
+}
+
+/* Larger, clearer focus rings for better keyboard navigation */
+:root[data-systems="on"] :focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
+
+/* Slightly more line spacing for readability */
+:root[data-systems="on"] .p,
+:root[data-systems="on"] .mini {
+  line-height: 1.7;
+}
+
 .container {
   max-width: 980px;
   margin: 0 auto;

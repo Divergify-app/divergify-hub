@@ -79,7 +79,7 @@ export function TopBar({ onOpenState }: Props) {
   const currentCopy = COPY.find((entry) => entry.match(location.pathname)) ?? COPY[COPY.length - 1];
   const focusArea = data.onboardingProfile?.focusArea || "Adaptive planning";
   const openTaskCount = data.tasks.filter((task) => !task.done).length;
-  const operatorOn = data.activeSidekickId === "systems";
+  const systemsOn = data.preferences.systems;
   const activeSidekick = getSidekick(data.activeSidekickId);
 
   return (
@@ -109,13 +109,13 @@ export function TopBar({ onOpenState }: Props) {
           Talk to {activeSidekick.name}
         </button>
         <button
-          className={`toggle-chip ${operatorOn ? "is-on" : ""}`}
-          onClick={() => actions.setActiveSidekickId(operatorOn ? "takota" : "systems")}
+          className={`toggle-chip ${systemsOn ? "is-on" : ""}`}
+          onClick={actions.toggleSystems}
           role="switch"
-          aria-checked={operatorOn}
+          aria-checked={systemsOn}
         >
-          <span>Operator</span>
-          <span className="toggle-chip-state">{operatorOn ? "ON" : "OFF"}</span>
+          <span>Systems</span>
+          <span className="toggle-chip-state">{systemsOn ? "ON" : "OFF"}</span>
         </button>
         <button
           className={`toggle-chip ${data.preferences.shades ? "is-on" : ""}`}

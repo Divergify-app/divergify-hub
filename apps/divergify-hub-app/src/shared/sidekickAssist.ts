@@ -64,7 +64,8 @@ export async function requestSidekickTurn(input: Input): Promise<Result> {
         preferences: {
           humor: input.data.preferences.humor,
           shades: input.data.preferences.shades,
-          lowStim: input.data.preferences.lowStim
+          lowStim: input.data.preferences.lowStim,
+          systems: input.data.preferences.systems
         },
         recentTurns: input.data.chat.slice(-8).map((turn) => ({
           role: turn.role,

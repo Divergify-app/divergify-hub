@@ -25,6 +25,7 @@ type Actions = {
   toggleShades: () => void;
   toggleLowStim: () => void;
   toggleTinFoil: () => void;
+  toggleSystems: () => void;
 
   addTask: (t: {
     title: string;
@@ -73,6 +74,7 @@ function applyDomPrefs(p: Preferences) {
   root.style.setProperty("--scale", String(p.fontScale ?? 1));
   root.dataset.mode = p.shades ? "shades" : "default";
   root.dataset.privacy = p.tinFoil ? "tinfoil" : "off";
+  root.dataset.systems = p.systems ? "on" : "off";
 
   const motionReduced = p.reduceMotion || p.shades;
   root.dataset.motion = motionReduced ? "reduced" : "normal";
@@ -95,11 +97,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     document.body.classList.toggle("low-stim", Boolean(data.preferences.lowStim));
     document.body.classList.toggle("tin-foil", Boolean(data.preferences.tinFoil));
+    document.body.classList.toggle("systems-mode", Boolean(data.preferences.systems));
     return () => {
       document.body.classList.remove("low-stim");
       document.body.classList.remove("tin-foil");
+      document.body.classList.remove("systems-mode");
     };
-  }, [data.preferences.lowStim, data.preferences.tinFoil]);
+  }, [data.preferences.lowStim, data.preferences.tinFoil, data.preferences.systems]);
 
   const timer = useRef<number | null>(null);
   useEffect(() => {
@@ -142,6 +146,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           ...d,
           preferences: { ...d.preferences, tinFoil: !d.preferences.tinFoil }
         })),
+
+      toggleSystems: () =>
+        setData((d) => {
+          const next = !d.preferences.systems;
+          return {
+            ...d,
+            preferences: { ...d.preferences, systems: next },
+            activeSidekickId: next ? "systems" : "takota"
+          };
+        }),
 
       addTask: ({ title, notes, dueDate, startAt, location, tags, project, priority, recurrence, estimateMinutes }) => {
         const t: Task = {

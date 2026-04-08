@@ -51,6 +51,7 @@ export type SidekickRequest = {
       humor?: string;
       shades?: boolean;
       lowStim?: boolean;
+      systems?: boolean;
     };
     recentTurns: Array<{
       role: "user" | "assistant";

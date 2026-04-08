@@ -65,3 +65,14 @@
   --accent: #b9936a;
   --accent-strong: #d6b086;
 }
+
+:root[data-systems="on"] {
+  --accent: #6ecfcf;
+  --accent-strong: #9de0e0;
+  --border: rgba(110, 207, 207, 0.18);
+  --border-strong: rgba(110, 207, 207, 0.40);
+  --focus-ring: 2px solid rgba(110, 207, 207, 0.9);
+  --line: 1.65;
+  --radius: 10px;
+  --radius-sm: 6px;
+}

@@ -71,6 +71,22 @@ export function Settings() {
           </div>
         </label>
 
+        <label className="row">
+          <input
+            type="checkbox"
+            checked={data.preferences.systems}
+            onChange={actions.toggleSystems}
+          />
+          <div className="stack" style={{ gap: 2 }}>
+            <div>Systems Mode</div>
+            <div className="p">
+              Switches to literal, unambiguous language throughout the app. No metaphors, idioms, or implied meanings.
+              All instructions are numbered. One step at a time. Designed for autistic users who need explicit,
+              predictable communication. Activates Soren (Systems) as your sidekick.
+            </div>
+          </div>
+        </label>
+
         <div className="field">
           <label className="label" htmlFor="humor">Humor</label>
           <select id="humor" className="select" value={data.preferences.humor} onChange={(e) => setHumor(e.target.value as Humor)}>

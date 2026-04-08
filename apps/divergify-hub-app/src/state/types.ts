@@ -15,6 +15,7 @@ export type Preferences = {
   shades: boolean;
   lowStim: boolean;
   tinFoil: boolean;
+  systems: boolean;
 
   // anti-hook
   loopGuard: { enabled: boolean; softLimitPerHour: number; cooldownMinutes: number };

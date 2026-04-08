@@ -17,6 +17,7 @@ export function defaultData(): AppData {
       shades: false,
       lowStim: false,
       tinFoil: false,
+      systems: false,
       loopGuard: { enabled: true, softLimitPerHour: 18, cooldownMinutes: 2 }
     },
     tasks: [],
@@ -104,7 +105,8 @@ export function loadData(): AppData | null {
       : [];
     parsed.preferences = {
       ...parsed.preferences,
-      lowStim: Boolean(parsed.preferences?.lowStim)
+      lowStim: Boolean(parsed.preferences?.lowStim),
+      systems: Boolean(parsed.preferences?.systems)
     };
     parsed.hasCompletedKickoff = parsed.hasOnboarded
       ? true

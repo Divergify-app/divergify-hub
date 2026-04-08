@@ -253,22 +253,117 @@ function replyZen(data: AppData, supportLevel: SupportLevel) {
   ].join("\n");
 }
 
-function replySystems(data: AppData, supportLevel: SupportLevel) {
+function replySystems(message: string, data: AppData, supportLevel: SupportLevel) {
   const ctx = summarizeContext(data);
+  const task = ctx.topTask ? `"${ctx.topTask}"` : "the first open task in your list";
+
+  if (containsAny(message, ["overwhelm", "overwhelmed", "panic", "spinning", "too much", "cant", "can't", "stuck"])) {
+    return [
+      supportLead(supportLevel),
+      "",
+      "You said you are stuck or overwhelmed. Here is what to do.",
+      "",
+      "1. Stop what you are doing right now.",
+      "2. Take one breath.",
+      "3. Look at this task: " + task + ".",
+      "4. Do only the first physical action for that task.",
+      "   Example of a first physical action: open the document, write the title, pick up the item.",
+      `5. Set a timer for ${stepSeconds(supportLevel)} seconds.`,
+      "6. When the timer ends, stop. Decide then whether to continue.",
+      "",
+      "Stop point: when the timer ends, you are allowed to stop.",
+      safeDisclaimer()
+    ].join("\n");
+  }
+
+  if (containsAny(message, ["plan", "schedule", "organize", "priority", "priorities", "what do i do", "what should i"])) {
+    return [
+      supportLead(supportLevel),
+      "",
+      "Here is a plan. Do each step in order.",
+      "",
+      "1. Choose one task. That task is: " + task + ".",
+      "2. Write down what the finished result looks like in one sentence.",
+      "3. Write down the first physical action needed to start.",
+      "4. Do only that first physical action.",
+      `5. Set a timer for ${stepSeconds(supportLevel)} seconds.`,
+      "6. When the timer ends: stop. Write one sentence about what changed.",
+      "",
+      "Stop point: when the timer ends.",
+      safeDisclaimer()
+    ].join("\n");
+  }
+
+  if (containsAny(message, ["habit", "routine", "consistent", "repeat", "every day", "daily"])) {
+    return [
+      supportLead(supportLevel),
+      "",
+      "Here is how to set up a habit. Follow these steps.",
+      "",
+      "1. Name the habit. Use one sentence that describes the exact action.",
+      "   Example: 'Take one vitamin at 8am with water.'",
+      "2. Choose a cue. A cue is a specific event that happens before the habit.",
+      "   Example: 'After I make coffee.'",
+      "3. Set the smallest version. This is the version you can do even on a bad day.",
+      "   Example: 'Take one vitamin.'",
+      "4. Go to the Habits section. Add the habit there.",
+      "",
+      "Stop point: when the habit is added to the app.",
+      safeDisclaimer()
+    ].join("\n");
+  }
+
+  if (containsAny(message, ["focus", "timer", "start", "begin", "work on"])) {
+    return [
+      supportLead(supportLevel),
+      "",
+      "Here are the steps to start a focus session.",
+      "",
+      "1. Go to the Focus section.",
+      "2. Choose one task. That task is: " + task + ".",
+      "3. Set the timer.",
+      `4. Work on only that task for ${stepSeconds(supportLevel)} seconds.`,
+      "5. Do not switch tasks during the timer.",
+      "6. When the timer ends: stop. Mark progress.",
+      "",
+      "Stop point: when the timer ends.",
+      safeDisclaimer()
+    ].join("\n");
+  }
+
+  if (containsAny(message, ["checklist", "steps", "breakdown", "break down", "break it down"])) {
+    return [
+      supportLead(supportLevel),
+      "",
+      "Here is how to break a task into steps.",
+      "",
+      "1. Name the task in one sentence.",
+      "2. Write the end result. What does done look like exactly?",
+      "3. Write the first physical action.",
+      "4. Write the second physical action.",
+      "5. Continue until you have 3 to 5 steps.",
+      "6. Do step 1 now.",
+      "",
+      "Note: if a step is unclear, make it smaller until it is clear.",
+      "Stop point: when step 1 is complete.",
+      safeDisclaimer()
+    ].join("\n");
+  }
+
+  // Default response
   return [
     supportLead(supportLevel),
     "",
-    "Operator mode: literal and predictable.",
+    "Here is what to do next.",
     "",
-    "Answer these in order:",
-    "1) What is the output?",
-    "2) What is the smallest input?",
-    "3) What is the first test?",
+    "1. Choose one task. That task is: " + task + ".",
+    "2. State what done looks like for that task in one sentence.",
+    "3. Do the first physical action for that task.",
+    `4. Set a timer for ${stepSeconds(supportLevel)} seconds.`,
+    "5. When the timer ends: stop. Decide whether to continue.",
     "",
-    ctx.topTask ? `Default task: \"${ctx.topTask}\"` : "Default task: the smallest visible task.",
-    "",
-    microStepPrompt("Write one sentence for the output. Then do input prep.", supportLevel),
-    stopPointLine(supportLevel)
+    "Stop point: when the timer ends.",
+    safeDisclaimer()
   ].join("\n");
 }
 
@@ -293,7 +388,7 @@ export function generateSidekickTurn(input: Input): ChatTurn {
     s.id === "chaos_buddy" ? replyChaos(input.data, supportLevel) :
     s.id === "drill_coach" ? replyDrill(input.data, supportLevel) :
     s.id === "zen" ? replyZen(input.data, supportLevel) :
-    replySystems(input.data, supportLevel);
+    replySystems(msg, input.data, supportLevel);
 
   return {
     id: uid(),
