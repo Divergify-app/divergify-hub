@@ -1,17 +1,20 @@
-# Divergify Hub
+# ⛔ ARCHIVED — DO NOT DEVELOP HERE
 
-This repo is the active workspace for the Divergify app product.
+**This repo is retired as of June 2026.**
 
-It is not the live `divergify.app` website deploy target. The live website source lives in:
+Active development has moved to:
+> **[github.com/Divergify-app/divergify-mobile-app](https://github.com/Divergify-app/divergify-mobile-app)**
 
-- `/home/jessibelle/Divergify/active/Divergify_Website`
+This repo is preserved as a reference only. Nothing here should be built, deployed, or modified.
 
-Use this repo for:
+## Why it was retired
 
-- app source in `apps/divergify-hub-app`
-- product docs and planning
-- app-facing support files that belong with the hub
+`divergify-hub` was a React/Vite web app wrapped in Capacitor for Android — no iOS path, not a true native app. `divergify-mobile-app` is Expo/React Native, runs natively on iOS and Android, has a more complete feature set (Takota AI, Divergipedia, Dopamine Depot, Social agent), and is the only path to the App Store.
 
-For the current active/repo inventory, use:
+## If you want something from here
 
-- `/home/jessibelle/Divergify/ACTIVE_SURFACES.md`
+Read `ARCHIVED_REFERENCE.md` in this repo. It lists every hub-app feature worth porting to mobile-app, with file locations and priority ratings.
+
+## Beta site
+
+`https://divergify-hub-beta-jess.netlify.app` — stays live as a web preview. Do not redeploy.
