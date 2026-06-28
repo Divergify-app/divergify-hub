@@ -68,35 +68,48 @@ export const sortResponseSchema = z.object({
   notes: z.array(z.string().trim().min(1).max(220)).max(40)
 });
 
-function corsOrigin(origin?: string | null): string {
-  if (!origin) return "*";
-  if (
-    origin === "capacitor://localhost" ||
-    origin === "ionic://localhost" ||
-    origin === "http://localhost"
-  ) {
-    return origin;
-  }
+// Allowed origins for the Divergify AI proxy.
+// Requests with no Origin header (server-to-server, curl) are blocked — not wildcarded.
+// Add production custom domain once DNS is confirmed.
+const ALLOWED_ORIGINS = new Set([
+  "capacitor://localhost",
+  "ionic://localhost",
+  "http://localhost",
+  "https://divergify.app",
+  "https://www.divergify.app",
+]);
 
+function corsOrigin(origin?: string | null): string | null {
+  if (!origin) return null; // No origin → no CORS header → browser blocks cross-origin requests
+  if (ALLOWED_ORIGINS.has(origin)) return origin;
   try {
     const url = new URL(origin);
-    if (url.protocol === "https:" && (url.hostname.endsWith(".netlify.app") || url.hostname.endsWith(".netlify.live"))) {
+    // Allow Netlify preview and branch deploys during development
+    if (
+      url.protocol === "https:" &&
+      (url.hostname.endsWith(".netlify.app") || url.hostname.endsWith(".netlify.live"))
+    ) {
       return origin;
     }
   } catch {
-    return "*";
+    // Malformed origin — deny
   }
-
-  return "*";
+  return null; // Unknown origin → no CORS header → browser blocks
 }
 
-export function buildHeaders(origin?: string | null) {
-  return {
-    "Access-Control-Allow-Origin": corsOrigin(origin),
+export function buildHeaders(origin?: string | null): Record<string, string> {
+  const allowedOrigin = corsOrigin(origin);
+  const headers: Record<string, string> = {
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Allow-Methods": "POST,OPTIONS",
     "Content-Type": "application/json; charset=utf-8"
   };
+  // Only set the CORS header when the origin is explicitly allowed.
+  // Omitting it for unknown/missing origins causes the browser to block the request.
+  if (allowedOrigin) {
+    headers["Access-Control-Allow-Origin"] = allowedOrigin;
+  }
+  return headers;
 }
 
 export function optionsResponse(event: HandlerEvent): HandlerResponse {

@@ -31,10 +31,20 @@ export function LegalPrivacy() {
           </p>
         </div>
         <div className="stack" style={{ gap: 10 }}>
+          <h3 className="h2">Voice input in Brain Dump</h3>
+          <p className="p">
+            The Brain Dump screen includes an optional microphone button. If you tap it, the app uses your
+            browser or device's built-in speech recognition service to convert your voice to text. Audio is
+            processed by that service, not by Divergify. The microphone button only activates when you tap it
+            and stops when you tap it again. You can use Brain Dump entirely by typing if you prefer.
+          </p>
+        </div>
+        <div className="stack" style={{ gap: 10 }}>
           <h3 className="h2">Permissions in the current Android build</h3>
           <p className="p">
             The Android manifest currently requests internet access only. This build does not declare microphone,
-            camera, or location permission.
+            camera, or location permission. Voice input in Brain Dump uses the WebView speech API, which may
+            prompt the device for microphone access at runtime when first used.
           </p>
         </div>
         <div className="notice">
