@@ -1,221 +1,57 @@
-import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { TopBar } from "../components/TopBar";
-import { Tabs } from "../components/Tabs";
-import { SidekickDrawer } from "../components/SidekickDrawer";
-import { BrandMark } from "../components/BrandMark";
-import { BrandWordmark } from "../components/BrandWordmark";
 import { useApp } from "../state/useApp";
 import { TakotaCheckIn } from "../components/TakotaCheckIn";
 import { useSessionState } from "../state/sessionState";
 import { getSupportProfile } from "../shared/supportProfile";
-import { todayISO } from "../shared/utils";
+import { SidekickDrawer } from "../components/SidekickDrawer";
+
+const tools = [
+  ["/today", "Today"], ["/tasks", "Tasks"], ["/calendar", "Calendar"],
+  ["/brain-dump", "Sort a written dump"], ["/focus", "Focus"], ["/habits", "Habits"],
+  ["/sidekicks", "Sidekicks"], ["/settings", "Settings"], ["/feedback", "Feedback"]
+];
 
 export function Shell() {
   const { hydrated, data, actions } = useApp();
-  const loc = useLocation();
-  const { session, checkInRequired } = useSessionState();
+  const { session } = useSessionState();
+  const location = useLocation();
   const [checkInOpen, setCheckInOpen] = useState(false);
+  const menu = useRef<HTMLDetailsElement>(null);
   const appliedSessionAtRef = useRef<string | null>(null);
-  const canOpenWithoutOnboarding =
-    loc.pathname === "/onboarding" ||
-    loc.pathname === "/brain-dump" ||
-    loc.pathname === "/feedback" ||
-    loc.pathname === "/legal/privacy" ||
-    loc.pathname === "/legal/terms";
-  const setupMode = !data.hasOnboarded;
-  const today = todayISO();
-  const openTasks = data.tasks.filter((task) => !task.done);
-  const dueNowCount = openTasks.filter((task) => task.dueDate && task.dueDate <= today).length;
-  const focusTodayCount = data.focus.filter((entry) => entry.startedAt.slice(0, 10) === today).length;
-  const supportProfile = getSupportProfile(session?.overwhelm ?? 50);
-  const operatorOn = data.activeSidekickId === "systems";
 
+  useEffect(() => { if (menu.current) menu.current.open = false; }, [location.pathname]);
   useEffect(() => {
-    if (!session) {
-      appliedSessionAtRef.current = null;
-      return;
-    }
-    if (appliedSessionAtRef.current === session.setAt) return;
+    if (!session || appliedSessionAtRef.current === session.setAt) return;
     appliedSessionAtRef.current = session.setAt;
-
     const profile = getSupportProfile(session.overwhelm);
-    if (!profile.autoEnableShades && !profile.autoReduceMotion) return;
-
-    const desiredShades = profile.autoEnableShades || data.preferences.shades;
-    const desiredReduceMotion = profile.autoReduceMotion || data.preferences.reduceMotion;
-    if (data.preferences.shades === desiredShades && data.preferences.reduceMotion === desiredReduceMotion) return;
-
-    actions.setPreferences({
-      ...data.preferences,
-      shades: desiredShades,
-      reduceMotion: desiredReduceMotion
-    });
+    if (profile.autoEnableShades || profile.autoReduceMotion) {
+      actions.setPreferences({ ...data.preferences,
+        shades: profile.autoEnableShades || data.preferences.shades,
+        reduceMotion: profile.autoReduceMotion || data.preferences.reduceMotion });
+    }
   }, [actions, data.preferences, session]);
 
-  useEffect(() => {
-    if (!hydrated || !data.hasOnboarded) return;
-    if (!checkInRequired) return;
-    setCheckInOpen(true);
-  }, [checkInRequired, data.hasOnboarded, hydrated]);
-
-  if (!hydrated) {
-    return (
-      <div className="container">
-        <div className="panel" style={{ padding: 22 }}>
-          <p className="p">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!data.hasOnboarded && !canOpenWithoutOnboarding) {
-    return <Navigate to="/onboarding" replace />;
-  }
-
-  if (setupMode) {
-    return (
-      <div className="setup-frame">
-        <TakotaCheckIn open={checkInOpen} onClose={() => setCheckInOpen(false)} />
-
-        <div className="setup-shell">
-          <section className="setup-hero panel stack">
-            <div className="setup-brand-row">
-              <div className="setup-brand-copy">
-                <div className="badge">Divergify</div>
-                <div className="setup-lockup">
-                  <div className="setup-brand-mark-shell">
-                    <BrandMark className="setup-brand-mark" />
-                  </div>
-                  <BrandWordmark className="setup-wordmark" />
-                </div>
-              </div>
-              <div className="stack" style={{ gap: 10, minWidth: 0 }}>
-                <h1 className="setup-title">For brains that zig when the world zags.</h1>
-                <p className="p">
-                  Divergify is a planner for neurodivergent brains: quick capture, clear next steps, and enough
-                  support to help without turning the app into more noise.
-                </p>
-                <div className="setup-action-row">
-                  <button
-                    className={`toggle-chip ${operatorOn ? "is-on" : ""}`}
-                    onClick={() => actions.setActiveSidekickId(operatorOn ? "takota" : "systems")}
-                    role="switch"
-                    aria-checked={operatorOn}
-                  >
-                    <span>Operator</span>
-                    <span className="toggle-chip-state">{operatorOn ? "ON" : "OFF"}</span>
-                  </button>
-                  <button
-                    className={`toggle-chip ${data.preferences.shades ? "is-on" : ""}`}
-                    onClick={actions.toggleShades}
-                    role="switch"
-                    aria-checked={data.preferences.shades}
-                  >
-                    <span>Shades</span>
-                    <span className="toggle-chip-state">{data.preferences.shades ? "ON" : "OFF"}</span>
-                  </button>
-                  <button
-                    className={`toggle-chip ${data.preferences.tinFoil ? "is-on" : ""}`}
-                    onClick={actions.toggleTinFoil}
-                    role="switch"
-                    aria-checked={data.preferences.tinFoil}
-                  >
-                    <span>Tinfoil Hat</span>
-                    <span className="toggle-chip-state">{data.preferences.tinFoil ? "ON" : "OFF"}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="setup-feature-grid">
-              <div className="setup-feature-card">
-                <span className="metric-label">Adaptive pacing</span>
-                <strong>{supportProfile.label}</strong>
-                <span className="mini">Daily check-ins tune sprint length, task cap, and nudge pace before the list gets louder than the work.</span>
-              </div>
-              <div className="setup-feature-card">
-                <span className="metric-label">Privacy</span>
-                <strong>Local-first tools</strong>
-                <span className="mini">Tasks, habits, focus history, and sidekick chat stay on the device unless you choose extra help.</span>
-              </div>
-              <div className="setup-feature-card">
-                <span className="metric-label">Phone-ready</span>
-                <strong>{openTasks.length} active items</strong>
-                <span className="mini">Built for tap-sized planning, quick entry, and smooth Android packaging.</span>
-              </div>
-            </div>
-
-            <div className="setup-action-row">
-              {loc.pathname !== "/brain-dump" ? (
-                <Link to="/brain-dump" className="btn" style={{ textDecoration: "none" }}>
-                  Quick brain dump
-                </Link>
-              ) : null}
-              <button className={`btn ${checkInRequired ? "primary" : ""}`} onClick={() => setCheckInOpen(true)}>
-                {checkInRequired ? "Run check-in" : `Support: ${supportProfile.label}`}
-              </button>
-            </div>
-          </section>
-
-          <main id="main" className="setup-content">
-            <Outlet context={{ openCheckIn: () => setCheckInOpen(true) }} />
-          </main>
-        </div>
-      </div>
-    );
-  }
+  if (!hydrated) return <main className="talk-loading" aria-busy="true">Opening Takota…</main>;
 
   return (
-    <div className="app-frame">
+    <div className="conversation-shell">
       <TakotaCheckIn open={checkInOpen} onClose={() => setCheckInOpen(false)} />
-
-      <aside className="nav-rail">
-        <div className="workspace-card stack nav-brand-card">
-          <div className="badge">Divergify</div>
-          <div className="nav-brand-lockup">
-            <div className="nav-brand-mark-shell">
-              <BrandMark className="nav-brand-mark" />
-            </div>
-            <BrandWordmark className="nav-wordmark" />
-          </div>
-          <h1 className="h2">For brains that zig when the world zags.</h1>
-          <p className="p">
-            A human planner for messy days, clear starts, and getting back in without rebuilding your whole brain.
-          </p>
-
-          <div className="nav-brand-stats">
-            <div className="nav-brand-stat">
-              <span className="metric-label">Open</span>
-              <strong>{openTasks.length}</strong>
-            </div>
-            <div className="nav-brand-stat">
-              <span className="metric-label">Due now</span>
-              <strong>{dueNowCount}</strong>
-            </div>
-            <div className="nav-brand-stat">
-              <span className="metric-label">Focus</span>
-              <strong>{focusTodayCount}</strong>
-            </div>
-          </div>
-
-          <div className="notice">
-            <strong>{supportProfile.label}</strong> support is active. Tinfoil Hat and Shades stay close for quick
-            environment changes.
-          </div>
-        </div>
-        <Tabs variant="sidebar" />
-      </aside>
-
-      <div className="app-main">
-        <TopBar onOpenState={() => setCheckInOpen(true)} />
-        <main id="main" className="app-content">
-          <Outlet context={{ openCheckIn: () => setCheckInOpen(true) }} />
-        </main>
-        <Tabs variant="bottom" />
-      </div>
-
-      <SidekickDrawer />
+      <header className="conversation-header">
+        <Link to="/" className="conversation-brand">Divergify</Link>
+        <details ref={menu} className="conversation-tools">
+          <summary>Tools</summary>
+          <nav aria-label="Tools">
+            <Link to="/">Talk to Takota</Link>
+            {tools.map(([to, label]) => <Link key={to} to={to}>{label}</Link>)}
+            <button type="button" onClick={() => { if (menu.current) menu.current.open = false; setCheckInOpen(true); }}>Adjust support</button>
+          </nav>
+        </details>
+      </header>
+      <main id="main" className={location.pathname === "/" ? "conversation-main" : "conversation-tool-page"}>
+        <Outlet context={{ openCheckIn: () => setCheckInOpen(true) }} />
+      </main>
+      {location.pathname !== "/" ? <SidekickDrawer /> : null}
     </div>
   );
 }

@@ -28,7 +28,7 @@ export function defaultData(): AppData {
         role: "assistant",
         sidekickId: "takota",
         content:
-          "I am Takota. Default settings: helpful, not precious.\n\nIf your brain is loud, we will work smaller. If your brain is bored, we will work weirder.\n\nPick one next step and we will build the bridge.",
+          "Go ahead. What’s on your mind?",
         ts: nowIso()
       }
     ],
