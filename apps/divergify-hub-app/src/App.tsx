@@ -17,14 +17,17 @@ import { NotFound } from "./routes/NotFound";
 import { Calendar } from "./routes/Calendar";
 import { BrainDump } from "./routes/BrainDump";
 import { Feedback } from "./routes/Feedback";
+import { Conversation } from "./routes/Conversation";
 
 export function App() {
   return (
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<Shell />}>
-          <Route index element={<Today />} />
-          <Route path="onboarding" element={<Onboarding />} />
+          <Route index element={<Conversation />} />
+          <Route path="today" element={<Today />} />
+          <Route path="onboarding" element={<Navigate to="/" replace />} />
+          <Route path="setup" element={<Onboarding />} />
           <Route path="kickoff" element={<Kickoff />} />
           <Route path="tasks" element={<Tasks />} />
           <Route path="brain-dump" element={<BrainDump />} />

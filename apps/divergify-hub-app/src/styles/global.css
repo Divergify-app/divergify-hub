@@ -1478,3 +1478,43 @@ body.tin-foil .takota-status-avatar {
     padding-top: 8px;
   }
 }
+
+/* Conversation is the front door; tools appear only when requested. */
+.conversation-shell { min-height: 100dvh; }
+.conversation-header { max-width: 960px; margin: auto; padding: 20px clamp(16px, 4vw, 32px); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.conversation-brand { color: var(--text); font-weight: 800; font-size: 1.2rem; text-decoration: none; }
+.conversation-tools { position: relative; z-index: 20; }
+.conversation-tools summary { cursor: pointer; min-height: 44px; padding: 10px 16px; border: 1px solid var(--border); border-radius: 14px; }
+.conversation-tools nav { position: absolute; right: 0; top: 100%; width: min(260px, 85vw); display: grid; padding: 10px; background: var(--bg); border: 1px solid var(--border-strong); border-radius: 14px; box-shadow: var(--shadow-lg); }
+.conversation-tools nav a, .conversation-tools nav button { color: var(--text); background: none; border: 0; text-align: left; text-decoration: none; min-height: 44px; padding: 12px; font: inherit; border-radius: 8px; }
+.conversation-tools nav a:hover, .conversation-tools nav button:hover { background: var(--panel-soft); }
+.conversation-main { padding: 12px 20px max(28px, env(safe-area-inset-bottom)); }
+.conversation-tool-page { width: min(1120px, 100%); padding: 20px; margin: auto; }
+.takota-conversation { max-width: 580px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+.talk-intro { text-align: center; padding-top: clamp(8px, 4vh, 40px); }
+.talk-service { display: block; font-size: .8rem; color: var(--muted); }
+.talk-avatar { display: block; width: 104px; height: 104px; margin: 20px auto 12px; color: var(--accent); }
+.talk-intro h1 { margin: 0 0 16px; font-size: 1.5rem; }
+.talk-reply { font-size: clamp(1.1rem, 3.8vw, 1.4rem); line-height: 1.6; max-width: 480px; margin: 0 auto; overflow-wrap: anywhere; }
+.talk-controls { display: grid; justify-items: center; gap: 8px; margin: 16px 0 4px; }
+.talk-button { border: 1px solid var(--accent); background: var(--accent); color: var(--bg); padding: 18px 26px; border-radius: 100px; display: flex; gap: 12px; align-items: center; font: inherit; font-weight: 800; font-size: 1.1rem; min-height: 64px; cursor: pointer; }
+.talk-button:disabled { opacity: .5; cursor: default; }
+.talk-button.is-listening { background: var(--panel-strong); color: var(--text); }
+.talk-button svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; }
+.talk-status { min-height: 24px; color: var(--muted); font-size: .9rem; }
+.talk-audio-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.talk-audio-actions .btn { min-height: 44px; }
+.talk-details { border-top: 1px solid var(--border); padding: 12px 0; overflow-wrap: anywhere; }
+.talk-details summary { cursor: pointer; min-height: 44px; padding: 10px 0; color: var(--muted); }
+.talk-details form { display: grid; gap: 12px; }
+.talk-details .textarea { margin: 8px 0; }
+.talk-notice, .talk-appointment { border: 1px solid var(--border-strong); border-radius: 14px; padding: 14px 18px; font-size: .95rem; }
+.talk-appointment p { margin: 0 0 8px; }
+.talk-appointment a { color: var(--accent); }
+.talk-limit { font-size: .8rem; color: var(--muted); text-align: center; margin: 0; }
+.talk-consent { background: var(--bg); color: var(--text); border: 1px solid var(--border-strong); border-radius: 22px; padding: 24px; width: min(460px, calc(100vw - 32px)); }
+.talk-consent::backdrop { background: rgba(0, 0, 0, .75); }
+.talk-consent h2 { margin-top: 0; }
+.talk-consent .row { flex-wrap: wrap; gap: 12px; }
+.talk-loading { padding: 40px; text-align: center; }
+@media (max-width: 400px) { .conversation-main { padding-inline: 16px; } .talk-button { padding: 16px 22px; } }

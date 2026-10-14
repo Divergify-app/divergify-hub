@@ -172,7 +172,8 @@ export function Tabs({ variant = "sidebar" }: TabsProps) {
     }));
 
   const primaryItems: NavItem[] = [
-    { to: "/", label: "Today", icon: "today", count: dueNowCount },
+    { to: "/", label: "Talk", icon: "sidekicks" },
+    { to: "/today", label: "Today", icon: "today", count: dueNowCount },
     { to: "/tasks", label: "Planner", icon: "planner", count: openTasks.length },
     { to: "/calendar", label: "Calendar", icon: "calendar", count: scheduledCount },
     { to: "/focus", label: "Focus", icon: "focus", count: focusTodayCount },
